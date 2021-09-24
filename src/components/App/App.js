@@ -1,7 +1,7 @@
 import React from 'react';
 
-
 import Header from '../Header/Header';
+import Main from '../Main/Main';
 
 function App() {
   return (
@@ -9,6 +9,7 @@ function App() {
       <div className="page__box">
 
         <Header />
+        <Main />
 
       </div>
     </div>

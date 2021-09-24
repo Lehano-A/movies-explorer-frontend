@@ -1,0 +1,7 @@
+.about-project__scale-backend-box {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 228px;
+  text-align: center;
+}

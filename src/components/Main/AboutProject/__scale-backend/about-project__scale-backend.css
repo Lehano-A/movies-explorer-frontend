@@ -1,0 +1,8 @@
+.about-project__scale-backend {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 36px;
+  margin-bottom: 14px;
+  background-color: #2be080;
+}

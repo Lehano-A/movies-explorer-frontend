@@ -1,0 +1,7 @@
+.about-project__scale-frontend-box {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 912px;
+  text-align: center;
+}

@@ -1,0 +1,5 @@
+.about-project__info-box {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 70px;
+}
