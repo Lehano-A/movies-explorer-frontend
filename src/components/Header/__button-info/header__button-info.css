@@ -1,0 +1,16 @@
+.header__button-info {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.33;
+  background-color: #e8e8e8;
+  min-width: 96px;
+  height: 36px;
+  margin-left: 5px;
+  margin-right: 5px;
+  border-radius: 10px;
+  border: none;
+}
+
+.header__button-info:hover {
+  cursor: pointer;
+}

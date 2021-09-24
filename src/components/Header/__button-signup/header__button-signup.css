@@ -1,0 +1,14 @@
+.header__button-signup {
+  color: #fff;
+  padding: 0;
+  margin-right: 30px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.33;
+  border: none;
+  background-color: transparent;
+}
+
+.header__button-signup:hover {
+  cursor: pointer;
+}

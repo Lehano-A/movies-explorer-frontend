@@ -1,0 +1,19 @@
+@import url(./vendor/normalize.css);
+@import url(./vendor/fonts/fonts.css);
+
+@import url(./blocks/page/page.css);
+@import url(./blocks/page/__box/page__box.css);
+
+@import url(./components/Header/Header.css);
+@import url(./components/Header/__top/header__top.css);
+@import url(./components/Header/__logo/header__logo.css);
+@import url(./components/Header/__button-box/header__button-box.css);
+@import url(./components/Header/__button-signin/header__button-signin.css);
+@import url(./components/Header/__button-signup/header__button-signup.css);
+
+@import url(./components/Header/__title-box/header__title-box.css);
+@import url(./components/Header/__title/header__title.css);
+@import url(./components/Header/__practicum-logo/header__practicum-logo.css);
+
+@import url(./components/Header/__info-buttons/header__info-buttons.css);
+@import url(./components/Header/__button-info/header__button-info.css);
