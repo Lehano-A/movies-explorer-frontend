@@ -1,0 +1,14 @@
+.title-description {
+  font-size: 50px;
+  font-weight: 400;
+  line-height: 1.16;
+  letter-spacing: -0.04em;
+}
+
+.Techs .title-description {
+  margin: 90px 0 0;
+}
+
+.Student .title-description {
+  margin: 0;
+}

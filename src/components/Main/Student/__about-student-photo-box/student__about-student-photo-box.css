@@ -1,0 +1,5 @@
+.student__about-student-photo-box {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 66px;
+}

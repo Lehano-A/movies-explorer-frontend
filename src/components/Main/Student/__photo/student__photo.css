@@ -1,0 +1,5 @@
+.student__photo {
+  max-width: 320px;
+  height: 240px;
+  border-radius: 10px;
+}
