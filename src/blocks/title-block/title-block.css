@@ -1,4 +1,5 @@
-.about-project__title-about-project {
+/*  МИКС - НАЗВАНИЕ БЛОКА */
+.title-block {
   max-width: 1140px;
   font-size: 22px;
   font-weight: 400;

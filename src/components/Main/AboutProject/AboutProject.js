@@ -4,17 +4,17 @@ function AboutProject() {
 
   return (
     <section className="AboutProject">
-      <h2 className="about-project__title-about-project">О проекте</h2>
+      <h2 className="title-block">О проекте</h2>
 
       <div className="about-project__info-box">
 
         <div className="about-project__text-box">
           <h3 className="about-project__title">Дипломный проект включал 5 этапов</h3>
-          <p className="about-project__description-text">Составление плана, работу над бэкендом, вёрстку, добавление функциональности и финальные доработки.</p>
+          <p className="description-text"> Составление плана, работу над бэкендом, вёрстку, добавление функциональности и финальные доработки.</p>
         </div>
         <div className="about-project__text-box">
           <h3 className="about-project__title">На выполнение диплома ушло 5 недель</h3>
-          <p className="about-project__description-text">У каждого этапа был мягкий и жёсткий дедлайн, которые нужно было соблюдать, чтобы успешно защититься.</p>
+          <p className="description-text">У каждого этапа был мягкий и жёсткий дедлайн, которые нужно было соблюдать, чтобы успешно защититься.</p>
         </div>
 
       </div>
@@ -34,7 +34,7 @@ function AboutProject() {
         </div>
       </div>
 
-    </section>
+    </section >
   )
 }
 
