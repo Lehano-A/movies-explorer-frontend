@@ -1,0 +1,13 @@
+.footer__nav {
+  display: flex;
+  list-style: none;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.21;
+  margin: 0;
+  padding-inline-start: 0;
+}
+
+.footer__nav li:nth-child(1n):not(:last-child) {
+  margin-right: 20px;
+}

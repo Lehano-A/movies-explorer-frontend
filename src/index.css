@@ -51,3 +51,9 @@
 @import url(./components/Main/Portfolio/Portfolio.css);
 @import url(./components/Main/Portfolio/__title/portfolio__title.css);
 @import url(./components/Main/Portfolio/__works/portfolio__works.css);
+
+@import url(./components/Footer/Footer.css);
+@import url(./components/Footer/__info-project/footer__info-project.css);
+@import url(./components/Footer/__date-nav-box/footer__date-nav-box.css);
+@import url(./components/Footer/__date/footer__date.css);
+@import url(./components/Footer/__nav/footer__nav.css);
