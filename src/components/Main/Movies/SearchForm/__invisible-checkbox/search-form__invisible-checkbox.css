@@ -1,0 +1,33 @@
+.search-form__invisible-checkbox {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  border-radius: 20px;
+}
+
+.search-form__invisible-checkbox:checked + .search-form__visible-checkbox {
+  transition: 0.25s;
+  background-color: #2be080;
+}
+
+.search-form__invisible-checkbox:checked
+  + .search-form__visible-checkbox
+  .search-form__switch {
+  transition: 0.5s;
+  transform: translateX(18px);
+}
+
+.search-form__invisible-checkbox:not(:checked)
+  + .search-form__visible-checkbox
+  .search-form__switch {
+  transition: 0.5s;
+  transform: translateX(0px);
+}
+
+.search-form__invisible-checkbox:not(:checked)
+  + .search-form__visible-checkbox {
+  transition: 0.5s;
+  background-color: #d3d3d3;
+}

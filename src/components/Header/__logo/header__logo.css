@@ -3,3 +3,7 @@
   height: 38px;
   margin-left: 70px;
 }
+
+.header__logo:hover {
+  cursor: pointer;
+}

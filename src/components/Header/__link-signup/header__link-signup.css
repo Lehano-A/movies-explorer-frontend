@@ -1,0 +1,27 @@
+.header__link-signup {
+  color: #fff;
+  padding: 0;
+  margin-right: 30px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.33;
+  border: none;
+  background-color: transparent;
+}
+
+.header__link-signup:hover {
+  cursor: pointer;
+}
+
+.header__link-signup:link {
+  text-decoration: none;
+}
+
+.header__link-signup:visited {
+  color: #fff;
+}
+
+.header__link-signup:active {
+  text-decoration: none;
+  color: #fff;
+}

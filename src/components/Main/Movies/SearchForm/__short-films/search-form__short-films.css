@@ -1,0 +1,9 @@
+.search-form__short-films {
+  display: flex;
+  justify-content: center;
+  padding-top: 29px;
+  padding-bottom: 40px;
+  border-bottom: 1px #e8e8e8 solid;
+  margin-left: 70px;
+  margin-right: 70px;
+}

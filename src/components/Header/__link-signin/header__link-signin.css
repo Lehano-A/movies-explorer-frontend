@@ -1,0 +1,30 @@
+.header__link-signin {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 76px;
+  height: 32px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.33;
+  background-color: #2be080;
+  border: none;
+  border-radius: 3px;
+}
+
+.header__link-signin:hover {
+  cursor: pointer;
+}
+
+.header__link-signin:link {
+  text-decoration: none;
+}
+
+.header__link-signin:visited {
+  color: black;
+}
+
+.header__link-signin:active {
+  text-decoration: none;
+  color: black;
+}

@@ -9,18 +9,24 @@
 @import url(./blocks/title-description/title-description.css);
 
 @import url(./components/Header/Header.css);
+@import url(./components/Header/_light-bg/header_light-bg.css);
+@import url(./components/Header/__profile/header__profile);
+@import url(./components/Header/__profile-icon/header__profile-icon.css);
+@import url(./components/Header/__links/header__links.css);
+@import url(./components/Header/__link-movies/header__link-movies.css);
+@import url(./components/Header/__link-saved-movies/header__link-saved-movies.css);
 @import url(./components/Header/__top/header__top.css);
 @import url(./components/Header/__logo/header__logo.css);
-@import url(./components/Header/__button-box/header__button-box.css);
-@import url(./components/Header/__button-signin/header__button-signin.css);
-@import url(./components/Header/__button-signup/header__button-signup.css);
+@import url(./components/Header/__signin-signup-box/header__signin-signup-box.css);
+@import url(./components/Header/__link-signin/header__link-signin.css);
+@import url(./components/Header/__link-signup/header__link-signup.css);
 
-@import url(./components/Header/__title-box/header__title-box.css);
-@import url(./components/Header/__title/header__title.css);
-@import url(./components/Header/__practicum-logo/header__practicum-logo.css);
-
-@import url(./components/Header/__info-buttons/header__info-buttons.css);
-@import url(./components/Header/__button-info/header__button-info.css);
+@import url(./components/Main/Promo/Promo.css);
+@import url(./components/Main/Promo/__title-box/promo__title-box.css);
+@import url(./components/Main/Promo/__title/promo__title.css);
+@import url(./components/Main/Promo/__practicum-logo/promo__practicum-logo.css);
+@import url(./components/Main/Promo/__info-buttons/promo__info-buttons.css);
+@import url(./components/Main/Promo/__button-info/promo__button-info.css);
 
 @import url(./components/Main/AboutProject/AboutProject.css);
 @import url(./components/Main/AboutProject/__info-box/about-project__info-box.css);
@@ -57,3 +63,27 @@
 @import url(./components/Footer/__date-nav-box/footer__date-nav-box.css);
 @import url(./components/Footer/__date/footer__date.css);
 @import url(./components/Footer/__nav/footer__nav.css);
+
+@import url(./components/Main/Movies/SearchForm/SearchForm.css);
+@import url(./components/Main/Movies/SearchForm/__form/search-form__form.css);
+@import url(./components/Main/Movies/SearchForm/__short-films/search-form__short-films.css);
+@import url(./components/Main/Movies/SearchForm/__input/search-form__input.css);
+@import url(./components/Main/Movies/SearchForm/__button-search/search-form__button-search.css);
+@import url(./components/Main/Movies/SearchForm/__label/search-form__label.css);
+@import url(./components/Main/Movies/SearchForm/__label-name/search-form__label-name.css);
+@import url(./components/Main/Movies/SearchForm/__invisible-checkbox/search-form__invisible-checkbox.css);
+@import url(./components/Main/Movies/SearchForm/__visible-checkbox/search-form__visible-checkbox.css);
+@import url(./components/Main/Movies/SearchForm/__switch/search-form__switch.css);
+
+@import url(./components/Main/Movies/MoviesCard/MoviesCard.css);
+@import url(./components/Main/Movies/MoviesCard/__poster/movies-card__poster.css);
+@import url(./components/Main/Movies/MoviesCard/__poster-box/movies-card__poster-box.css);
+@import url(./components/Main/Movies/MoviesCard/__title-duration-box/movies-card__title-duration-box.css);
+@import url(./components/Main/Movies/MoviesCard/__title/movies-card__title.css);
+@import url(./components/Main/Movies/MoviesCard/__duration/movies-card__duration.css);
+@import url(./components/Main/Movies/MoviesCard/__button-save/movies-card__button-save.css);
+@import url(./components/Main/Movies/MoviesCard/__title-duration-button-box/movies-card__title-duration-button-box.css);
+
+@import url(./components/Main/Movies/MoviesCardList/MoviesCardList.css);
+@import url(./components/Main/Movies/More/More.css);
+@import url(./components/Main/Movies/More/__button-more/more__button-more.css);

@@ -1,0 +1,18 @@
+.header__profile {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100px;
+  height: 32px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 0.92;
+  text-decoration: none;
+  border-radius: 40px;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.08);
+  margin-right: 70px;
+}
+
+.header__profile span {
+  margin-left: 5px;
+}

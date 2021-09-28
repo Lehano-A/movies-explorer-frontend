@@ -2,7 +2,7 @@ import React from "react";
 
 function Footer() {
   return (
-    <section className="Footer">
+    <footer className="Footer">
       <p className="footer__info-project">Учебный проект Яндекс.Практикум х BeatFilm.</p>
       <div className="footer__date-nav-box">
         <p className="footer__date">&copy; {new Date().getFullYear()}</p>
@@ -14,7 +14,7 @@ function Footer() {
           </ul>
         </nav>
       </div>
-    </section>
+    </footer>
   )
 }
 

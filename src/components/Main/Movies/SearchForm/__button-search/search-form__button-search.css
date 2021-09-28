@@ -1,0 +1,14 @@
+.search-form__button-search {
+  width: 44px;
+  height: 44px;
+  background-color: #ff6838;
+  border: none;
+  border-radius: 8px;
+  background-image: url("./../../../../../images/search_icon.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.search-form__button-search:hover {
+  cursor: pointer;
+}
