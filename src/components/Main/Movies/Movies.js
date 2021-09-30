@@ -5,15 +5,20 @@ import MoviesCardList from "./MoviesCardList/MoviesCardList";
 import More from "./More/More";
 
 
-function Movies({ handleIsCountCards }) {
+function Movies({ cards, countedCards, handleCountCards, isActiveButtonSave, handleIsActiveButtonSave }) {
 
   return (
     <>
       <SearchForm />
       <MoviesCardList
-        handleIsCountCards={handleIsCountCards}
+        countedCards={countedCards}
+        handleIsActiveButtonSave={handleIsActiveButtonSave}
+
       />
-      <More />
+      <More
+        cards={cards}
+        handleCountCards={handleCountCards}
+      />
     </>
   )
 

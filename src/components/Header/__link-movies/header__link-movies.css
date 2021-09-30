@@ -21,7 +21,7 @@
 .header__link-movies::after {
   content: "";
   position: absolute;
-  left: 0;
+  right: 0;
   bottom: -3px;
   display: block;
   width: 0;

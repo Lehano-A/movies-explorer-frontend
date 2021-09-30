@@ -15,7 +15,7 @@
 @import url(./components/Header/__links/header__links.css);
 @import url(./components/Header/__link-movies/header__link-movies.css);
 @import url(./components/Header/__link-saved-movies/header__link-saved-movies.css);
-@import url(./components/Header/__top/header__top.css);
+@import url(./components/Header/__head/header__head.css);
 @import url(./components/Header/__logo/header__logo.css);
 @import url(./components/Header/__signin-signup-box/header__signin-signup-box.css);
 @import url(./components/Header/__link-signin/header__link-signin.css);
@@ -82,6 +82,7 @@
 @import url(./components/Main/Movies/MoviesCard/__title/movies-card__title.css);
 @import url(./components/Main/Movies/MoviesCard/__duration/movies-card__duration.css);
 @import url(./components/Main/Movies/MoviesCard/__button-save/movies-card__button-save.css);
+@import url(./components/Main/Movies/MoviesCard/__button-save/_active/movies-card__button-save_active.css);
 @import url(./components/Main/Movies/MoviesCard/__title-duration-button-box/movies-card__title-duration-button-box.css);
 
 @import url(./components/Main/Movies/MoviesCardList/MoviesCardList.css);

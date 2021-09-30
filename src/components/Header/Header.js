@@ -24,7 +24,7 @@ function Header({ isReg, isLog, isProfile }) {
         </ul>
         <Link to="/profile" className="header__profile">
           <span>Аккаунт</span>
-          <span className="header__profile-icon"></span>
+          <div className="header__profile-icon"></div>
         </Link>
       </>
 
@@ -41,7 +41,7 @@ function Header({ isReg, isLog, isProfile }) {
   return (
     <header className={`Header ${lightBg()}`}>
 
-      <div className="header__top">
+      <div className="header__head">
 
         <Link to="/"><img className="header__logo" src={logo} alt="Логотип сайта"></img></Link>
 
