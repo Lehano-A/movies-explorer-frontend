@@ -1,16 +1,18 @@
 import React from "react";
 import { useLocation } from "react-router";
 
-function Footer() {
+function Footer({ isPageNotFound }) {
 
   const location = useLocation();
+  const pathName = location.pathname;
 
-  if (location.pathname === '/signup' || location.pathname === '/signin') {
-    return <></>;
+  function disabledFooter() {
+    if (pathName === '/signup' || pathName === '/signin' || isPageNotFound) {
+      return 'footer_disabled';
+    }
   }
-
   return (
-    <footer className="Footer">
+    <footer className={`Footer ${disabledFooter()}`}>
       <p className="footer__info-project">Учебный проект Яндекс.Практикум х BeatFilm.</p>
       <div className="footer__date-nav-box">
         <p className="footer__date">&copy; {new Date().getFullYear()}</p>

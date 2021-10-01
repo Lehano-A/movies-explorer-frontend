@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import logo from './../../images/logo.svg';
 import { Link, useLocation } from 'react-router-dom';
 
-function Header({ isRegLink, isLogLink, isProfileLink, handleIsReg, handleIsLog, handleIsProfile, handleClickByLogo }) {
+function Header({ isRegLink, isLogLink, isProfileLink, isPageNotFound, handleIsReg, handleIsLog, handleIsProfile, handleClickByLogo }) {
 
   const location = useLocation();
   const pathName = location.pathname;
@@ -15,13 +15,22 @@ function Header({ isRegLink, isLogLink, isProfileLink, handleIsReg, handleIsLog,
   // СТЭЙТ ВНУТРЕННЕЙ ССЫЛКИ ИЛИ URL - TRUE
   const activeLink = (isRegLink || signUpUrl) || (isLogLink || signInUrl) || (isProfileLink || profileUrl);
 
-  // СВЕТЛЫЙ ФОН ШАПКИ
-  function lightBg() {
-
-    if (!MainUrl && activeLink) {
+  // ПРИМЕНИТЬ СВЕТЛЫЙ ФОН ШАПКИ, НА ВСЕ СТРАНИЦЫ, КРОМЕ: ГЛАВНОЙ И 404
+  function useLightBg() {
+    if (!MainUrl && activeLink)
       return 'header_light-bg'
-    }
-    return;
+  }
+
+  // УБРАТЬ ШАПКУ, ЕСЛИ 404
+  function removeHead() {
+    if (isPageNotFound)
+      return 'header__head_disabled'
+  }
+
+  // В ШАПКЕ ТОЛЬКО ЛОГО (ДЛЯ - /signup, /signin)
+  function showOnlyLogo() {
+    if (activeLink && !MainUrl)
+      return 'header__head_only-logo'
   }
 
   // ОБРАБОТЧИК ДАЛЬНЕЙШЕЙ ЛОГИКИ ПРИ НАЖАТИИ НА ССЫЛКИ
@@ -38,7 +47,7 @@ function Header({ isRegLink, isLogLink, isProfileLink, handleIsReg, handleIsLog,
       return <h1 className="signup__title">Рады видеть!</h1>;
     }
 
-    // ЕСЛИ ПОЛЬЗОВАТЕЛЬ ЗАЛОГИНЕН, ТО ИНИЦИАЛИЗИРУЮТСЯ ССЫЛКИ
+    // ЕСЛИ ПОЛЬЗОВАТЕЛЬ ЗАЛОГИНЕН, ТО ИНИЦИАЛИЗИРУЮТСЯ ССЫЛКИ:
     // ФИЛЬМЫ, СОХРАНЁННЫЕ ФИЛЬМЫ И АККАУНТ
     if (isProfileLink && (!isRegLink && !isLogLink)) {
       return <>
@@ -63,9 +72,9 @@ function Header({ isRegLink, isLogLink, isProfileLink, handleIsReg, handleIsLog,
   }
 
   return (
-    <header className={`Header  ${lightBg()}`}>
+    <header className={`Header ${useLightBg()} ${removeHead()}`}>
 
-      <div className={`header__head ${(activeLink && !MainUrl) && 'header__head_only-logo'}`}>
+      <div className={`header__head ${showOnlyLogo()}`}>
 
         <Link onClick={handleClickByLogo} to="/"><img className="header__logo" src={logo} alt="Логотип сайта"></img></Link>
 

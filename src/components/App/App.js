@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-
-
 import Header from '../Header/Header';
 import Main from '../Main/Main';
 import Footer from '../Footer/Footer';
 import Movies from '../Main/Movies/Movies';
-import SignUp from '../Main/SignUp/SignUp'
-import SignIn from '../Main/SignIn/SignIn'
+import SignUp from '../SignUp/SignUp'
+import SignIn from '../SignIn/SignIn'
+import PageNotFound from '../PageNotFound/PageNotFound'
 
 import oneC from "./../../images/posters/1.jpg";
 import twoC from "./../../images/posters/2.jpg";
@@ -27,13 +26,12 @@ import thirtyC from "./../../images/posters/13.jpg";
 const posters = [{ 1: oneC }, { 2: twoC }, { 3: treeC }, { 4: fourC }, { 5: fiveC }, { 6: sixC }, { 7: sevenC }, { 8: eightC }, { 9: nineC }, { 10: tenC }, { 11: elevenC }, { 12: twelveC }, { 13: thirtyC }];
 
 
-
 function App() {
-
 
   const [isRegLink, setIsRegLink] = useState(false);
   const [isLogLink, setIsLogLink] = useState(false);
   const [isProfileLink, setIsProfileLink] = useState(false);
+  const [isPageNotFound, setIsPageNotFound] = useState(false)
 
   const [isSignUp, setIsSignUp] = useState(false);
   const [isSignIn, setIsSignIn] = useState(false);
@@ -71,14 +69,25 @@ function App() {
     setIsProfileLink(false)
     setIsLogLink(false)
     setIsRegLink(false)
+    setIsPageNotFound(false)
   }
 
-  // ЗАЛОГИНЕН ЛИ ПОЛЬЗОВАТЕЛЬ
+  // ОБРАБОТЧИК СТРАНИЦЫ 404 - ОТКРЫТА
+  function handlePageNotFoundOpened() {
+    setIsPageNotFound(true)
+  }
+
+  // ОБРАБОТЧИК СТРАНИЦЫ 404 - ЗАКРЫТА
+  function handlePageNotFoundClosed() {
+    setIsPageNotFound(false)
+  }
+
+   // ЗАРЕГИСТРИРОВАН ЛИ ПОЛЬЗОВАТЕЛЬ
   function handleIsSignUp() {
     setIsSignUp(true)
   }
 
-  // ЗАРЕГИСТРИРОВАН ЛИ ПОЛЬЗОВАТЕЛЬ
+  // ЗАЛОГИНЕН ЛИ ПОЛЬЗОВАТЕЛЬ
   function handleIsSignIn() {
     setIsSignIn(true)
   }
@@ -90,8 +99,6 @@ function App() {
   function handleSubmitSignUp(e) {
     e.preventDefault();
   }
-
-
 
   // ВРЕМЕННЫЙ ОБРАБОТЧИК КНОПКИ КАРТОЧКИ "ДОБАВИТЬ В ИЗБРАННОЕ"
   function handleIsActiveButtonSave(e) {
@@ -126,6 +133,7 @@ function App() {
           isRegLink={isRegLink}
           isLogLink={isLogLink}
           isProfileLink={isProfileLink}
+          isPageNotFound={isPageNotFound}
           handleIsReg={handleIsReg}
           handleIsLog={handleIsLog}
           handleIsProfile={handleIsProfile}
@@ -133,6 +141,10 @@ function App() {
         />
 
         <Switch>
+
+          <Route exact path="/">
+            <Main />
+          </Route>
 
           <Route path="/movies">
             <Movies
@@ -145,7 +157,6 @@ function App() {
 
 
           <Route path="/saved-movies">
-
           </Route>
 
 
@@ -155,22 +166,26 @@ function App() {
             />
           </Route>
 
+
           <Route path="/signin">
             <SignIn
               handleSubmitSignIn={handleSubmitSignIn}
             />
-
           </Route>
 
-          <Route path="/">
-            <Main />
-          </Route>
 
+          <Route path="*">
+            <PageNotFound
+              handlePageNotFoundOpened={handlePageNotFoundOpened}
+            />
+          </Route>
 
 
         </Switch>
-        <Footer />
 
+        <Footer
+          isPageNotFound={isPageNotFound}
+        />
 
       </div>
     </div>
