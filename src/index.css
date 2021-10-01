@@ -111,3 +111,14 @@
 @import url(./components/PageNotFound/__back/page-not-found__back.css);
 @import url(./components/PageNotFound/__description/page-not-found__description.css);
 @import url(./components/PageNotFound/__title/page-not-found__title.css);
+
+@import url(./components/Profile/Profile.css);
+@import url(./components/Profile/__label/profile__label.css);
+@import url(./components/Profile/__input/profile__input.css);
+@import url(./components/Profile/__hello-title/profile__hello-title.css);
+@import url(./components/Profile/__name-box/profile__name-box.css);
+@import url(./components/Profile/__email-box/profile__email-box.css);
+@import url(./components/Profile/__inputs-box/profile__inputs-box.css);
+@import url(./components/Profile/__button-submit/profile__button-submit.css);
+@import url(./components/Profile/__logout/profile__logout.css);
+@import url(./components/Profile/__form-height/profile__form-height.css);

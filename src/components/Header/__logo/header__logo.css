@@ -4,6 +4,10 @@
   margin-left: 70px;
 }
 
+.header__logo a {
+  width: 0;
+}
+
 .header__logo:hover {
   cursor: pointer;
 }

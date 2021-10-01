@@ -1,13 +1,13 @@
 import React from "react";
 import { useLocation } from "react-router";
 
-function Footer({ isPageNotFound }) {
+function Footer({ isPageNotFound, isProfileLink }) {
 
   const location = useLocation();
   const pathName = location.pathname;
 
   function disabledFooter() {
-    if (pathName === '/signup' || pathName === '/signin' || isPageNotFound) {
+    if (pathName === '/signup' || pathName === '/signin' || isPageNotFound || isProfileLink) {
       return 'footer_disabled';
     }
   }

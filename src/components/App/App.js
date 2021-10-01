@@ -5,9 +5,11 @@ import Header from '../Header/Header';
 import Main from '../Main/Main';
 import Footer from '../Footer/Footer';
 import Movies from '../Main/Movies/Movies';
-import SignUp from '../SignUp/SignUp'
-import SignIn from '../SignIn/SignIn'
-import PageNotFound from '../PageNotFound/PageNotFound'
+import SignUp from '../SignUp/SignUp';
+import SignIn from '../SignIn/SignIn';
+import PageNotFound from '../PageNotFound/PageNotFound';
+import Profile from '../Profile/Profile';
+
 
 import oneC from "./../../images/posters/1.jpg";
 import twoC from "./../../images/posters/2.jpg";
@@ -32,6 +34,7 @@ function App() {
   const [isLogLink, setIsLogLink] = useState(false);
   const [isProfileLink, setIsProfileLink] = useState(false);
   const [isPageNotFound, setIsPageNotFound] = useState(false)
+  const [isMainPage, setIsMainPage] = useState(false)
 
   const [isSignUp, setIsSignUp] = useState(false);
   const [isSignIn, setIsSignIn] = useState(false);
@@ -42,13 +45,16 @@ function App() {
 
   useEffect(() => {
     handleCountCards();
-  }, [])
+  }, []);
+
 
   // ОБРАБОТЧИК ССЫЛКИ РЕГИСТРАЦИИ
   function handleIsReg() {
     setIsRegLink(true)
     setIsLogLink(false)
     setIsProfileLink(false)
+    setIsMainPage(false)
+    setIsPageNotFound(false)
   }
 
   // ОБРАБОТЧИК ССЫЛКИ АУТЕНТИФИКАЦИИ
@@ -56,6 +62,8 @@ function App() {
     setIsLogLink(true)
     setIsRegLink(false)
     setIsProfileLink(false)
+    setIsMainPage(false)
+    setIsPageNotFound(false)
   }
 
   // ОБРАБОТЧИК ССЫЛКИ ПРОФАЙЛА
@@ -63,9 +71,12 @@ function App() {
     setIsProfileLink(true)
     setIsLogLink(false)
     setIsRegLink(false)
+    setIsMainPage(false)
+    setIsPageNotFound(false)
   }
 
   function handleClickByLogo() {
+    setIsMainPage(true)
     setIsProfileLink(false)
     setIsLogLink(false)
     setIsRegLink(false)
@@ -82,7 +93,7 @@ function App() {
     setIsPageNotFound(false)
   }
 
-   // ЗАРЕГИСТРИРОВАН ЛИ ПОЛЬЗОВАТЕЛЬ
+  // ЗАРЕГИСТРИРОВАН ЛИ ПОЛЬЗОВАТЕЛЬ
   function handleIsSignUp() {
     setIsSignUp(true)
   }
@@ -143,7 +154,9 @@ function App() {
         <Switch>
 
           <Route exact path="/">
-            <Main />
+            <Main
+              handleClickByLogo={handleClickByLogo}
+            />
           </Route>
 
           <Route path="/movies">
@@ -156,12 +169,19 @@ function App() {
           </Route>
 
 
+          <Route path="/profile">
+            <Profile
+              handleIsProfile={handleIsProfile}
+            />
+          </Route>
+
           <Route path="/saved-movies">
           </Route>
 
 
           <Route path="/signup">
             <SignUp
+              handleIsReg={handleIsReg}
               handleSubmitSignUp={handleSubmitSignUp}
             />
           </Route>
@@ -169,6 +189,7 @@ function App() {
 
           <Route path="/signin">
             <SignIn
+              handleIsLog={handleIsLog}
               handleSubmitSignIn={handleSubmitSignIn}
             />
           </Route>
@@ -185,6 +206,7 @@ function App() {
 
         <Footer
           isPageNotFound={isPageNotFound}
+          isProfileLink={isProfileLink}
         />
 
       </div>

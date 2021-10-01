@@ -1,36 +1,35 @@
 import React, { useEffect } from 'react';
 import logo from './../../images/logo.svg';
 import { Link, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router';
 
 function Header({ isRegLink, isLogLink, isProfileLink, isPageNotFound, handleIsReg, handleIsLog, handleIsProfile, handleClickByLogo }) {
-
+  const history = useHistory();
   const location = useLocation();
   const pathName = location.pathname;
 
-  const signUpUrl = pathName === '/signup'; // URL ФОРМЫ РЕГИСТРАЦИИ
-  const signInUrl = pathName === '/signin'; // URL ФОРМЫ АУТЕНТИФИКАЦИИ
-  const profileUrl = pathName === '/profile'; // URL ФОРМЫ ПРОФАЙЛА
   const MainUrl = pathName === '/'; // URL ГЛАВНОЙ СТРАНИЦЫ
 
+  function goToMainPage() {
+    history.push('/')
+  }
+
   // СТЭЙТ ВНУТРЕННЕЙ ССЫЛКИ ИЛИ URL - TRUE
-  const activeLink = (isRegLink || signUpUrl) || (isLogLink || signInUrl) || (isProfileLink || profileUrl);
+  const activeLink = (isRegLink || isLogLink);
 
   // ПРИМЕНИТЬ СВЕТЛЫЙ ФОН ШАПКИ, НА ВСЕ СТРАНИЦЫ, КРОМЕ: ГЛАВНОЙ И 404
   function useLightBg() {
-    if (!MainUrl && activeLink)
-      return 'header_light-bg'
+    return (!MainUrl && (activeLink || isProfileLink)) && 'header_light-bg'
   }
 
   // УБРАТЬ ШАПКУ, ЕСЛИ 404
   function removeHead() {
-    if (isPageNotFound)
-      return 'header__head_disabled'
+    return isPageNotFound && 'header__head_disabled'
   }
 
-  // В ШАПКЕ ТОЛЬКО ЛОГО (ДЛЯ - /signup, /signin)
+  // ПОКАЗЫВАЕМ В ШАПКЕ ТОЛЬКО ЛОГО (ДЛЯ - /signup, /signin)
   function showOnlyLogo() {
-    if (activeLink && !MainUrl)
-      return 'header__head_only-logo'
+    return (activeLink && !MainUrl) && 'header__head_only-logo'
   }
 
   // ОБРАБОТЧИК ДАЛЬНЕЙШЕЙ ЛОГИКИ ПРИ НАЖАТИИ НА ССЫЛКИ
@@ -55,9 +54,9 @@ function Header({ isRegLink, isLogLink, isProfileLink, isPageNotFound, handleIsR
           <li><Link to="/movies" className="header__link-movies">Фильмы</Link></li>
           <li><Link to="/saved-movies" className="header__link-saved-movies">Сохранённые фильмы</Link></li>
         </ul>
-        <Link to="/profile" className="header__profile">
+        <Link to="/profile" className="header__profile-button">
           <p>Аккаунт</p>
-          <span className="header__profile-icon"></span>
+          <span className="header__profile-button-icon"></span>
         </Link>
       </>
     }
@@ -65,8 +64,8 @@ function Header({ isRegLink, isLogLink, isProfileLink, isPageNotFound, handleIsR
     // ЕСЛИ ПОЛЬЗОВАТЕЛЬ НЕЗАЛОГИНЕН
     if (!isProfileLink) {
       return <ul className="header__signin-signup-box">
-        <li><Link onClick={handleIsReg} to="/signup" className="header__link-signup">Регистрация</Link></li>
-        <li><Link onClick={handleIsLog} to="/signin" className="header__link-signin">Войти</Link></li>
+        <li><Link to="/signup" className="header__link-signup">Регистрация</Link></li>
+        <li><Link to="/signin" className="header__link-signin">Войти</Link></li>
       </ul>
     }
   }
@@ -76,7 +75,7 @@ function Header({ isRegLink, isLogLink, isProfileLink, isPageNotFound, handleIsR
 
       <div className={`header__head ${showOnlyLogo()}`}>
 
-        <Link onClick={handleClickByLogo} to="/"><img className="header__logo" src={logo} alt="Логотип сайта"></img></Link>
+        <Link to="/"><img onClick={goToMainPage} className="header__logo" src={logo} alt="Логотип сайта"></img></Link>
 
         {handleRegLogProfile()}
 

@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Form from "../Form/Form";
 
-function SignIn({ handleSubmitSignIn }) {
+function SignIn({ handleSubmitSignIn, handleIsLog }) {
+
+  useEffect(() => {
+    handleIsLog();
+  }, []);
 
   return (
 
-    <section className="SignIn">
+    <div className="SignIn">
 
       <Form handleSubmit={handleSubmitSignIn} buttonName="Войти" regQuestion="Ещё не зарегистрированы?" inOrUp="up" regOrLogin="Регистрация">
         <div className="form__input-box">
@@ -19,7 +23,7 @@ function SignIn({ handleSubmitSignIn }) {
         </div>
       </Form>
 
-    </section>
+    </div>
 
   )
 

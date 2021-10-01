@@ -1,0 +1,13 @@
+.profile__button-submit {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.21;
+  background-color: transparent;
+  color: black;
+  margin: 0 auto;
+  height: 16px;
+}
+
+.profile__button-submit:hover {
+  text-decoration: underline;
+}
