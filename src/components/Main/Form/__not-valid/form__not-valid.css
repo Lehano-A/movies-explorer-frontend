@@ -1,0 +1,8 @@
+.form__not-valid {
+  height: 12px;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.21;
+  color: #ee3465;
+  margin-top: 8px;
+}

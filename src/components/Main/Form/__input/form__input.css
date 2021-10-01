@@ -1,0 +1,21 @@
+.form__input {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.21;
+  padding: 0;
+  border: none;
+  background-color: #f9f9f9;
+  height: 46px;
+  border-radius: 8px;
+  text-indent: 15px;
+}
+
+/* .form__input:nth-child(1n):not(:last-child) {
+  margin-bottom: 10px;
+} */
+
+.form__input:focus {
+  border: 1px #dbdbdb solid;
+  outline: none;
+  height: 44px;
+}

@@ -6,6 +6,7 @@ import Header from '../Header/Header';
 import Main from '../Main/Main';
 import Footer from '../Footer/Footer';
 import Movies from '../Main/Movies/Movies';
+import SignUp from '../Main/SignUp/SignUp'
 
 
 import oneC from "./../../images/posters/1.jpg";
@@ -29,14 +30,15 @@ const posters = [{ 1: oneC }, { 2: twoC }, { 3: treeC }, { 4: fourC }, { 5: five
 function App() {
 
 
-  const [isReg, setIsReg] = useState(false);
+  const [isReg, setIsReg] = useState(true);
   const [isLog, setIsLog] = useState(false);
-  const [isProfile, setIsProfile] = useState(true);
+  const [isProfile, setIsProfile] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [isSignIn, setIsSignIn] = useState(false);
 
   const [cards, setCards] = useState(posters)
   const [countedCards, setCountedCards] = useState([])
 
-  const [isActiveButtonSave, setIsActiveButtonSave] = useState(false)
 
   useEffect(() => {
     handleCountCards();
@@ -52,6 +54,14 @@ function App() {
 
   function handleIsProfile() {
     setIsProfile(true)
+  }
+
+  function handleIsSignUp() {
+    setIsSignUp(true)
+  }
+
+  function handleIsSignIn() {
+    setIsSignIn(true)
   }
 
   // ВРЕМЕННЫЙ ОБРАБОТЧИК КНОПКИ КАРТОЧКИ "ДОБАВИТЬ В ИЗБРАННОЕ"
@@ -101,8 +111,15 @@ function App() {
             />
           </Route>
 
-          <Route path="/signup">
 
+          <Route path="/saved-movies">
+
+          </Route>
+
+
+
+          <Route path="/signup">
+            <SignUp />
           </Route>
 
           <Route path="/signin">
@@ -116,8 +133,8 @@ function App() {
 
 
         </Switch>
-
         <Footer />
+
 
       </div>
     </div>

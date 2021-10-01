@@ -1,6 +1,14 @@
 import React from "react";
+import { useLocation } from "react-router";
 
 function Footer() {
+
+  const location = useLocation();
+
+  if (location.pathname === '/signup' || location.pathname === '/signin') {
+    return <></>;
+  }
+
   return (
     <footer className="Footer">
       <p className="footer__info-project">Учебный проект Яндекс.Практикум х BeatFilm.</p>

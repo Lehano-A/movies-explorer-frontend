@@ -1,0 +1,11 @@
+.header__head_only-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 396px;
+  margin: 70px auto 74px;
+}
+
+.header__head_only-logo .header__logo {
+  margin: 0;
+}

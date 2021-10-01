@@ -1,20 +1,25 @@
 import React from 'react';
 import logo from './../../images/logo.svg';
-import { Link } from 'react-router-dom';
-
+import { Link, useLocation } from 'react-router-dom';
 
 
 function Header({ isReg, isLog, isProfile }) {
 
+  // СВЕТЛЫЙ ФОН ШАПКИ
   function lightBg() {
-    if (isProfile) {
+    if (isReg || isLog || isProfile) {
       return 'header_light-bg'
     }
-    return
+    return;
   }
 
+  // ОБРАБОТЧИК ДАЛЬНЕЙШЕЙ ЛОГИКИ ПРИ НАЖАТИИ НА ССЫЛКИ
+  // РЕГИСТРАЦИИ, АУТЕНТИФИКАЦИИ И ПРОФИЛЯ
   function handleRegLogProfile() {
 
+    if (isReg) {
+      return <h1 className="signup__title">Добро пожаловать!</h1>;
+    }
 
     if (!isLog && !isReg) {
       return <>
@@ -23,11 +28,10 @@ function Header({ isReg, isLog, isProfile }) {
           <li><Link to="/saved-movies" className="header__link-saved-movies">Сохранённые фильмы</Link></li>
         </ul>
         <Link to="/profile" className="header__profile">
-          <span>Аккаунт</span>
-          <div className="header__profile-icon"></div>
+          <p>Аккаунт</p>
+          <span className="header__profile-icon"></span>
         </Link>
       </>
-
     }
 
     if (!isProfile) {
@@ -39,9 +43,9 @@ function Header({ isReg, isLog, isProfile }) {
   }
 
   return (
-    <header className={`Header ${lightBg()}`}>
+    <header className={`Header  ${lightBg()}`}>
 
-      <div className="header__head">
+      <div className={`header__head ${(isReg || isLog) && 'header__head_only-logo'}`}>
 
         <Link to="/"><img className="header__logo" src={logo} alt="Логотип сайта"></img></Link>
 
@@ -49,7 +53,7 @@ function Header({ isReg, isLog, isProfile }) {
 
       </div>
 
-    </header >
+    </header>
 
   )
 }
