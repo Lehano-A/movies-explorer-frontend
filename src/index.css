@@ -10,8 +10,9 @@
 
 @import url(./components/Header/Header.css);
 @import url(./components/Header/_light-bg/header_light-bg.css);
-@import url(./components/Header/__profile/header__profile);
-@import url(./components/Header/__profile-icon/header__profile-icon.css);
+@import url(./components/Header/__profile-button/header__profile-button.css);
+@import url(./components/Header/__profile-button-text/header__profile-button-text.css);
+@import url(./components/Header/__profile-button-icon/header__profile-button-icon.css);
 @import url(./components/Header/__links/header__links.css);
 @import url(./components/Header/__link-movies/header__link-movies.css);
 @import url(./components/Header/__link-saved-movies/header__link-saved-movies.css);
@@ -99,6 +100,7 @@
 @import url(./components/Main/Form/__input/form__input.css);
 @import url(./components/Main/Form/__not-valid/form__not-valid.css);
 @import url(./components/Main/Form/__submit/form__submit.css);
-@import url(./components/Main/Form/__reg-login-redirection-box/form__reg-login-redirection-box.css);
+@import url(./components/Main/Form/__reg-login-link-box/form__reg-login-link-box.css);
 @import url(./components/Main/Form/__reg-question/form__reg-question.css);
-@import url(./components/Main/Form/__signin-signup-redirection/form__signin-signup-redirection.css);
+@import url(./components/Main/Form/__signin-signup-link/form__signin-signup-link.css);
+@import url(./components/Main/Form/__input-box/form__input-box.css);

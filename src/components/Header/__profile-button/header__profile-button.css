@@ -1,4 +1,4 @@
-.header__profile {
+.header__profile-button {
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -11,8 +11,4 @@
   border-radius: 40px;
   box-shadow: 0 3px 14px rgba(0, 0, 0, 0.08);
   margin-right: 70px;
-}
-
-.header__profile p {
-  margin-left: 8px;
 }

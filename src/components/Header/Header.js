@@ -1,13 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import logo from './../../images/logo.svg';
 import { Link, useLocation } from 'react-router-dom';
 
+function Header({ isRegLink, isLogLink, isProfileLink, handleIsReg, handleIsLog, handleIsProfile, handleClickByLogo }) {
 
-function Header({ isReg, isLog, isProfile }) {
+  const location = useLocation();
+  const pathName = location.pathname;
+
+  const signUpUrl = pathName === '/signup'; // URL ФОРМЫ РЕГИСТРАЦИИ
+  const signInUrl = pathName === '/signin'; // URL ФОРМЫ АУТЕНТИФИКАЦИИ
+  const profileUrl = pathName === '/profile'; // URL ФОРМЫ ПРОФАЙЛА
+  const MainUrl = pathName === '/'; // URL ГЛАВНОЙ СТРАНИЦЫ
+
+  // СТЭЙТ ВНУТРЕННЕЙ ССЫЛКИ ИЛИ URL - TRUE
+  const activeLink = (isRegLink || signUpUrl) || (isLogLink || signInUrl) || (isProfileLink || profileUrl);
 
   // СВЕТЛЫЙ ФОН ШАПКИ
   function lightBg() {
-    if (isReg || isLog || isProfile) {
+
+    if (!MainUrl && activeLink) {
       return 'header_light-bg'
     }
     return;
@@ -17,11 +28,19 @@ function Header({ isReg, isLog, isProfile }) {
   // РЕГИСТРАЦИИ, АУТЕНТИФИКАЦИИ И ПРОФИЛЯ
   function handleRegLogProfile() {
 
-    if (isReg) {
+    // ЕСЛИ ОТКРЫТА ФОРМА РЕГИСТРАЦИИ
+    if (pathName === '/signup') {
       return <h1 className="signup__title">Добро пожаловать!</h1>;
     }
 
-    if (!isLog && !isReg) {
+    // ЕСЛИ ОТКРЫТА ФОРМА АУТЕНТИФИКАЦИИ
+    if (pathName === '/signin') {
+      return <h1 className="signup__title">Рады видеть!</h1>;
+    }
+
+    // ЕСЛИ ПОЛЬЗОВАТЕЛЬ ЗАЛОГИНЕН, ТО ИНИЦИАЛИЗИРУЮТСЯ ССЫЛКИ
+    // ФИЛЬМЫ, СОХРАНЁННЫЕ ФИЛЬМЫ И АККАУНТ
+    if (isProfileLink && (!isRegLink && !isLogLink)) {
       return <>
         <ul className="header__links">
           <li><Link to="/movies" className="header__link-movies">Фильмы</Link></li>
@@ -34,10 +53,11 @@ function Header({ isReg, isLog, isProfile }) {
       </>
     }
 
-    if (!isProfile) {
+    // ЕСЛИ ПОЛЬЗОВАТЕЛЬ НЕЗАЛОГИНЕН
+    if (!isProfileLink) {
       return <ul className="header__signin-signup-box">
-        <li><Link to="/signup" className="header__link-signup">Регистрация</Link></li>
-        <li><Link to="/signin" className="header__link-signin">Войти</Link></li>
+        <li><Link onClick={handleIsReg} to="/signup" className="header__link-signup">Регистрация</Link></li>
+        <li><Link onClick={handleIsLog} to="/signin" className="header__link-signin">Войти</Link></li>
       </ul>
     }
   }
@@ -45,9 +65,9 @@ function Header({ isReg, isLog, isProfile }) {
   return (
     <header className={`Header  ${lightBg()}`}>
 
-      <div className={`header__head ${(isReg || isLog) && 'header__head_only-logo'}`}>
+      <div className={`header__head ${(activeLink && !MainUrl) && 'header__head_only-logo'}`}>
 
-        <Link to="/"><img className="header__logo" src={logo} alt="Логотип сайта"></img></Link>
+        <Link onClick={handleClickByLogo} to="/"><img className="header__logo" src={logo} alt="Логотип сайта"></img></Link>
 
         {handleRegLogProfile()}
 

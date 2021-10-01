@@ -1,21 +1,20 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function Form({ name, buttonName, children }) {
+function Form({ name, buttonName, regQuestion, inOrUp, regOrLogin, children, handleSubmit }) {
 
   return (
     <>
-      <form className="Form" method="POST" name={name}>
+      <form onSubmit={handleSubmit} className="Form" method="POST" name={name}>
         {children}
-        <button className="form__submit">{buttonName}</button>
+        <button type="submit" className="form__submit">{buttonName}</button>
       </form>
-      <div className="form__reg-login-redirection-box">
-        <p className="form__reg-question">Уже зарегистрированы?</p>
-        <Link to="/signin" className="form__signin-signup-redirection">Войти</Link>
+      <div className="form__reg-login-link-box">
+        <p className="form__reg-question">{regQuestion}</p>
+        <Link to={`/sign${inOrUp}`} className="form__signin-signup-link">{regOrLogin}</Link>
       </div>
     </>
   )
-
 }
 
 export default Form;

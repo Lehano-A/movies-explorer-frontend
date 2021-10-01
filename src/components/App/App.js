@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 
+
 import Header from '../Header/Header';
 import Main from '../Main/Main';
 import Footer from '../Footer/Footer';
 import Movies from '../Main/Movies/Movies';
 import SignUp from '../Main/SignUp/SignUp'
-
+import SignIn from '../Main/SignIn/SignIn'
 
 import oneC from "./../../images/posters/1.jpg";
 import twoC from "./../../images/posters/2.jpg";
@@ -30,9 +31,10 @@ const posters = [{ 1: oneC }, { 2: twoC }, { 3: treeC }, { 4: fourC }, { 5: five
 function App() {
 
 
-  const [isReg, setIsReg] = useState(true);
-  const [isLog, setIsLog] = useState(false);
-  const [isProfile, setIsProfile] = useState(false);
+  const [isRegLink, setIsRegLink] = useState(false);
+  const [isLogLink, setIsLogLink] = useState(false);
+  const [isProfileLink, setIsProfileLink] = useState(false);
+
   const [isSignUp, setIsSignUp] = useState(false);
   const [isSignIn, setIsSignIn] = useState(false);
 
@@ -44,31 +46,57 @@ function App() {
     handleCountCards();
   }, [])
 
+  // ОБРАБОТЧИК ССЫЛКИ РЕГИСТРАЦИИ
   function handleIsReg() {
-    setIsReg(true)
+    setIsRegLink(true)
+    setIsLogLink(false)
+    setIsProfileLink(false)
   }
 
+  // ОБРАБОТЧИК ССЫЛКИ АУТЕНТИФИКАЦИИ
   function handleIsLog() {
-    setIsLog(true)
+    setIsLogLink(true)
+    setIsRegLink(false)
+    setIsProfileLink(false)
   }
 
+  // ОБРАБОТЧИК ССЫЛКИ ПРОФАЙЛА
   function handleIsProfile() {
-    setIsProfile(true)
+    setIsProfileLink(true)
+    setIsLogLink(false)
+    setIsRegLink(false)
   }
 
+  function handleClickByLogo() {
+    setIsProfileLink(false)
+    setIsLogLink(false)
+    setIsRegLink(false)
+  }
+
+  // ЗАЛОГИНЕН ЛИ ПОЛЬЗОВАТЕЛЬ
   function handleIsSignUp() {
     setIsSignUp(true)
   }
 
+  // ЗАРЕГИСТРИРОВАН ЛИ ПОЛЬЗОВАТЕЛЬ
   function handleIsSignIn() {
     setIsSignIn(true)
   }
+
+  function handleSubmitSignIn(e) {
+    e.preventDefault();
+  }
+
+  function handleSubmitSignUp(e) {
+    e.preventDefault();
+  }
+
+
 
   // ВРЕМЕННЫЙ ОБРАБОТЧИК КНОПКИ КАРТОЧКИ "ДОБАВИТЬ В ИЗБРАННОЕ"
   function handleIsActiveButtonSave(e) {
     e.target.classList.toggle('movies-card__button-save_active')
   }
-
 
   // ОБРАБОТЧИК ОТБОРА 12 КАРТОЧЕК
   // СРАБАТЫВАЕТ В САМОМ НАЧАЛЕ, ПОСЛЕ РЕНДЕРА ПРИЛОЖЕНИЯ - ОДИН РАЗ,
@@ -95,9 +123,13 @@ function App() {
       <div className="page__box">
 
         <Header
-          isReg={isReg}
-          isLog={isLog}
-          isProfile={isProfile}
+          isRegLink={isRegLink}
+          isLogLink={isLogLink}
+          isProfileLink={isProfileLink}
+          handleIsReg={handleIsReg}
+          handleIsLog={handleIsLog}
+          handleIsProfile={handleIsProfile}
+          handleClickByLogo={handleClickByLogo}
         />
 
         <Switch>
@@ -117,12 +149,16 @@ function App() {
           </Route>
 
 
-
           <Route path="/signup">
-            <SignUp />
+            <SignUp
+              handleSubmitSignUp={handleSubmitSignUp}
+            />
           </Route>
 
           <Route path="/signin">
+            <SignIn
+              handleSubmitSignIn={handleSubmitSignIn}
+            />
 
           </Route>
 
