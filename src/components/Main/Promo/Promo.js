@@ -12,12 +12,12 @@ function Promo() {
         <h1 className="promo__title">Учебный проект студента факультета Веб-разработки.</h1>
       </div>
 
-      <nav className="promo__info-buttons">
-        <button className="promo__button-info">О проекте</button>
-        <button className="promo__button-info">Технологии</button>
-        <button className="promo__button-info">Студент</button>
-      </nav>
-      
+      <ul className="promo__info-buttons">
+        <a href="#aboutProject"><li className="promo__button-info">О проекте</li></a>
+        <a href="#techs"><li className="promo__button-info">Технологии</li></a>
+        <a href="#aboutMe"><li className="promo__button-info">Студент</li></a>
+      </ul>
+
     </section>
 
   )

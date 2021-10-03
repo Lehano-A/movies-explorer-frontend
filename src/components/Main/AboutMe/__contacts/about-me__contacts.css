@@ -1,4 +1,4 @@
-.student__contacts {
+.about-me__contacts {
   display: flex;
   list-style: none;
   font-size: 14px;
@@ -9,6 +9,6 @@
   margin-bottom: 0;
 }
 
-.student__contacts li:nth-child(1n):not(:last-child) {
+.about-me__contacts li:nth-child(1n):not(:last-child) {
   margin-right: 20px;
 }

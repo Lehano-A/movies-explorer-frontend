@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Promo from "./Promo/Promo";
 import AboutProject from "./AboutProject/AboutProject";
 import Tech from "./Techs/Techs";
-import Student from "./Student/Student";
+import AboutMe from "./AboutMe/AboutMe";
 
 function Main({ handleClickByLogo }) {
 
@@ -15,7 +15,7 @@ function Main({ handleClickByLogo }) {
       <Promo />
       <AboutProject />
       <Tech />
-      <Student />
+      <AboutMe />
     </main>
   )
 }

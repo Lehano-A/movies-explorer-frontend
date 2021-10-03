@@ -10,7 +10,7 @@ function Form({
   children,
   handleSubmit,
   profileButton,
-  profileFormHeight
+  profileFormHeight,
 }) {
 
   return (

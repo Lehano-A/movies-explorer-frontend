@@ -7,8 +7,5 @@
   background-image: url("./../../../../../images/search_icon.svg");
   background-repeat: no-repeat;
   background-position: center;
-}
-
-.search-form__button-search:hover {
   cursor: pointer;
 }

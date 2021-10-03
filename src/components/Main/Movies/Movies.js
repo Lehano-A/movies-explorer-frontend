@@ -1,22 +1,30 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SearchForm from '../Movies/SearchForm/SearchForm';
 import MoviesCardList from "./MoviesCardList/MoviesCardList";
 import More from "./More/More";
 
 
-function Movies({ cards, countedCards, handleCountCards, isActiveButtonSave, handleIsActiveButtonSave }) {
+function Movies({ cards, countedCards, handleCountCards, handleIsActiveButtonSave, handleIsMoviesLink, handleSubmitSearchForm }) {
+
+  useEffect(() => {
+    handleIsMoviesLink();
+    handleCountCards();
+  }, [])
 
   return (
     <>
-      <SearchForm />
+      <SearchForm
+        handleSubmitSearchForm={handleSubmitSearchForm}
+      />
+
       <MoviesCardList
         countedCards={countedCards}
         handleIsActiveButtonSave={handleIsActiveButtonSave}
-
       />
+
       <More
-        cards={cards}
-        handleCountCards={handleCountCards}
+        restCards={cards}
+        addMoreCards={handleCountCards}
       />
     </>
   )

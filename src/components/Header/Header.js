@@ -3,7 +3,7 @@ import logo from './../../images/logo.svg';
 import { Link, useLocation } from 'react-router-dom';
 import { useHistory } from 'react-router';
 
-function Header({ isRegLink, isLogLink, isProfileLink, isPageNotFound, handleIsReg, handleIsLog, handleIsProfile, handleClickByLogo }) {
+function Header({ isRegLink, isLogLink, isProfileLink, isMoviesLink, isSavedMoviesLink, isPageNotFound, handleIsRegLink, handleIsLogLink, handleIsProfileLink, handleClickByLogo }) {
   const history = useHistory();
   const location = useLocation();
   const pathName = location.pathname;
@@ -15,11 +15,11 @@ function Header({ isRegLink, isLogLink, isProfileLink, isPageNotFound, handleIsR
   }
 
   // СТЭЙТ ВНУТРЕННЕЙ ССЫЛКИ ИЛИ URL - TRUE
-  const activeLink = (isRegLink || isLogLink);
+  const regLogLink = (isRegLink || isLogLink);
 
   // ПРИМЕНИТЬ СВЕТЛЫЙ ФОН ШАПКИ, НА ВСЕ СТРАНИЦЫ, КРОМЕ: ГЛАВНОЙ И 404
   function useLightBg() {
-    return (!MainUrl && (activeLink || isProfileLink)) && 'header_light-bg'
+    return (regLogLink || isProfileLink || isMoviesLink || isSavedMoviesLink) && 'header_light-bg'
   }
 
   // УБРАТЬ ШАПКУ, ЕСЛИ 404
@@ -29,33 +29,33 @@ function Header({ isRegLink, isLogLink, isProfileLink, isPageNotFound, handleIsR
 
   // ПОКАЗЫВАЕМ В ШАПКЕ ТОЛЬКО ЛОГО (ДЛЯ - /signup, /signin)
   function showOnlyLogo() {
-    return (activeLink && !MainUrl) && 'header__head_only-logo'
+    return (regLogLink && !MainUrl) && 'header__head_only-logo'
   }
 
   // ОБРАБОТЧИК ДАЛЬНЕЙШЕЙ ЛОГИКИ ПРИ НАЖАТИИ НА ССЫЛКИ
   // РЕГИСТРАЦИИ, АУТЕНТИФИКАЦИИ И ПРОФИЛЯ
   function handleRegLogProfile() {
 
-    // ЕСЛИ ОТКРЫТА ФОРМА РЕГИСТРАЦИИ
+    // ПРИВЕТСТВИЕ - ЕСЛИ ОТКРЫТА ФОРМА РЕГИСТРАЦИИ
     if (pathName === '/signup') {
       return <h1 className="signup__title">Добро пожаловать!</h1>;
     }
 
-    // ЕСЛИ ОТКРЫТА ФОРМА АУТЕНТИФИКАЦИИ
+    // ПРИВЕТСТВИЕ - ЕСЛИ ОТКРЫТА ФОРМА АУТЕНТИФИКАЦИИ
     if (pathName === '/signin') {
       return <h1 className="signup__title">Рады видеть!</h1>;
     }
 
-    // ЕСЛИ ПОЛЬЗОВАТЕЛЬ ЗАЛОГИНЕН, ТО ИНИЦИАЛИЗИРУЮТСЯ ССЫЛКИ:
+    // ЕСЛИ ПОЛЬЗОВАТЕЛЬ ЗАЛОГИНЕН, ТО ИНИЦИАЛИЗИРУЮТСЯ ССЫЛКИ: (ВРЕМЕННОЕ УСЛОВИЕ)
     // ФИЛЬМЫ, СОХРАНЁННЫЕ ФИЛЬМЫ И АККАУНТ
-    if (isProfileLink && (!isRegLink && !isLogLink)) {
+    if ((isProfileLink || isSavedMoviesLink || isMoviesLink) && (!regLogLink)) {
       return <>
         <ul className="header__links">
           <li><Link to="/movies" className="header__link-movies">Фильмы</Link></li>
           <li><Link to="/saved-movies" className="header__link-saved-movies">Сохранённые фильмы</Link></li>
         </ul>
         <Link to="/profile" className="header__profile-button">
-          <p>Аккаунт</p>
+          <p className="header__profile-button-text">Аккаунт</p>
           <span className="header__profile-button-icon"></span>
         </Link>
       </>

@@ -50,11 +50,12 @@
 @import url(./components/Main/Techs/__info-box/techs__info-box.css);
 @import url(./components/Main/Techs/__used-techs/techs__used-techs.css);
 
-@import url(./components/Main/Student/__photo/student__photo.css);
-@import url(./components/Main/Student/__about-student-photo-box/student__about-student-photo-box.css);
-@import url(./components/Main/Student/__contacts/student__contacts.css);
-@import url(./components/Main/Student/__about/student__about.css);
-@import url(./components/Main/Student/__about-student-box/student__about-student-box.css);
+@import url(./components/Main/AboutMe/AboutMe.css);
+@import url(./components/Main/AboutMe/__photo/about-me__photo.css);
+@import url(./components/Main/AboutMe/__student-photo-box/about-me__student-photo-box.css);
+@import url(./components/Main/AboutMe/__contacts/about-me__contacts.css);
+@import url(./components/Main/AboutMe/__about/about-me__about.css);
+@import url(./components/Main/AboutMe/__about-student-box/about-me__about-student-box.css);
 
 @import url(./components/Main/Portfolio/Portfolio.css);
 @import url(./components/Main/Portfolio/__title/portfolio__title.css);
@@ -71,6 +72,7 @@
 @import url(./components/Main/Movies/SearchForm/SearchForm.css);
 @import url(./components/Main/Movies/SearchForm/__form/search-form__form.css);
 @import url(./components/Main/Movies/SearchForm/__short-films/search-form__short-films.css);
+@import url(./components/Main/Movies/SearchForm/__input-button-box/search-form__input-button-box.css);
 @import url(./components/Main/Movies/SearchForm/__input/search-form__input.css);
 @import url(./components/Main/Movies/SearchForm/__button-search/search-form__button-search.css);
 @import url(./components/Main/Movies/SearchForm/__label/search-form__label.css);
@@ -122,3 +124,5 @@
 @import url(./components/Profile/__button-submit/profile__button-submit.css);
 @import url(./components/Profile/__logout/profile__logout.css);
 @import url(./components/Profile/__form-height/profile__form-height.css);
+
+@import url(./components/SavedMovies/SavedMovies.css);

@@ -2,4 +2,11 @@
   display: flex;
   justify-content: center;
   margin-top: 92px;
+  list-style: none;
+  padding-inline-start: 0;
+}
+
+.promo__info-buttons a {
+  text-decoration: none;
+  color: #000000;
 }

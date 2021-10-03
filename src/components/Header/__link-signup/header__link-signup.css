@@ -7,21 +7,10 @@
   line-height: 1.33;
   border: none;
   background-color: transparent;
-}
-
-.header__link-signup:hover {
+  text-decoration: none;
   cursor: pointer;
 }
 
-.header__link-signup:link {
-  text-decoration: none;
-}
-
-.header__link-signup:visited {
-  color: #fff;
-}
-
-.header__link-signup:active {
-  text-decoration: none;
-  color: #fff;
+.header__link-signup:hover {
+  text-decoration: underline;
 }

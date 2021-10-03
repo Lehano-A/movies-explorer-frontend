@@ -9,7 +9,7 @@ import SignUp from '../SignUp/SignUp';
 import SignIn from '../SignIn/SignIn';
 import PageNotFound from '../PageNotFound/PageNotFound';
 import Profile from '../Profile/Profile';
-
+import SavedMovies from '../SavedMovies/SavedMovies';
 
 import oneC from "./../../images/posters/1.jpg";
 import twoC from "./../../images/posters/2.jpg";
@@ -26,62 +26,90 @@ import twelveC from "./../../images/posters/12.jpg";
 import thirtyC from "./../../images/posters/13.jpg";
 
 const posters = [{ 1: oneC }, { 2: twoC }, { 3: treeC }, { 4: fourC }, { 5: fiveC }, { 6: sixC }, { 7: sevenC }, { 8: eightC }, { 9: nineC }, { 10: tenC }, { 11: elevenC }, { 12: twelveC }, { 13: thirtyC }];
-
+const mySavedMovies = [{ 2: twoC }, { 5: fiveC }, { 9: nineC }, { 12: twelveC }, { 5: fiveC }, { 9: nineC }, { 12: twelveC }, { 5: fiveC }, { 9: nineC }, { 12: twelveC }, { 5: fiveC }, { 9: nineC }, { 12: twelveC }, { 5: fiveC }, { 9: nineC }, { 12: twelveC }]
 
 function App() {
 
   const [isRegLink, setIsRegLink] = useState(false);
   const [isLogLink, setIsLogLink] = useState(false);
   const [isProfileLink, setIsProfileLink] = useState(false);
-  const [isPageNotFound, setIsPageNotFound] = useState(false)
-  const [isMainPage, setIsMainPage] = useState(false)
+  const [isMoviesLink, setIsMoviesLink] = useState(false);
+  const [isSavedMoviesLink, setIsSavedMoviesLink] = useState(false);
+  const [isPageNotFound, setIsPageNotFound] = useState(false);
+  const [isMainPage, setIsMainPage] = useState(false);
 
-  const [isSignUp, setIsSignUp] = useState(false);
   const [isSignIn, setIsSignIn] = useState(false);
 
-  const [cards, setCards] = useState(posters)
-  const [countedCards, setCountedCards] = useState([])
+  const [cards, setCards] = useState(posters);// ВСЕ ИМЕЮЩИЕСЯ ФИЛЬМЫ
+  const [countedCards, setCountedCards] = useState([]); // ОТБИРАЕМЫЕ ФИЛЬМЫ ПО 12 ШТУК
+
+  const [savedMovies, setSavedMovies] = useState(mySavedMovies); // ВСЕ СОХРАНЁННЫЕ ФИЛЬМЫ
+  const [countedSavedMovies, setCountedSavedMovies] = useState([]); // ОТБИРАЕМЫЕ СОХРАНЁННЫЕ ФИЛЬМЫ ПО 12 ШТУК
 
 
-  useEffect(() => {
-    handleCountCards();
-  }, []);
-
-
-  // ОБРАБОТЧИК ССЫЛКИ РЕГИСТРАЦИИ
-  function handleIsReg() {
+  // ОБРАБОТЧИК СТЭЙТА ССЫЛКИ /signup
+  function handleIsRegLink() {
     setIsRegLink(true)
     setIsLogLink(false)
     setIsProfileLink(false)
+    setIsMoviesLink(false)
+    setIsSavedMoviesLink(false)
     setIsMainPage(false)
     setIsPageNotFound(false)
   }
 
-  // ОБРАБОТЧИК ССЫЛКИ АУТЕНТИФИКАЦИИ
-  function handleIsLog() {
+  // ОБРАБОТЧИК СТЭЙТА ССЫЛКИ /signin
+  function handleIsLogLink() {
     setIsLogLink(true)
     setIsRegLink(false)
     setIsProfileLink(false)
+    setIsMoviesLink(false)
+    setIsSavedMoviesLink(false)
     setIsMainPage(false)
     setIsPageNotFound(false)
   }
 
-  // ОБРАБОТЧИК ССЫЛКИ ПРОФАЙЛА
-  function handleIsProfile() {
+  // ОБРАБОТЧИК СТЭЙТА ССЫЛКИ /profile
+  function handleIsProfileLink() {
     setIsProfileLink(true)
     setIsLogLink(false)
     setIsRegLink(false)
+    setIsMoviesLink(false)
+    setIsSavedMoviesLink(false)
     setIsMainPage(false)
     setIsPageNotFound(false)
   }
 
+  // ОБРАБОТЧИК СТЭЙТА КЛИКА НА ЛОГО САЙТА
   function handleClickByLogo() {
     setIsMainPage(true)
-    setIsProfileLink(false)
     setIsLogLink(false)
     setIsRegLink(false)
+    setIsMoviesLink(false)
+    setIsSavedMoviesLink(false)
     setIsPageNotFound(false)
   }
+
+  // ОБРАБОТЧИК СТЭЙТА ССЫЛКИ /saved-movies
+  function handleIsSavedMoviesLink() {
+    setIsSavedMoviesLink(true)
+    setIsMainPage(false)
+    setIsLogLink(false)
+    setIsRegLink(false)
+    setIsMoviesLink(false)
+    setIsPageNotFound(false)
+  }
+
+  // ОБРАБОТЧИК СТЭЙТА ССЫЛКИ /movies
+  function handleIsMoviesLink() {
+    setIsMoviesLink(true)
+    setIsMainPage(false)
+    setIsLogLink(false)
+    setIsRegLink(false)
+    setIsSavedMoviesLink(false)
+    setIsPageNotFound(false)
+  }
+
 
   // ОБРАБОТЧИК СТРАНИЦЫ 404 - ОТКРЫТА
   function handlePageNotFoundOpened() {
@@ -93,12 +121,7 @@ function App() {
     setIsPageNotFound(false)
   }
 
-  // ЗАРЕГИСТРИРОВАН ЛИ ПОЛЬЗОВАТЕЛЬ
-  function handleIsSignUp() {
-    setIsSignUp(true)
-  }
-
-  // ЗАЛОГИНЕН ЛИ ПОЛЬЗОВАТЕЛЬ
+    // ЗАЛОГИНЕН ЛИ ПОЛЬЗОВАТЕЛЬ
   function handleIsSignIn() {
     setIsSignIn(true)
   }
@@ -111,7 +134,15 @@ function App() {
     e.preventDefault();
   }
 
-  // ВРЕМЕННЫЙ ОБРАБОТЧИК КНОПКИ КАРТОЧКИ "ДОБАВИТЬ В ИЗБРАННОЕ"
+  function handleEditProfile(e) {
+    e.preventDefault();
+  }
+
+  function handleSubmitSearchForm(e) {
+    e.preventDefault();
+  }
+
+  // ВРЕМЕННЫЙ ОБРАБОТЧИК КНОПКИ КАРТОЧКИ "СОХРАНИТЬ ФИЛЬМ"
   function handleIsActiveButtonSave(e) {
     e.target.classList.toggle('movies-card__button-save_active')
   }
@@ -131,9 +162,19 @@ function App() {
     // К ПРЕДЫДУЩИМ КАРТОЧКАМ УЖЕ НАХОДЯЩИХСЯ В МАССИВЕ (prevCards) - ДОБАВЛЯЕМ НОВЫЕ,
     // КОТОРЫЕ ОТОБРАЛИ В КОЛИЧЕСТВЕ ДО 12 ШТУК КНОПКОЙ "ЕЩЁ" (currentCards)
     setCountedCards((prevCards) => { return [...prevCards, ...currentCards] })
-
   }
 
+  function handleSavedMovies() {
+    const pickedCards = savedMovies.splice(0, 12);
+
+    let currentCards = []
+
+    pickedCards.forEach((card) => {
+      currentCards.push(card)
+    })
+
+    setCountedSavedMovies((prevCards) => { return [...prevCards, ...currentCards] })
+  }
 
   return (
 
@@ -144,10 +185,12 @@ function App() {
           isRegLink={isRegLink}
           isLogLink={isLogLink}
           isProfileLink={isProfileLink}
+          isMoviesLink={isMoviesLink}
+          isSavedMoviesLink={isSavedMoviesLink}
           isPageNotFound={isPageNotFound}
-          handleIsReg={handleIsReg}
-          handleIsLog={handleIsLog}
-          handleIsProfile={handleIsProfile}
+          handleIsRegLink={handleIsRegLink}
+          handleIsLogLink={handleIsLogLink}
+          handleIsProfileLink={handleIsProfileLink}
           handleClickByLogo={handleClickByLogo}
         />
 
@@ -165,23 +208,33 @@ function App() {
               countedCards={countedCards}
               handleCountCards={handleCountCards}
               handleIsActiveButtonSave={handleIsActiveButtonSave}
+              handleIsMoviesLink={handleIsMoviesLink}
+              handleSubmitSearchForm={handleSubmitSearchForm}
             />
           </Route>
 
 
           <Route path="/profile">
             <Profile
-              handleIsProfile={handleIsProfile}
+              handleEditProfile={handleEditProfile}
+              handleIsProfileLink={handleIsProfileLink}
             />
           </Route>
 
           <Route path="/saved-movies">
+            <SavedMovies
+              savedMovies={savedMovies}
+              countedSavedMovies={countedSavedMovies}
+              handleIsActiveButtonSave={handleIsActiveButtonSave}
+              handleSavedMovies={handleSavedMovies}
+              handleIsSavedMoviesLink={handleIsSavedMoviesLink}
+            />
           </Route>
 
 
           <Route path="/signup">
             <SignUp
-              handleIsReg={handleIsReg}
+              handleIsRegLink={handleIsRegLink}
               handleSubmitSignUp={handleSubmitSignUp}
             />
           </Route>
@@ -189,7 +242,7 @@ function App() {
 
           <Route path="/signin">
             <SignIn
-              handleIsLog={handleIsLog}
+              handleIsLogLink={handleIsLogLink}
               handleSubmitSignIn={handleSubmitSignIn}
             />
           </Route>

@@ -2,9 +2,8 @@
   list-style: none;
   display: flex;
   justify-content: center;
-  padding-top: 100px;
   padding-inline-start: 0;
-  margin: 0;
+  margin: 100px 0 0;
 }
 
 .techs__used-techs li {
@@ -19,8 +18,45 @@
   font-weight: 400;
   line-height: 1.21;
   letter-spacing: -0.04em;
+  transition: 0.3s;
+  cursor: default;
 }
 
 .techs__used-techs li:nth-child(1n):not(:last-child) {
   margin-right: 10px;
+}
+
+.techs__used-techs li:nth-child(1):hover {
+  background-color: #ff6838;
+  color: #fff;
+}
+
+.techs__used-techs li:nth-child(2):hover {
+  background-color: #005a9c;
+  color: #fff;
+}
+
+.techs__used-techs li:nth-child(3):hover {
+  background-color: #f7e01d;
+  color: #fff;
+}
+
+.techs__used-techs li:nth-child(4):hover {
+  background-color: #61dafb;
+  color: #fff;
+}
+
+.techs__used-techs li:nth-child(5):hover {
+  background-color: #24292f;
+  color: #fff;
+}
+
+.techs__used-techs li:nth-child(6):hover {
+  background-color: #4d4d4d;
+  color: #fff;
+}
+
+.techs__used-techs li:nth-child(7):hover {
+  background-color: #13aa52;
+  color: #fff;
 }

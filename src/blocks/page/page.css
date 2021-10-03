@@ -1,6 +1,9 @@
 .page {
-  box-sizing: border-box;
   font-family: "Inter", Arial, sans-serif;
   background-color: #fff;
   margin: auto;
+}
+
+* {
+  box-sizing: border-box;
 }

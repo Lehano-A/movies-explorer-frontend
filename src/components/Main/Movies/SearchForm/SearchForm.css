@@ -1,2 +1,5 @@
 .SearchForm {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px #e8e8e8 solid;
 }

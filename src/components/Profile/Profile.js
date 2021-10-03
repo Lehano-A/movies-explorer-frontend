@@ -2,26 +2,26 @@ import React, { useEffect } from "react";
 import Form from "../Form/Form";
 
 
-function Profile({ handleIsProfile }) {
+function Profile({ profileName, handleEditProfile, handleIsProfileLink, handleChangeNameProfile }) {
 
   useEffect(() => {
-    handleIsProfile();
+    handleIsProfileLink();
   }, []);
 
   return (
     <div className="Profile">
-      <h1 className="profile__hello-title">Привет, Человек!</h1>
-      <Form profileFormHeight="profile__form-height" profileButton="profile__button-submit" buttonName="Редактировать">
+      <h1 className="profile__hello-title">Привет, Виталий!</h1>
+      <Form handleSubmit={handleEditProfile} profileFormHeight="profile__form-height" profileButton="profile__button-submit" buttonName="Редактировать">
 
         <div className="profile__inputs-box">
           <div className="profile__name-box">
             <label for="name" className="profile__label">Имя</label>
-            <input id="name" type="text" className="profile__input"></input>
+            <input id="name" type="text" className="profile__input" defaultValue="Виталий" minLength="2" maxLength="30" required></input>
           </div>
 
           <div className="profile__email-box">
             <label for="email" className="profile__label">E-mail</label>
-            <input id="email" type="email" className="profile__input"></input>
+            <input id="email" type="email" className="profile__input" defaultValue="pochta@yandex.ru" maxLength="70" required></input>
           </div>
         </div>
 
