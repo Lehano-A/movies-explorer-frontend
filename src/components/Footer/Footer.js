@@ -18,9 +18,9 @@ function Footer({ isPageNotFound, isProfileLink }) {
         <p className="footer__date">&copy; {new Date().getFullYear()}</p>
         <nav>
           <ul className="footer__nav">
-            <li>Яндекс.Практикум</li>
-            <li>Github</li>
-            <li>Вконтакте</li>
+            <li><a href="https://praktikum.yandex.ru/" target="blank">Яндекс.Практикум</a></li>
+            <li><a href="https://github.com/Lehano-A" target="blank">Github</a></li>
+            <li><a href="https://vk.com/id2895043" target="blank">Вконтакте</a></li>
           </ul>
         </nav>
       </div>

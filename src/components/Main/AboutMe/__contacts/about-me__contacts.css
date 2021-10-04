@@ -9,6 +9,23 @@
   margin-bottom: 0;
 }
 
+.about-me__contacts li:hover {
+  cursor: pointer;
+  text-decoration: gray underline;
+}
+
 .about-me__contacts li:nth-child(1n):not(:last-child) {
   margin-right: 20px;
+}
+
+@media screen and (max-width: 768px) {
+  .about-me__contacts {
+    margin-top: 87px;
+  }
+}
+
+@media screen and (max-width: 429px) {
+  .about-me__contacts {
+    margin-top: 40px;
+  }
 }

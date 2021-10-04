@@ -5,3 +5,9 @@
   max-width: 912px;
   text-align: center;
 }
+
+@media screen and (max-width: 768px) {
+  .about-project__scale-frontend-box {
+    max-width: 528px;
+  }
+}

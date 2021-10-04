@@ -3,3 +3,12 @@
   justify-content: space-between;
   margin-top: 66px;
 }
+
+@media screen and (max-width: 650px) {
+  .about-me__student-photo-box {
+    display: flex;
+    flex-direction: column-reverse;
+    margin-top: 60px;
+  }
+}
+

@@ -9,3 +9,11 @@
   margin: 0;
   border-bottom: 1px black solid;
 }
+
+@media screen and (max-width: 429px) {
+  .title-block {
+    font-size: 18px;
+    line-height: 1.21;
+    padding-bottom: 28px;
+  }
+}

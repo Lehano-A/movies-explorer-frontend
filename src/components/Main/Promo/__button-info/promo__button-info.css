@@ -6,7 +6,7 @@
   font-weight: 500;
   line-height: 1.33;
   background-color: #e8e8e8;
-  min-width: 96px;
+  width: 96px;
   height: 36px;
   margin-left: 5px;
   margin-right: 5px;
@@ -18,4 +18,13 @@
 
 .promo__button-info:hover {
   background-color: #2be080;
+}
+
+@media screen and (max-width: 429px) {
+  .promo__button-info {
+    width: 90px;
+    height: 30px;
+    font-size: 10px;
+    line-height: 1.6;
+  }
 }

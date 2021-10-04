@@ -9,8 +9,17 @@
   background-color: transparent;
   text-decoration: none;
   cursor: pointer;
+  transition: 0.25s;
 }
 
 .header__link-signup:hover {
-  text-decoration: underline;
+  color: #2be080;
+}
+
+@media screen and (max-width: 429px) {
+  .header__link-signup {
+    font-size: 10px;
+    line-height: 1.6;
+    margin-right: 14px;
+  }
 }

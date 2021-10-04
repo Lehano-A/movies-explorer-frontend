@@ -2,3 +2,20 @@
   max-width: 550px;
   text-align: left;
 }
+
+.about-project__text-box:first-child {
+  margin-right: 30px;
+}
+
+@media screen and (max-width: 768px) {
+  .about-project__text-box {
+    max-width: 319px;
+  }
+}
+
+@media screen and (max-width: 429px) {
+  .about-project__text-box:nth-child(2) {
+    padding-top: 56px;
+    max-width: 100%;
+  }
+}

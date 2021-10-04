@@ -2,3 +2,15 @@
   display: flex;
   padding-top: 112px;
 }
+
+@media screen and (max-width: 768px) {
+  .about-project__scale {
+    padding-top: 93px;
+  }
+}
+
+@media screen and (max-width: 429px) {
+  .about-project__scale {
+    padding-top: 61px;
+  }
+}

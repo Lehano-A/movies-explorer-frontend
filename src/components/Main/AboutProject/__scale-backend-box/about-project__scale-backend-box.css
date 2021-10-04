@@ -5,3 +5,15 @@
   max-width: 228px;
   text-align: center;
 }
+
+@media screen and (max-width: 768px) {
+  .about-project__scale-backend-box {
+    max-width: 140px;
+  }
+}
+
+@media screen and (max-width: 429px) {
+  .about-project__scale-backend-box {
+    max-width: 100px;
+  }
+}

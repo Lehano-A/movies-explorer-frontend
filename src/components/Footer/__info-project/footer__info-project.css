@@ -9,3 +9,11 @@
   margin: 0 auto;
   text-align: center;
 }
+
+@media screen and (max-width: 429px) {
+  .footer__info-project {
+    font-size: 12px;
+    line-height: 1.21;
+    padding: 0 0 21px;
+  }
+}

@@ -60,3 +60,44 @@
   background-color: #13aa52;
   color: #fff;
 }
+
+@media screen and (max-width: 768px) {
+  .techs__used-techs {
+    margin-top: 83px;
+  }
+}
+
+@media screen and (max-width: 680px) {
+  .techs__used-techs {
+    display: grid;
+    grid-template-rows: 57px 57px;
+    grid-template-columns: 84px 84px 84px 84px;
+    gap: 10px;
+    margin-top: 50px;
+  }
+}
+
+@media screen and (max-width: 429px) {
+  .techs__used-techs {
+    display: grid;
+    grid-template-columns: 84px 84px;
+    column-gap: 10px;
+    gap: 10px;
+    margin-top: 50px;
+  }
+}
+
+@media screen and (max-width: 429px) {
+  .techs__used-techs li:nth-child(1n):not(:last-child) {
+    margin-right: 0;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .techs__used-techs li {
+    width: 84px;
+    height: 57px;
+    font-size: 12px;
+    font-weight: 1.21;
+  }
+}

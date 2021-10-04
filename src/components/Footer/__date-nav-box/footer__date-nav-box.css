@@ -3,3 +3,12 @@
   justify-content: space-between;
   padding-top: 20px;
 }
+
+@media screen and (max-width: 429px) {
+  .footer__date-nav-box {
+    flex-direction: column-reverse;
+    justify-content: center;
+    text-align: center;
+    padding-top: 30px;
+  }
+}

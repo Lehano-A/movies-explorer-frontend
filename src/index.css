@@ -27,7 +27,6 @@
 @import url(./components/Main/Promo/Promo.css);
 @import url(./components/Main/Promo/__title-box/promo__title-box.css);
 @import url(./components/Main/Promo/__title/promo__title.css);
-@import url(./components/Main/Promo/__practicum-logo/promo__practicum-logo.css);
 @import url(./components/Main/Promo/__info-buttons/promo__info-buttons.css);
 @import url(./components/Main/Promo/__button-info/promo__button-info.css);
 
@@ -46,7 +45,6 @@
 @import url(./components/Main/AboutProject/__scale-range-title/about-project__scale-range-title.css);
 
 @import url(./components/Main/Techs/Techs.css);
-@import url(./components/Main/Techs/__title/techs__title.css);
 @import url(./components/Main/Techs/__info-box/techs__info-box.css);
 @import url(./components/Main/Techs/__used-techs/techs__used-techs.css);
 

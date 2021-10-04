@@ -1,4 +1,20 @@
 .Promo {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
   background-color: #465dff;
   height: 560px;
+}
+
+@media screen and (max-width: 768px) {
+  .Promo {
+    height: 844px;
+  }
+}
+
+@media screen and (max-width: 429px) {
+  .Promo {
+    height: 630px;
+  }
 }

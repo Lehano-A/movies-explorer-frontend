@@ -1,5 +1,4 @@
 import React from "react";
-import practicum_logo from './../../../images/practicum_logo.svg';
 
 function Promo() {
 
@@ -8,7 +7,6 @@ function Promo() {
     <section className="Promo">
 
       <div className="promo__title-box">
-        <img className="promo__practicum-logo" src={practicum_logo} alt="Логотип Практикума"></img>
         <h1 className="promo__title">Учебный проект студента факультета Веб-разработки.</h1>
       </div>
 

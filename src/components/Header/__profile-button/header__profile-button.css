@@ -14,3 +14,9 @@
   transition: 0.3s;
   color: #000;
 }
+
+@media screen and (max-width: 768px) {
+  .header__profile-button {
+    margin-right: 30px;
+  }
+}

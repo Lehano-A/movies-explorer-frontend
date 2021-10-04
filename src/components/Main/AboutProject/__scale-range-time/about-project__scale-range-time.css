@@ -4,3 +4,9 @@
   line-height: 1.21;
   margin: 0;
 }
+
+@media screen and (max-width: 429px) {
+  .about-project__scale-range-time {
+    font-size: 11px;
+  }
+}

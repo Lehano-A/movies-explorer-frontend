@@ -1,4 +1,18 @@
 .AboutProject {
-  height: 608px;
+  min-height: 608px;
   padding: 110px 70px 0;
+}
+
+@media screen and (max-width: 768px) {
+  .AboutProject {
+    min-height: 585px;
+    padding: 90px 50px;
+  }
+}
+
+@media screen and (max-width: 429px) {
+  .AboutProject {
+    min-height: 641px;
+    padding: 70px 18px 0;
+  }
 }

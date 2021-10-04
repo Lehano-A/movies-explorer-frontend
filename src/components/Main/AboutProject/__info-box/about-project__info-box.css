@@ -3,3 +3,10 @@
   justify-content: space-between;
   padding-top: 70px;
 }
+
+@media screen and (max-width: 429px) {
+  .about-project__info-box {
+    flex-direction: column;
+    padding-top: 60px;
+  }
+}
