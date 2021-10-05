@@ -11,3 +11,9 @@
 .profile__button-submit:hover {
   text-decoration: underline;
 }
+
+@media screen and (max-width: 429px) {
+  .profile__button-submit {
+    font-size: 12px;
+  }
+}

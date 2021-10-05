@@ -8,9 +8,14 @@
   height: 14px;
   border: none;
   padding: 0;
+  transition: 0.2s;
+}
+
+.profile__input:hover {
+  box-shadow: 0 0 2px gray;
 }
 
 .profile__input:focus {
   outline: none;
+  box-shadow: 0 0 2px gray;
 }
-

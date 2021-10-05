@@ -34,7 +34,7 @@ function AboutProject() {
         </div>
       </div>
 
-    </section >
+    </section>
   )
 }
 

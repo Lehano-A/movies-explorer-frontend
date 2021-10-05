@@ -1,3 +1,15 @@
 .profile__form-height {
   height: 298px;
 }
+
+@media screen and (max-width: 768px) {
+  .profile__form-height {
+    height: 288px;
+  }
+}
+
+@media screen and (max-width: 429px) {
+  .profile__form-height {
+    height: 455px;
+  }
+}

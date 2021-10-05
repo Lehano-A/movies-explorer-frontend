@@ -1,0 +1,27 @@
+.header__menu-profile {
+  display: none;
+  padding: 0;
+}
+
+@media screen and (max-width: 815px) {
+  .header__menu-profile {
+    display: flex;
+    width: 44px;
+    height: 44px;
+    background-size: 44px 44px;
+    background-image: url("./../../../images/burger_icon.svg");
+    background-position: 50% 50%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+  }
+}
+
+@media screen and (max-width: 429px) {
+  .header__menu-profile {
+    width: 40px;
+    height: 43px;
+    background-size: 34px 40px;
+  }
+}

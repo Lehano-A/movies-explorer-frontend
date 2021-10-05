@@ -1,0 +1,12 @@
+.SearchForm {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px #e8e8e8 solid;
+  margin: 0 30px;
+}
+
+@media screen and (max-width: 429px) {
+  .SearchForm {
+    margin: 0 14px;
+  }
+}

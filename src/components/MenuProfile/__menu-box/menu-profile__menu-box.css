@@ -1,0 +1,35 @@
+.menu-profile__menu-box {
+  display: none;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 159px;
+  padding-bottom: 90px;
+  z-index: 5;
+  height: 100%;
+  background-color: #ffffff;
+}
+
+@media screen and (max-width: 815px) {
+  .menu-profile__menu-box {
+    display: flex;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 248px;
+    right: 0;
+    max-width: 567px;
+  }
+}
+
+@media screen and (max-width: 596px) {
+  .menu-profile__menu-box {
+    padding-top: 154px;
+    padding-bottom: 205px;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+  }
+}

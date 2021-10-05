@@ -12,10 +12,10 @@
   letter-spacing: -0.04em;
   border-bottom: 1px #e8e8e8 solid;
   padding: 20px 0;
-  cursor: pointer;
 }
 
-.portfolio__works li:hover {
+.portfolio__works a:hover {
+  cursor: pointer;
   background: #e8e8e8;
 }
 
@@ -61,4 +61,13 @@
     padding-right: 20px;
     background-position: 50% 50%;
   }
+}
+
+.portfolio__works a:link {
+  color: #000;
+  text-decoration: none;
+}
+
+.portfolio__works a:visited {
+  color: #000;
 }

@@ -1,0 +1,12 @@
+.movies-card__button-save {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50px;
+  background-color: #f9f9f9;
+  background-image: url("./../../../../images/button_save_icon.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+  transition: 0.4s;
+}

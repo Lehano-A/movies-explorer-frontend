@@ -1,0 +1,15 @@
+.movies-card__poster-box {
+  height: 203px;
+}
+
+@media screen and (max-width: 1226px) {
+  .movies-card__poster-box {
+    height: 190px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .movies-card__poster-box {
+    height: 168px;
+  }
+}

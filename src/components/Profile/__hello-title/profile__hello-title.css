@@ -2,6 +2,18 @@
   font-size: 24px;
   font-weight: 500;
   line-height: 1.21;
-  margin: 74px 0 123px;
+  margin: 0 0 123px;
   text-align: center;
+}
+
+@media screen and (max-width: 768px) {
+  .profile__hello-title {
+    margin-bottom: 96px;
+  }
+}
+
+@media screen and (max-width: 429px) {
+  .profile__hello-title {
+    margin-bottom: 81px;
+  }
 }

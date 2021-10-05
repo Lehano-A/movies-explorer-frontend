@@ -9,3 +9,9 @@
 .form__signin-signup-link:hover {
   text-decoration: underline;
 }
+
+@media screen and (max-width: 465px) {
+  .form__signin-signup-link {
+    font-size: 12px;
+  }
+}

@@ -16,8 +16,8 @@ function AboutMe() {
               и дочь. Я люблю слушать музыку, а ещё увлекаюсь бегом. Недавно начал кодить. С 2015 года работал в компании «СКБ Контур». После того, как прошёл курс по веб-разработке, начал заниматься фриланс-заказами и ушёл с постоянной работы.</p>
           </div>
           <ul className="about-me__contacts">
-            <li>Вконтакте</li>
-            <li>Github</li>
+            <li><a href="https://vk.com/id2895043" target="blank">Вконтакте</a></li>
+            <li><a href="https://github.com/Lehano-A" target="blank">Github</a></li>
           </ul>
         </div>
 

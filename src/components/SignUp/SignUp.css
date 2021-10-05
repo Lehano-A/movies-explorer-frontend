@@ -2,3 +2,9 @@
   max-width: 396px;
   margin: 0 auto;
 }
+
+@media screen and (max-width: 465px) {
+  .SignUp {
+    margin: 0 30px;
+  }
+}

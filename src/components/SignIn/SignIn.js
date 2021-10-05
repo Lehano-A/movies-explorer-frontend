@@ -5,6 +5,7 @@ function SignIn({ handleSubmitSignIn, handleIsLogLink }) {
 
   useEffect(() => {
     handleIsLogLink();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

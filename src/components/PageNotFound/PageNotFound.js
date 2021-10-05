@@ -5,6 +5,7 @@ function PageNotFound({ handlePageNotFoundOpened }) {
 
   useEffect(() => {
     handlePageNotFoundOpened()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const history = useHistory();

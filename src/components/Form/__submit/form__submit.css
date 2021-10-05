@@ -10,3 +10,10 @@
   margin-top: 70px;
   cursor: pointer;
 }
+
+@media screen and (max-width: 465px) {
+  .form__submit {
+    font-size: 12px;
+    margin-top: 159px;
+  }
+}

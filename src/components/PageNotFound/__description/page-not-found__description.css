@@ -4,3 +4,10 @@
   line-height: 1.21;
   margin: 0 0 184px;
 }
+
+@media screen and (max-width: 429px) {
+  .page-not-found__description {
+    font-size: 12px;
+    margin-bottom: 284px;
+  }
+}

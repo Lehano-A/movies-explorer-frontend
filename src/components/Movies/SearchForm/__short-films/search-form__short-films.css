@@ -1,0 +1,14 @@
+.search-form__short-films {
+  display: flex;
+  justify-content: center;
+  padding-top: 29px;
+  padding-bottom: 40px;
+  margin-left: 70px;
+  margin-right: 70px;
+}
+
+@media screen and (max-width: 815px) {
+  .search-form__short-films {
+    padding-top: 48px;
+  }
+}

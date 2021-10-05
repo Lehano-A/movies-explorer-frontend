@@ -1,15 +1,28 @@
 import React, { useEffect } from "react";
 import Form from "../Form/Form";
+import MenuProfile from "../MenuProfile/MenuProfile";
 
-
-function Profile({ profileName, handleEditProfile, handleIsProfileLink, handleChangeNameProfile }) {
+function Profile({
+  isProfileLink,
+  isProfileMenu,
+  handleEditProfile,
+  handleIsProfileLink,
+  handleButtonCloseMenuProfile }) {
 
   useEffect(() => {
     handleIsProfileLink();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div className="Profile">
+
+      <MenuProfile
+        isProfileLink={isProfileLink}
+        isProfileMenu={isProfileMenu}
+        handleButtonCloseMenuProfile={handleButtonCloseMenuProfile}
+      />
+
       <h1 className="profile__hello-title">Привет, Виталий!</h1>
       <Form handleSubmit={handleEditProfile} profileFormHeight="profile__form-height" profileButton="profile__button-submit" buttonName="Редактировать">
 

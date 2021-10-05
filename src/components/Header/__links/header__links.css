@@ -2,5 +2,15 @@
   display: flex;
   list-style: none;
   padding-inline-start: 0;
-  padding-left: 62px;
+  padding-left: 60px;
+}
+
+.header__links li:first-child {
+  margin-right: 20px;
+}
+
+@media screen and (max-width: 815px) {
+  .header__links {
+    display: none;
+  }
 }

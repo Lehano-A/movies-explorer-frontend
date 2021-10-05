@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import Header from '../Header/Header';
 import Main from '../Main/Main';
 import Footer from '../Footer/Footer';
-import Movies from '../Main/Movies/Movies';
+import Movies from '../Movies/Movies';
 import SignUp from '../SignUp/SignUp';
 import SignIn from '../SignIn/SignIn';
 import PageNotFound from '../PageNotFound/PageNotFound';
@@ -36,16 +36,13 @@ function App() {
   const [isMoviesLink, setIsMoviesLink] = useState(false);
   const [isSavedMoviesLink, setIsSavedMoviesLink] = useState(false);
   const [isPageNotFound, setIsPageNotFound] = useState(false);
-  const [isMainPage, setIsMainPage] = useState(false);
+  const [isProfileMenu, setIsProfileMenu] = useState(false);
 
-  const [isSignIn, setIsSignIn] = useState(false);
-
-  const [cards, setCards] = useState(posters);// ВСЕ ИМЕЮЩИЕСЯ ФИЛЬМЫ
+  const [cards,] = useState(posters);// ВСЕ ИМЕЮЩИЕСЯ ФИЛЬМЫ
   const [countedCards, setCountedCards] = useState([]); // ОТБИРАЕМЫЕ ФИЛЬМЫ ПО 12 ШТУК
 
-  const [savedMovies, setSavedMovies] = useState(mySavedMovies); // ВСЕ СОХРАНЁННЫЕ ФИЛЬМЫ
+  const [savedMovies,] = useState(mySavedMovies); // ВСЕ СОХРАНЁННЫЕ ФИЛЬМЫ
   const [countedSavedMovies, setCountedSavedMovies] = useState([]); // ОТБИРАЕМЫЕ СОХРАНЁННЫЕ ФИЛЬМЫ ПО 12 ШТУК
-
 
   // ОБРАБОТЧИК СТЭЙТА ССЫЛКИ /signup
   function handleIsRegLink() {
@@ -54,8 +51,8 @@ function App() {
     setIsProfileLink(false)
     setIsMoviesLink(false)
     setIsSavedMoviesLink(false)
-    setIsMainPage(false)
     setIsPageNotFound(false)
+    setIsProfileMenu(false)
   }
 
   // ОБРАБОТЧИК СТЭЙТА ССЫЛКИ /signin
@@ -65,8 +62,8 @@ function App() {
     setIsProfileLink(false)
     setIsMoviesLink(false)
     setIsSavedMoviesLink(false)
-    setIsMainPage(false)
     setIsPageNotFound(false)
+    setIsProfileMenu(false)
   }
 
   // ОБРАБОТЧИК СТЭЙТА ССЫЛКИ /profile
@@ -76,38 +73,41 @@ function App() {
     setIsRegLink(false)
     setIsMoviesLink(false)
     setIsSavedMoviesLink(false)
-    setIsMainPage(false)
     setIsPageNotFound(false)
+    setIsProfileMenu(false)
   }
 
-  // ОБРАБОТЧИК СТЭЙТА КЛИКА НА ЛОГО САЙТА
+  // ОБРАБОТЧИК СТЭЙТА КЛИКА НА ЛОГО САЙТА (главная страница)
   function handleClickByLogo() {
-    setIsMainPage(true)
     setIsLogLink(false)
     setIsRegLink(false)
     setIsMoviesLink(false)
+    setIsProfileLink(false)
     setIsSavedMoviesLink(false)
     setIsPageNotFound(false)
+    setIsProfileMenu(false)
   }
 
   // ОБРАБОТЧИК СТЭЙТА ССЫЛКИ /saved-movies
   function handleIsSavedMoviesLink() {
     setIsSavedMoviesLink(true)
-    setIsMainPage(false)
     setIsLogLink(false)
     setIsRegLink(false)
     setIsMoviesLink(false)
+    setIsProfileLink(false)
     setIsPageNotFound(false)
+    setIsProfileMenu(false)
   }
 
   // ОБРАБОТЧИК СТЭЙТА ССЫЛКИ /movies
   function handleIsMoviesLink() {
     setIsMoviesLink(true)
-    setIsMainPage(false)
     setIsLogLink(false)
     setIsRegLink(false)
     setIsSavedMoviesLink(false)
+    setIsProfileLink(false)
     setIsPageNotFound(false)
+    setIsProfileMenu(false)
   }
 
 
@@ -116,15 +116,20 @@ function App() {
     setIsPageNotFound(true)
   }
 
-  // ОБРАБОТЧИК СТРАНИЦЫ 404 - ЗАКРЫТА
-  function handlePageNotFoundClosed() {
-    setIsPageNotFound(false)
+
+  // ОТКРЫВАЕМ МЕНЮ ПРОФАЙЛА (ПРИ НАЖАТИИ НА КНОПКУ ГАМБУРГЕРА)
+  function handleIsProfileMenu() {
+    setIsProfileMenu(true)
   }
 
-    // ЗАЛОГИНЕН ЛИ ПОЛЬЗОВАТЕЛЬ
-  function handleIsSignIn() {
-    setIsSignIn(true)
+  // ЗАКРЫВАЕМ МЕНЮ ПРОФАЙЛА (ПРИ НАЖАТИИ НА КНОПКУ ГАМБУРГЕРА)
+  function handleButtonCloseMenuProfile() {
+    setIsProfileMenu(false)
   }
+
+
+
+
 
   function handleSubmitSignIn(e) {
     e.preventDefault();
@@ -164,6 +169,7 @@ function App() {
     setCountedCards((prevCards) => { return [...prevCards, ...currentCards] })
   }
 
+  // ОБРАБОТЧИК СОХРАНЕНИЯ ФИЛЬМА
   function handleSavedMovies() {
     const pickedCards = savedMovies.splice(0, 12);
 
@@ -174,6 +180,11 @@ function App() {
     })
 
     setCountedSavedMovies((prevCards) => { return [...prevCards, ...currentCards] })
+  }
+
+  // ОБРАБОТЧИК УДАЛЕНИЯ ФИЛЬМА
+  function handleDeleteMovies() {
+
   }
 
   return (
@@ -192,6 +203,7 @@ function App() {
           handleIsLogLink={handleIsLogLink}
           handleIsProfileLink={handleIsProfileLink}
           handleClickByLogo={handleClickByLogo}
+          handleIsProfileMenu={handleIsProfileMenu}
         />
 
         <Switch>
@@ -206,18 +218,26 @@ function App() {
             <Movies
               cards={cards}
               countedCards={countedCards}
+              isMoviesLink={isMoviesLink}
+              isProfileMenu={isProfileMenu}
               handleCountCards={handleCountCards}
               handleIsActiveButtonSave={handleIsActiveButtonSave}
               handleIsMoviesLink={handleIsMoviesLink}
               handleSubmitSearchForm={handleSubmitSearchForm}
+              handleButtonCloseMenuProfile={handleButtonCloseMenuProfile}
             />
           </Route>
 
 
           <Route path="/profile">
             <Profile
+              isProfileLink={isProfileLink}
+              isProfileMenu={isProfileMenu}
               handleEditProfile={handleEditProfile}
               handleIsProfileLink={handleIsProfileLink}
+              handleButtonCloseMenuProfile={handleButtonCloseMenuProfile}
+              handleIsMoviesLink={handleIsMoviesLink}
+              handleIsSavedMoviesLink={handleIsSavedMoviesLink}
             />
           </Route>
 
@@ -225,9 +245,13 @@ function App() {
             <SavedMovies
               savedMovies={savedMovies}
               countedSavedMovies={countedSavedMovies}
+              isSavedMoviesLink={isSavedMoviesLink}
+              isProfileMenu={isProfileMenu}
               handleIsActiveButtonSave={handleIsActiveButtonSave}
               handleSavedMovies={handleSavedMovies}
+              handleDeleteMovies={handleDeleteMovies}
               handleIsSavedMoviesLink={handleIsSavedMoviesLink}
+              handleButtonCloseMenuProfile={handleButtonCloseMenuProfile}
             />
           </Route>
 

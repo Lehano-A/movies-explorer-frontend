@@ -4,3 +4,9 @@
   justify-content: space-between;
   height: 380px;
 }
+
+@media screen and (max-width: 465px) {
+  .Form {
+    height: 468px;
+  }
+}

@@ -1,9 +1,19 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import logo from './../../images/logo.svg';
 import { Link, useLocation } from 'react-router-dom';
 import { useHistory } from 'react-router';
+import ProfileButton from '../ProfileButton/ProfileButton';
 
-function Header({ isRegLink, isLogLink, isProfileLink, isMoviesLink, isSavedMoviesLink, isPageNotFound, handleIsRegLink, handleIsLogLink, handleIsProfileLink, handleClickByLogo }) {
+function Header({
+  isRegLink,
+  isLogLink,
+  isProfileLink,
+  isMoviesLink,
+  isSavedMoviesLink,
+  isPageNotFound,
+  handleIsProfileMenu,
+}) {
+
   const history = useHistory();
   const location = useLocation();
   const pathName = location.pathname;
@@ -51,13 +61,11 @@ function Header({ isRegLink, isLogLink, isProfileLink, isMoviesLink, isSavedMovi
     if ((isProfileLink || isSavedMoviesLink || isMoviesLink) && (!regLogLink)) {
       return <>
         <ul className="header__links">
-          <li><Link to="/movies" className="header__link-movies">Фильмы</Link></li>
-          <li><Link to="/saved-movies" className="header__link-saved-movies">Сохранённые фильмы</Link></li>
+          <li><Link to="/movies" className="header__link">Фильмы</Link></li>
+          <li><Link to="/saved-movies" className="header__link">Сохранённые фильмы</Link></li>
         </ul>
-        <Link to="/profile" className="header__profile-button">
-          <p className="header__profile-button-text">Аккаунт</p>
-          <span className="header__profile-button-icon"></span>
-        </Link>
+        <button onClick={handleIsProfileMenu} type="button" className="header__menu-profile"></button>
+        <span className="header__profile-button"><ProfileButton /></span>
       </>
     }
 

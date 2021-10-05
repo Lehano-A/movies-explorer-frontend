@@ -9,3 +9,11 @@
 .header__head_only-logo .header__logo {
   margin: 0;
 }
+
+@media screen and (max-width: 465px) {
+  .header__head_only-logo {
+    margin-top: 56px;
+    margin-bottom: 123px;
+    align-items: center;
+  }
+}

@@ -1,0 +1,16 @@
+.search-form__button-search {
+  min-width: 44px;
+  min-height: 44px;
+  background-color: #ff6838;
+  border: none;
+  border-radius: 8px;
+  background-image: url("./../../../../images/search_icon.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.search-form__button-search:hover {
+  background-color: #ff8b64;
+}

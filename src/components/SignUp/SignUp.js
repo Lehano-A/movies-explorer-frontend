@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import Form from "../Form/Form";
 
-/* ФОРМА РЕГИСТРАЦИИ */
 function SignUp({ handleSubmitSignUp, handleIsRegLink }) {
 
   useEffect(() => {
@@ -28,7 +27,7 @@ function SignUp({ handleSubmitSignUp, handleIsRegLink }) {
 
       </Form>
 
-    </div >
+    </div>
   )
 
 }

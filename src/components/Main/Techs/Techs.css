@@ -8,6 +8,7 @@
   .Techs {
     min-height: 567px;
     padding: 90px 50px 0;
+    background-color: #f5f5f5;
   }
 }
 
@@ -15,6 +16,6 @@
   .Techs {
     min-height: 651px;
     padding: 70px 18px 0;
-    background-color: #ffffff;
+    background-color: #fff;
   }
 }
