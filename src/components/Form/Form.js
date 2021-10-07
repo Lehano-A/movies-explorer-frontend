@@ -11,11 +11,12 @@ function Form({
   handleSubmit,
   profileButton,
   profileFormHeight,
+  handleOnChange
 }) {
 
   return (
     <>
-      <form onSubmit={handleSubmit} className={`Form ${profileFormHeight}`} method="POST" name={name}>
+      <form onSubmit={handleSubmit} onChange={handleOnChange} className={`Form ${profileFormHeight}`} method="POST" name={name}>
         {children}
         <button type="submit" className={`form__submit ${profileButton}`}>{buttonName}</button>
       </form>

@@ -134,3 +134,7 @@
 @import url(./components/MenuProfile/__link/_active/menu-profile__link_active.css);
 @import url(./components/MenuProfile/__button-close/menu-profile__button-close.css);
 @import url(./components/MenuProfile/_open/menu-profile_open.css);
+
+@import url(./components/Error/Error.css);
+@import url(./components/Error/__message/error__message.css);
+@import url(./components/Error/_active/error_active.css);

@@ -7,7 +7,7 @@ function SearchForm({ handleSubmitSearchForm }) {
 
       <form onSubmit={handleSubmitSearchForm} className="search-form__form">
         <div className="search-form__input-button-box">
-          <input className="search-form__input" placeholder="Фильм"></input>
+          <input className="search-form__input" placeholder="Фильм" required></input>
           <button className="search-form__button-search" type="submit"></button>
         </div>
 
@@ -24,7 +24,6 @@ function SearchForm({ handleSubmitSearchForm }) {
       </form>
     </section>
   )
-
 }
 
 export default SearchForm;

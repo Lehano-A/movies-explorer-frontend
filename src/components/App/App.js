@@ -11,6 +11,8 @@ import PageNotFound from '../PageNotFound/PageNotFound';
 import Profile from '../Profile/Profile';
 import SavedMovies from '../SavedMovies/SavedMovies';
 
+import Error from '../Error/Error';
+
 import oneC from "./../../images/posters/1.jpg";
 import twoC from "./../../images/posters/2.jpg";
 import treeC from "./../../images/posters/3.jpg";
@@ -43,6 +45,34 @@ function App() {
 
   const [savedMovies,] = useState(mySavedMovies); // ВСЕ СОХРАНЁННЫЕ ФИЛЬМЫ
   const [countedSavedMovies, setCountedSavedMovies] = useState([]); // ОТБИРАЕМЫЕ СОХРАНЁННЫЕ ФИЛЬМЫ ПО 12 ШТУК
+
+  const [formSignUpInputs, setFormSignUpInputs] = useState({ // ПОЛЯ ФОРМЫ РЕГИСТРАЦИИ
+    name: '',
+    email: '',
+    password: '',
+  })
+
+  const [formSignInInputs, setFormSignInInputs] = useState({ // ПОЛЯ ФОРМЫ АУТЕНТИФИКАЦИИ
+    email: '',
+    password: '',
+  })
+
+  const [formProfileInputs, setFormProfileInputs] = useState({ // ПОЛЯ ФОРМЫ АУТЕНТИФИКАЦИИ
+    name: '',
+    email: '',
+  })
+
+  const [error, setError] = useState(false)
+
+  // ОБРАБОТЧИК ПОЯВЛЕНИЯ ОКНА ОШИБКИ
+  function handleOpenError() {
+    setError(true);
+  }
+
+  // ОБРАБОТЧИК ЗАКРЫТИЯ ОКНА ОШИБКИ
+  function handleCloseError() {
+    setError(false);
+  }
 
   // ОБРАБОТЧИК СТЭЙТА ССЫЛКИ /signup
   function handleIsRegLink() {
@@ -127,15 +157,7 @@ function App() {
     setIsProfileMenu(false)
   }
 
-
-
-
-
   function handleSubmitSignIn(e) {
-    e.preventDefault();
-  }
-
-  function handleSubmitSignUp(e) {
     e.preventDefault();
   }
 
@@ -147,10 +169,95 @@ function App() {
     e.preventDefault();
   }
 
+  // РЕГИСТРАЦИЯ ПОЛЬЗОВАТЕЛЯ
+  function handleSubmitSignUp(e) {
+    e.preventDefault();
+    const { name, email, password } = formSignUpInputs;
+
+    return fetch('https://moviefan.nomoredomains.monster/signup', {
+      method: 'POST',
+      credentials: 'include',
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: `${name}`,
+        email: `${email}`,
+        password: `${password}`
+      }),
+    })
+      .then((res) => { return res.json() })
+      .then((res) => { console.log(res); handleOpenError() })
+      .catch((err) => { console.log(err) })
+  }
+
   // ВРЕМЕННЫЙ ОБРАБОТЧИК КНОПКИ КАРТОЧКИ "СОХРАНИТЬ ФИЛЬМ"
   function handleIsActiveButtonSave(e) {
     e.target.classList.toggle('movies-card__button-save_active')
   }
+
+
+  /* -------------------------------------------------------------------------- */
+  /*                       ОБРАБОТЧИК ПОЛЕЙ ФОРМ (НАЧАЛО)                       */
+  /* -------------------------------------------------------------------------- */
+
+  function handleInputsForm(e) {
+
+    const baseUri = e.target.form.baseURI;
+
+    const signUpEndPoint = handleIncludes(baseUri, 'signup')
+    const signInEndPoint = handleIncludes(baseUri, 'signin')
+    const profileEndPoint = handleIncludes(baseUri, 'profile')
+
+    if (signUpEndPoint) {
+      handleInputs(e, setFormSignUpInputs, formSignUpInputs)
+    }
+    if (signInEndPoint) {
+      handleInputs(e, setFormSignInInputs, formSignInInputs)
+    }
+    if (profileEndPoint) {
+      handleInputs(e, setFormProfileInputs, formProfileInputs)
+    }
+  }
+
+  // ОБРАБОТЧИК ПОЛЕЙ
+  function handleInputs(e, setter, setVar) {
+    const input = e.target.name;
+    const value = e.target.value;
+
+    setter({
+      ...setVar,
+      [input]: value,
+    })
+
+  }
+
+  // СОДЕРЖИТ ЛИ ССЫЛКА НУЖНЫЙ ЭНДПОИНТ
+  function handleIncludes(uri, endpoint) {
+    return uri.includes(endpoint);
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                        ОБРАБОТЧИК ПОЛЕЙ ФОРМ (КОНЕЦ)                       */
+  /* -------------------------------------------------------------------------- */
+
+
+  /*
+  // ОБРАБОТЧИК ПОЛЕЙ ФОРМЫ АУТЕНТИФИКАЦИИ
+  function handleSignInInputs(e) {
+
+    const input = e.target.name;
+    const value = e.target.value;
+
+    setSignInInputs({
+      ...signInInputs,
+      [input]: value,
+    })
+  }
+  */
+
+
 
   // ОБРАБОТЧИК ОТБОРА 12 КАРТОЧЕК
   // СРАБАТЫВАЕТ В САМОМ НАЧАЛЕ, ПОСЛЕ РЕНДЕРА ПРИЛОЖЕНИЯ - ОДИН РАЗ,
@@ -258,6 +365,7 @@ function App() {
 
           <Route path="/signup">
             <SignUp
+              handleInputsForm={handleInputsForm}
               handleIsRegLink={handleIsRegLink}
               handleSubmitSignUp={handleSubmitSignUp}
             />
@@ -266,6 +374,7 @@ function App() {
 
           <Route path="/signin">
             <SignIn
+              handleInputsForm={handleInputsForm}
               handleIsLogLink={handleIsLogLink}
               handleSubmitSignIn={handleSubmitSignIn}
             />
@@ -284,6 +393,11 @@ function App() {
         <Footer
           isPageNotFound={isPageNotFound}
           isProfileLink={isProfileLink}
+        />
+
+        <Error
+          error={error}
+          handleCloseError={handleCloseError}
         />
 
       </div>

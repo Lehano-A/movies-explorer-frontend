@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Form from "../Form/Form";
 
-function SignIn({ handleSubmitSignIn, handleIsLogLink }) {
+function SignIn({ handleInputsForm, handleSubmitSignIn, handleIsLogLink }) {
 
   useEffect(() => {
     handleIsLogLink();
@@ -12,14 +12,14 @@ function SignIn({ handleSubmitSignIn, handleIsLogLink }) {
 
     <div className="SignIn">
 
-      <Form handleSubmit={handleSubmitSignIn} buttonName="Войти" regQuestion="Ещё не зарегистрированы?" inOrUp="up" regOrLogin="Регистрация">
+      <Form handleSubmit={handleSubmitSignIn} handleOnChange={handleInputsForm} buttonName="Войти" regQuestion="Ещё не зарегистрированы?" inOrUp="up" regOrLogin="Регистрация">
         <div className="form__input-box">
           <label className="form__label">E-mail</label>
-          <input type="email" className="form__input" maxLength="70" required></input>
+          <input name="email" type="email" className="form__input" maxLength="70" required></input>
           <span className="form__not-valid"></span>
 
           <label className="form__label">Пароль</label>
-          <input type="password" className="form__input" minLength="7" maxLength="30" required></input>
+          <input name="password" type="password" className="form__input" minLength="7" maxLength="30" required></input>
           <span className="form__not-valid"></span>
         </div>
       </Form>

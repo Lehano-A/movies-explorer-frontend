@@ -1,0 +1,14 @@
+.Error {
+  display: none;
+  align-items: center;
+  text-align: center;
+  max-width: 350px;
+  height: 80px;
+  position: absolute;
+  top: 20px;
+  right: -300px;
+  background-color: #f5e3e3;
+  border-radius: 5px;
+  border-left: tomato 5px solid;
+  cursor: pointer;
+}
