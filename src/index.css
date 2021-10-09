@@ -63,6 +63,7 @@
 @import url(./components/Footer/__date-nav-box/footer__date-nav-box.css);
 @import url(./components/Footer/__date/footer__date.css);
 @import url(./components/Footer/__nav/footer__nav.css);
+@import url(./components/Footer/_indent/footer_indent.css);
 
 @import url(./components/Movies/SearchForm/SearchForm.css);
 @import url(./components/Movies/SearchForm/__form/search-form__form.css);

@@ -3,28 +3,34 @@ import MenuProfile from "../MenuProfile/MenuProfile";
 import SearchForm from './SearchForm/SearchForm';
 import MoviesCardList from "./MoviesCardList/MoviesCardList";
 import More from "./More/More";
+import Preloader from "./Preloader/Preloader";
 
 
 function Movies({
-  cards,
-  countedCards,
+  selectedCards,
   isMoviesLink,
   isProfileMenu,
+  resultSearchMovies,
+  pushedSubmitSearchForm,
+  isPreloaderActive,
   handleCountCards,
   handleIsActiveButtonSave,
   handleIsMoviesLink,
   handleSubmitSearchForm,
-  handleButtonCloseMenuProfile, }) {
+  handleButtonCloseMenuProfile,
+  handleSetValueInputSearchForm,
+  handleShowResultSearchMovies,
+}) {
 
   useEffect(() => {
     handleIsMoviesLink();
-    handleCountCards();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+
+
   return (
     <>
-
       <MenuProfile
         isMoviesLink={isMoviesLink}
         isProfileMenu={isProfileMenu}
@@ -33,15 +39,22 @@ function Movies({
 
       <SearchForm
         handleSubmitSearchForm={handleSubmitSearchForm}
+        handleSetValueInputSearchForm={handleSetValueInputSearchForm}
       />
 
-      <MoviesCardList
-        countedCards={countedCards}
+
+      {resultSearchMovies && <MoviesCardList
+        Preloader={Preloader}
+        isPreloaderActive={isPreloaderActive}
+        selectedCards={selectedCards}
+        resultSearchMovies={resultSearchMovies}
         handleIsActiveButtonSave={handleIsActiveButtonSave}
-      />
+        handleCountCards={handleCountCards}
+        handleShowResultSearchMovies={handleShowResultSearchMovies}
+      />}
 
       <More
-        restCards={cards}
+        selectedCards={selectedCards}
         addMoreCards={handleCountCards}
       />
     </>

@@ -1,19 +1,25 @@
-
 import React from "react";
 
 import MoviesCard from "../MoviesCard/MoviesCard";
 
-
 function MoviesCardList({
+  Preloader,
+  isPreloaderActive,
   isSavedMoviesLink,
-  countedCards,
+  resultSearchMovies,
   handleIsActiveButtonSave,
-  handleDeleteMovies }) {
+  handleDeleteMovies,
+}) {
+
+
 
   return (
     <section className="MoviesCardList">
       <div className="movies-card-list__grid">
-        {countedCards.map((card, i) => {
+        <Preloader
+          isPreloaderActive={isPreloaderActive}
+        />
+        {resultSearchMovies.map((card, i) => {
           return (
             <MoviesCard
               isSavedMoviesLink={isSavedMoviesLink}
@@ -24,6 +30,7 @@ function MoviesCardList({
             />
           )
         })}
+
       </div>
     </section>
   )

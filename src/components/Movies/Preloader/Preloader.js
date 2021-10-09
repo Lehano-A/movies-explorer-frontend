@@ -1,14 +1,18 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './Preloader.css'
+import './_active/preloader_active.css'
 
-const Preloader = () => {
-    return (
-        <div className="preloader">
-            <div className="preloader__container">
-                <span className="preloader__round"></span>
-            </div>
-        </div>
-    )
+function Preloader({ isPreloaderActive }) {
+
+
+
+  return (
+    <div className={`preloader ${isPreloaderActive && 'preloader_active'}`}>
+      <div className="preloader__container">
+        <span className="preloader__round"></span>
+      </div>
+    </div>
+  )
 };
 
 export default Preloader

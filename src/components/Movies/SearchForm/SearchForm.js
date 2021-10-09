@@ -1,11 +1,13 @@
 import React from "react";
 
-function SearchForm({ handleSubmitSearchForm }) {
+function SearchForm({ handleSubmitSearchForm, handleSetValueInputSearchForm }) {
+
+
 
   return (
     <section className="SearchForm">
 
-      <form onSubmit={handleSubmitSearchForm} className="search-form__form">
+      <form onSubmit={handleSubmitSearchForm} onChange={handleSetValueInputSearchForm} className="search-form__form">
         <div className="search-form__input-button-box">
           <input className="search-form__input" placeholder="Фильм" required></input>
           <button className="search-form__button-search" type="submit"></button>

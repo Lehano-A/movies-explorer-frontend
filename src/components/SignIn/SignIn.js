@@ -19,7 +19,7 @@ function SignIn({ handleInputsForm, handleSubmitSignIn, handleIsLogLink }) {
           <span className="form__not-valid"></span>
 
           <label className="form__label">Пароль</label>
-          <input name="password" type="password" className="form__input" minLength="7" maxLength="30" required></input>
+          <input name="password" type="password" className="form__input" minLength="7" maxLength="30" autoComplete="off" required></input>
           <span className="form__not-valid"></span>
         </div>
       </Form>
