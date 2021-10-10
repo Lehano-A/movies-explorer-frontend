@@ -2,8 +2,6 @@ import React from "react";
 
 function SearchForm({ handleSubmitSearchForm, handleSetValueInputSearchForm }) {
 
-
-
   return (
     <section className="SearchForm">
 
@@ -15,7 +13,7 @@ function SearchForm({ handleSubmitSearchForm, handleSetValueInputSearchForm }) {
 
         <div className="search-form__short-films">
           <label className="search-form__label">
-            <input className="search-form__invisible-checkbox" type="checkbox" id="short-films" defaultChecked></input>
+            <input className="search-form__invisible-checkbox" type="checkbox" id="short-films"></input>
             <span className="search-form__visible-checkbox">
               <span className="search-form__switch"></span>
             </span>

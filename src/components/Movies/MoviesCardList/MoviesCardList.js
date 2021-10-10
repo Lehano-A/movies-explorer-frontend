@@ -4,22 +4,22 @@ import MoviesCard from "../MoviesCard/MoviesCard";
 
 function MoviesCardList({
   Preloader,
+  selectedCards,
   isPreloaderActive,
   isSavedMoviesLink,
-  resultSearchMovies,
   handleIsActiveButtonSave,
   handleDeleteMovies,
 }) {
 
 
-
   return (
     <section className="MoviesCardList">
+      <Preloader
+        isPreloaderActive={isPreloaderActive}
+      />
       <div className="movies-card-list__grid">
-        <Preloader
-          isPreloaderActive={isPreloaderActive}
-        />
-        {resultSearchMovies.map((card, i) => {
+
+        {selectedCards.map((card, i) => {
           return (
             <MoviesCard
               isSavedMoviesLink={isSavedMoviesLink}

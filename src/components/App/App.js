@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Route, Switch, Redirect, } from 'react-router-dom';
 import { useHistory } from 'react-router';
 
+
 import Header from '../Header/Header';
 import Main from '../Main/Main';
 import Footer from '../Footer/Footer';
@@ -12,6 +13,7 @@ import PageNotFound from '../PageNotFound/PageNotFound';
 import Profile from '../Profile/Profile';
 import SavedMovies from '../SavedMovies/SavedMovies';
 
+import { widthWindowForFirstCount, widthWindowForSecondaryCounts } from './../../utils/constants';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import mainApi from '../../utils/MainApi';
 import moviesApi from '../../utils/MoviesApi';
@@ -27,19 +29,18 @@ function App() {
   const [isSavedMoviesLink, setIsSavedMoviesLink] = useState(false);
   const [isPageNotFound, setIsPageNotFound] = useState(false);
   const [isProfileMenu, setIsProfileMenu] = useState(false);
+  const [isFirstCountCards, setIsFirstCountCards] = useState(false); // ПЕРВИЧНЫЙ ОТБОР КАРТОЧЕК?
 
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [pressedSubmitSearchForm, setPressedSubmitSearchForm] = useState(false)
   const [isPreloaderActive, setIsPreloaderActive] = useState(false)
 
-  const [initialCards, setInitialCards] = useState([]); // ВСЕ ИМЕЮЩИЕСЯ ФИЛЬМЫ
+  const [initialCards, setInitialCards] = useState([]); // МАССИВ ВСЕХ ИМЕЮЩИХСЯ ФИЛЬМОВ
   const [valueInputSearchForm, setValueInputSearchForm] = useState(''); // ЗНАЧЕНИЕ ИЗ ПОЛЯ ВВОДА ФОРМЫ ПОИСКА ФИЛЬМА
-  const [resultSearchMovies, setResultSearchMovies] = useState([]); // НАЙДЕННЫЕ ФИЛЬМЫ ПО ЗНАЧЕНИЮ
+  const [resultSearchMovies, setResultSearchMovies] = useState([]); // МАССИВ НАЙДЕННЫХ ФИЛЬМОВ ПО ЗНАЧЕНИЮ
 
-
-
-
-  const [selectedCards, setSelectedCards] = useState([]); // КОЛИЧЕСТВЕННЫЙ ОТБОР КАРТОЧЕК
+  const [selectedCards, setSelectedCards] = useState([]); // МАССИВ ПЕРВОГО КОЛИЧЕСТВЕННОГО (12/8/5) ОТБОРА КАРТОЧЕК
+  const [fewCards, setFewCards] = useState([]); // МАССИВ ПОСЛЕДУЮЩЕГО ОТБОРА КАРТОЧЕК КНОПКОЙ "ЕЩЁ" (3/2/1)
 
   const [savedMovies,] = useState([]); // ВСЕ СОХРАНЁННЫЕ ФИЛЬМЫ
   const [countedSavedMovies, setCountedSavedCards] = useState([]); // ОТБИРАЕМЫЕ СОХРАНЁННЫЕ ФИЛЬМЫ ПО 12 ШТУК
@@ -49,7 +50,6 @@ function App() {
     email: '',
     password: '',
   })
-
 
   const [formSignInInputs, setFormSignInInputs] = useState({ // ПОЛЯ ФОРМЫ АУТЕНТИФИКАЦИИ
     email: '',
@@ -65,95 +65,6 @@ function App() {
 
   const history = useHistory();
 
-  // САБМИТ ФОРМЫ ПОИСКА ФИЛЬМОВ
-  useEffect(() => {
-    if (pressedSubmitSearchForm) {
-      handleSetResultSearchMovies([]) // ОЧИЩАЕМ МАССИВ ДЛЯ НОВОГО ЗНАЧЕНИЯ
-      handleSetPreloaderActive() // ВКЛЮЧИЛИ ПРЕЛОАДЕР
-
-      moviesApi.getMovies()
-        .then((data) => {
-          handleSetCards(data); // ЗАПИСЫВАЕМ ВСЕ ФИЛЬМЫ В МАССИВ
-          localStorage.setItem('movies', JSON.stringify(data)); // ДУБЛИРУЕМ В ЛОКАЛЬНОЕ ХРАНИЛИЩЕ
-        })
-        .catch((err) => {
-          handleOpenError({
-            active: true,
-            message: 'Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз'
-          })
-        })
-    }
-  }, [pressedSubmitSearchForm]) // ОТСЛЕЖИВАЕМ НАЖАТИЕ САБМИТА ПОИСКА ФИЛЬМОВ
-
-
-  // ПОИСК ФИЛЬМА СОГЛАСНО ЗНАЧЕНИЮ В ПОЛЕ ПОИСКА
-  useEffect(() => {
-    if (initialCards) {
-      initialCards.forEach((movie) => {
-        const valueFromInputSearch = movie.nameRU.trim().toLowerCase().includes(valueInputSearchForm);
-
-        if (valueFromInputSearch) { // ЕСЛИ ЗНАЧЕНИЕ ПОЛЯ СОВПАДАЕТ С НАЗВАНИЕМ ФИЛЬМА ИЗ ВСЕГО СПИСКА
-          handleSetResultSearchMovies((prevMovies) => { return [...prevMovies, movie] }) // ЗАПИСЫВАЕМ ФИЛЬМ В МАССИВ НАЙДЕННЫХ ФИЛЬМОВ
-        }
-      })
-      handleSetPreloaderNotActive(); // ВЫКЛЮЧИЛИ ПРЕЛОАДЕР
-      setPressedSubmitSearchForm(false);// САБМИТ ПОИСКА ФИЛЬМА НЕ НАЖАТ
-
-    }
-  }, [initialCards])
-
-  console.log('ВСЕ ФИЛЬМЫ: ', initialCards)
-  console.log('ЗНАЧЕНИЕ ИЗ ПОЛЯ ВВОДА: ', valueInputSearchForm)
-  console.log('РЕЗУЛЬТАТ ПОИСКА: ', resultSearchMovies)
-  /*  useEffect(() => {
-     console.log('ЗНАЧЕНИЕ ИЗ ПОЛЯ ВВОДА: ', valueInputSearchForm)
-     console.log('РЕЗУЛЬТАТ ПОИСКА: ', resultSearchMovies)
-   }, [pushedSubmitSearchForm]) */
-
-  // ПЕРЕНАПРАВЛЕНИЕ НА /movies
-  function handleRedirectMovies() {
-    history.push('/movies')
-  }
-
-  // ОБРАБОТЧИК ЗНАЧЕНИЯ В ПОЛЕ ФОРМЫ ПОИСКА ФИЛЬМОВ
-  function handleSetValueInputSearchForm(e) {
-    const value = e.target.value.trim().toLowerCase();
-    setValueInputSearchForm(value);
-  }
-
-  // ОБРАБОТЧИК МАССИВА НАЙДЕННЫХ ФИЛЬМОВ
-  function handleSetResultSearchMovies(data) {
-    setResultSearchMovies(data)
-  }
-
-  /*   // ПОИСК ФИЛЬМА СОГЛАСНО ЗНАЧЕНИЮ В ПОЛЕ ПОИСКА
-    function handleShowResultSearchMovies() {
-
-    } */
-
-  // ПРЕЛОАДЕР АКТИВЕН
-  function handleSetPreloaderActive() {
-    setIsPreloaderActive(true);
-  }
-
-  // ПРЕЛОАДЕР НЕАКТИВЕН
-  function handleSetPreloaderNotActive() {
-    setIsPreloaderActive(false);
-  }
-
-  // ОБРАБОТЧИК САБМИТА ФОРМЫ ПОИСКА ФИЛЬМА
-  function handleSubmitSearchForm(e) {
-    e.preventDefault();
-    setPressedSubmitSearchForm(true); // САБМИТ ПОИСКА ФИЛЬМА НАЖАТ
-  }
-
-
-
-
-  /*
-    function handleGetMovies() {
-
-    } */
 
   // ОБРАБОТЧИК СТЭЙТА ССЫЛКИ /signup
   function handleIsRegLink() {
@@ -221,21 +132,28 @@ function App() {
     setIsProfileMenu(false)
   }
 
-
-  // ОБРАБОТЧИК ЗАПИСИ В СТЭЙТ ВСЕХ ФИЛЬМОВ ИЗ API
-  function handleSetCards(data) {
-    setInitialCards(data)
+  // ПРЕЛОАДЕР АКТИВЕН
+  function handleSetPreloaderActive() {
+    setIsPreloaderActive(true);
   }
+
+  // ПРЕЛОАДЕР НЕАКТИВЕН
+  function handleSetPreloaderNotActive() {
+    setIsPreloaderActive(false);
+  }
+
+  // ОБРАБОТЧИК САБМИТА ФОРМЫ ПОИСКА ФИЛЬМА
+  function handleSubmitSearchForm(e) {
+    e.preventDefault();
+    setPressedSubmitSearchForm(true); // САБМИТ ПОИСКА ФИЛЬМА НАЖАТ
+  }
+
 
   // ЗАЛОГИНЕН ЛИ ПОЛЬЗОВАТЕЛЬ
   function handleIsLoggedIn() {
     setIsLoggedIn(true);
   }
 
-  // ОБРАБОТЧИК ПОЯВЛЕНИЯ ОКНА ОШИБКИ
-  function handleOpenError(data) {
-    setError(data);
-  }
 
   // ОБРАБОТЧИК ЗАКРЫТИЯ ОКНА ОШИБКИ
   function handleCloseError() {
@@ -256,6 +174,50 @@ function App() {
   // ЗАКРЫВАЕМ МЕНЮ ПРОФАЙЛА (ПРИ НАЖАТИИ НА КНОПКУ ГАМБУРГЕРА)
   function handleButtonCloseMenuProfile() {
     setIsProfileMenu(false)
+  }
+
+  // ПЕРВИЧНЫЙ ОТБОР КАРТОЧЕК (ПЕРВЫЙ ПОКАЗ)
+  function handleSetIsFirstCoundCardsActive() {
+    setIsFirstCountCards(true)
+  }
+  // ПЕРВИЧНОГО ОТБОРА КАРТОЧЕК ЕЩЁ НЕ БЫЛО ИЛИ УЖЕ БЫЛ
+  function handleSetIsFirstCoundCardsNotActive() {
+    setIsFirstCountCards(false)
+  }
+
+  // ОБРАБОТЧИК ПОЯВЛЕНИЯ ОКНА ОШИБКИ
+  function handleOpenError(data) {
+    setError(data);
+  }
+
+  // ОБРАБОТЧИК МАССИВА НАЙДЕННЫХ ФИЛЬМОВ
+  function handleSetResultSearchMovies(data) {
+    setResultSearchMovies(data)
+  }
+
+  // ОБРАБОТЧИК ЗАПИСИ В СТЭЙТ ВСЕХ ФИЛЬМОВ ИЗ API
+  function handleSetCards(data) {
+    setInitialCards(data)
+  }
+
+  // ПРИ ЗАГРУЗКЕ ФИЛЬМОВ В МАССИВ, ПРОИСХОДИТ ИХ КОЛИЧЕСТВЕННОЕ ПЕРЕМЕЩЕНИЕ В ДРУГОЙ МАССИВ
+  useEffect(() => {
+    handleSetIsFirstCoundCardsActive(); // ОБЪЯВЛЯЕМ, ЧТО ЭТО ПЕРВЫЙ ОТБОР КАРТОЧЕК
+    if (resultSearchMovies.length >= 1) { // ЕСЛИ В МАССИВЕ РЕЗУЛЬТАТА ПОИСКА ЧТО-ТО НАШЛОСЬ
+      handleCountCards() // ЗАПУСК ОТБОРА КАРТОЧЕК
+    }
+  }, [resultSearchMovies])
+
+
+  // ПЕРЕНАПРАВЛЕНИЕ НА /movies
+  function handleRedirectMovies() {
+    history.push('/movies')
+  }
+
+  // ОБРАБОТЧИК ЗНАЧЕНИЯ В ПОЛЕ ФОРМЫ ПОИСКА ФИЛЬМОВ
+  function handleSetValueInputSearchForm(e) {
+    const value = e.target.value.trim().toLowerCase();
+    setValueInputSearchForm(value);
   }
 
 
@@ -366,26 +328,115 @@ function App() {
   }
   */
 
+  // ОЧИЩЕНИЕ МАССИВА ЗАГРУЖЕННЫХ ФИЛЬМОВ
+  function handleClearResultSearchMovies() {
+    setResultSearchMovies([])
+  }
 
-  // ОБРАБОТЧИК ОТБОРА 12 КАРТОЧЕК
-  // СРАБАТЫВАЕТ В САМОМ НАЧАЛЕ, ПОСЛЕ РЕНДЕРА ПРИЛОЖЕНИЯ - ОДИН РАЗ,
-  // А ТАКЖЕ, КАЖДЫЙ РАЗ ПРИ НАЖАТИИ КНОПКИ "ЕЩЁ" В КОМПОНЕНТЕ <MORE />
+  // ОЧИЩЕНИЕ МАССИВА КОЛИЧЕСТВЕННОГО ОТБОРА КАРТОЧЕК
+  function handleClearSelectedCards() {
+    setSelectedCards([])
+  }
+
+  // ПОЛУЧЕНИЕ ШИРИНЫ ОКНА БРАУЗЕРА
+  function getWidthWindowBrowser() {
+    return window.innerWidth
+  }
+
+  // 1
+  // САБМИТ ФОРМЫ ПОИСКА ФИЛЬМОВ
+  useEffect(() => {
+    if (pressedSubmitSearchForm) {
+      handleClearResultSearchMovies() // ОЧИЩАЕМ МАССИВ ЗАГРУЖЕННЫХ ФИЛЬМОВ
+      handleClearSelectedCards() // ОЧИЩАЕМ МАССИВ КОЛИЧЕСТВЕННОГО ОТБОРА КАРТОЧЕК
+      handleSetPreloaderActive() // ВКЛЮЧАЕМ ПРЕЛОАДЕР
+
+      moviesApi.getMovies()
+        .then((data) => {
+          handleSetCards(data); // ЗАПИСЫВАЕМ ВСЕ ФИЛЬМЫ В МАССИВ
+          localStorage.setItem('movies', JSON.stringify(data)); // ДУБЛИРУЕМ В ЛОКАЛЬНОЕ ХРАНИЛИЩЕ
+        })
+        .catch((err) => {
+          console.error('Ошибка:', err);
+          handleOpenError({
+            active: true,
+            message: 'Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз'
+          })
+        })
+    }
+  }, [pressedSubmitSearchForm]) // ОТСЛЕЖИВАЕМ НАЖАТИЕ САБМИТА ПОИСКА ФИЛЬМОВ
+
+
+  // 2
+  // ПОИСК ФИЛЬМА СОГЛАСНО ЗНАЧЕНИЮ В ПОЛЕ ПОИСКА
+  useEffect(() => {
+    if (initialCards) {
+      initialCards.forEach((movie) => {
+        const valueFromInputSearch = movie.nameRU.trim().toLowerCase().includes(valueInputSearchForm);
+
+        if (valueFromInputSearch) { // ЕСЛИ ЗНАЧЕНИЕ ПОЛЯ СОВПАДАЕТ С НАЗВАНИЕМ ФИЛЬМА ИЗ ВСЕГО СПИСКА
+          handleSetResultSearchMovies((prevMovies) => { return [...prevMovies, movie] }) // ЗАПИСЫВАЕМ ФИЛЬМ В МАССИВ НАЙДЕННЫХ ФИЛЬМОВ
+        }
+      })
+      handleSetPreloaderNotActive(); // ВЫКЛЮЧИЛИ ПРЕЛОАДЕР
+      setPressedSubmitSearchForm(false);// САБМИТ ПОИСКА ФИЛЬМА НЕ НАЖАТ
+
+    }
+  }, [initialCards])
+
+
+  // 3
+  // ОТБОР КАРТОЧЕК
   function handleCountCards() {
 
-    const pickedCards = initialCards.splice(0, 12);
+    const currentWidthWindow = getWidthWindowBrowser();
 
-    let currentCards = []
+    let parametersWindow = null;
 
-    pickedCards.forEach((card) => {
-      currentCards.push(card)
+    let quantity = null;
+    // let { big: { fromBig, quantityBig }, middle: { fromMiddle, toMiddle, quantityMiddle }, low: { fromLow, toLow, quantityLow } } = quantity;
+
+    if (isFirstCountCards) {
+      console.log('ПАРАМЕТРЫ1', parametersWindow)
+      console.log(isFirstCountCards)
+      parametersWindow = widthWindowForFirstCount // ПЕРВИЧНЫЙ ОТБОР (ОТОБРАЗИТСЯ СРАЗУ 12/8/5)
+      handleSetIsFirstCoundCardsNotActive()
+      console.log(isFirstCountCards)
+      console.log('ПАРАМЕТРЫ1', parametersWindow)
+    } else {
+      console.log('ПАРАМЕТРЫ2', parametersWindow)
+      console.log(isFirstCountCards)
+      parametersWindow = widthWindowForSecondaryCounts // ВТОРИЧНЫЙ ОТБОР (БУДЕТ ОТОБРАЖАТЬСЯ ПРИ НАЖАТИИ НА КНОПКУ "ЕЩЁ" 3/2/1)
+      console.log(isFirstCountCards)
+      console.log('ПАРАМЕТРЫ2', parametersWindow)
+    }
+
+    if (currentWidthWindow >= parametersWindow.big.from) { // 1280 или 1210
+      quantity = parametersWindow.big.quantity; // 12 или 3
+    }
+    if (currentWidthWindow >= parametersWindow.middle.from && currentWidthWindow < parametersWindow.middle.to) { // 768-1280 или 751-1210
+      quantity = parametersWindow.middle.quantity; // 8 или 2
+    }
+    if (currentWidthWindow >= parametersWindow.low.from && currentWidthWindow <= parametersWindow.low.to) { // 320-480 или 320-750
+      quantity = parametersWindow.low.quantity; // 5 или 1
+    }
+
+    // console.log('ПАРАМЕТРЫ', parametersWindow)
+    console.log('КОЛИЧЕСТВО', quantity)
+
+    const pickedAnyCards = resultSearchMovies.splice(0, quantity);
+
+    let currentNumberCards = []
+
+    pickedAnyCards.forEach((card) => {
+      currentNumberCards.push(card)
     })
 
     // К ПРЕДЫДУЩИМ КАРТОЧКАМ УЖЕ НАХОДЯЩИХСЯ В МАССИВЕ (prevCards) - ДОБАВЛЯЕМ НОВЫЕ,
-    // КОТОРЫЕ ОТОБРАЛИ В КОЛИЧЕСТВЕ ДО 12 ШТУК КНОПКОЙ "ЕЩЁ" (currentCards)
-    setSelectedCards((prevCards) => { return [...prevCards, ...currentCards] })
-    console.log('dddddddddd', initialCards)
-    console.log('gggggggggg', selectedCards)
+    // КОТОРЫЕ ОТОБРАЛИ В КОЛИЧЕСТВЕ ДО 3/2/1 ШТУКИ КНОПКОЙ "ЕЩЁ" (currentFewCards)
+    setSelectedCards((prevCards) => { return [...prevCards, ...currentNumberCards] })
   }
+
 
   // ОБРАБОТЧИК СОХРАНЕНИЯ ФИЛЬМА
   function handleSavedMovies() {
@@ -399,6 +450,8 @@ function App() {
 
     setCountedSavedCards((prevCards) => { return [...prevCards, ...currentCards] })
   }
+
+
 
   // ОБРАБОТЧИК УДАЛЕНИЯ ФИЛЬМА
   function handleDeleteMovies() {
@@ -441,12 +494,14 @@ function App() {
               pushedSubmitSearchForm={pressedSubmitSearchForm}
               isPreloaderActive={isPreloaderActive}
               resultSearchMovies={resultSearchMovies}
+              fewCards={fewCards}
+
               handleCountCards={handleCountCards}
+              // handleCountFewCards={handleCountFewCards}
               handleIsActiveButtonSave={handleIsActiveButtonSave}
               handleIsMoviesLink={handleIsMoviesLink}
               handleSubmitSearchForm={handleSubmitSearchForm}
               handleButtonCloseMenuProfile={handleButtonCloseMenuProfile}
-              // handleGetMovies={handleGetMovies}
               handleSetValueInputSearchForm={handleSetValueInputSearchForm}
               handleSetPreloaderActive={handleSetPreloaderActive}
             /></Route>
@@ -515,7 +570,7 @@ function App() {
         />
 
       </div>
-    </div >
+    </div>
   )
 };
 

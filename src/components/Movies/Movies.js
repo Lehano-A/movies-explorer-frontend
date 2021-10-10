@@ -11,9 +11,11 @@ function Movies({
   isMoviesLink,
   isProfileMenu,
   resultSearchMovies,
-  pushedSubmitSearchForm,
   isPreloaderActive,
+  fewCards,
+
   handleCountCards,
+  handleCountFewCards,
   handleIsActiveButtonSave,
   handleIsMoviesLink,
   handleSubmitSearchForm,
@@ -47,14 +49,13 @@ function Movies({
         Preloader={Preloader}
         isPreloaderActive={isPreloaderActive}
         selectedCards={selectedCards}
-        resultSearchMovies={resultSearchMovies}
         handleIsActiveButtonSave={handleIsActiveButtonSave}
-        handleCountCards={handleCountCards}
         handleShowResultSearchMovies={handleShowResultSearchMovies}
       />}
 
       <More
         selectedCards={selectedCards}
+        resultSearchMovies={resultSearchMovies}
         addMoreCards={handleCountCards}
       />
     </>
