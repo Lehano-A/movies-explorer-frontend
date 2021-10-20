@@ -422,6 +422,7 @@ function App() {
     if (pathesPages.moviesUrl) {
 
       if (firstLoggingUser) {
+        console.log('sdcdscdscsdcds')
         handleSetFirstLoggingUserNotActive();
         return;
       }

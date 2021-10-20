@@ -80,7 +80,7 @@ function Profile({
     return;
   }
 
-  
+
   // ОБРАБОТЧИК ПУСТЫХ ПОЛЕЙ ПРИ ОБНОВЛЕНИИ
   function changeVoidValue() {
     if (!emailValue) {
@@ -128,8 +128,6 @@ function Profile({
 
     mainApi.logoutUser()
       .then((user) => {
-        console.log(user)
-
         setShowAllSavedCards(false);
         setMoviesBoxForMore([]);
         setFoundMoviesAfterSearchApi([]);

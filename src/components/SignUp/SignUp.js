@@ -54,6 +54,7 @@ function SignUp({
   function authAfterReg() {
     mainApi.signIn(dataForAuth.email, dataForAuth.password)
       .then((user) => {
+        console.log('sdcdscsdcsdc')
         handleSetFirstLoggingUserActive(); // ПЕРВОЕ ПОСЕЩЕНИЕ ПОЛЬЗОВАТЕЛЯ
         return console.log(user)
       })
@@ -89,7 +90,8 @@ function SignUp({
 
     mainApi.signUp(namedValue, emailValue, passwordValue)
       .then((user) => {
-        handleRedirectMovies()
+        console.log(user)
+    
         setDataForAuth({
           email: emailValue,
           password: passwordValue,

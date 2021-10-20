@@ -19,10 +19,7 @@ export default function Form({
 
   const handlesValidation = React.useContext(ValidationContext);
 
-  const { values, handleChange, isValid, clickAtInput } = handlesValidation;
-
-  const valuesInputName = values().name;
-  const valuesInputEmail = values().email;
+  const { handleChange, isValid, clickAtInput } = handlesValidation;
 
 
   function checkButtonForm() {
@@ -37,11 +34,6 @@ export default function Form({
     }
   }
 
-  function checkValidInputs() {
-    if (!isValid() || (!valuesInputEmail && !valuesInputName)) { return true }
-  }
-
-
 
   return (<>
 
@@ -50,7 +42,7 @@ export default function Form({
 
       {clickAtInput && <span>{errorSubmitMessage}</span>}
 
-      <button type="submit" disabled={checkValidInputs() && true} className={`form__submit ${profileButton} ${checkButtonForm()}`}>{buttonName}</button>
+      <button type="submit" disabled={!isValid() && true} className={`form__submit ${profileButton} ${checkButtonForm()}`}>{buttonName}</button>
 
     </form>
     <div className="form__reg-login-link-box">
