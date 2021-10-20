@@ -5,5 +5,5 @@ function getTimeFromMinutes(mins) {
   return hours + 'ч ' + minutes + 'м';
 };
 
-export default getTimeFromMinutes
+export default getTimeFromMinutes;
 

@@ -1,25 +1,80 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import MenuProfile from "../MenuProfile/MenuProfile";
 import SearchForm from "../Movies/SearchForm/SearchForm";
 import MoviesCardList from "../Movies/MoviesCardList/MoviesCardList";
-import More from "../Movies/More/More";
+
 
 function SavedMovies({
-  savedMovies,
-  countedSavedMovies,
+  moviesFromLocal,
+  resultSearchMovies,
+  isFilterShortMovies,
+  handleSetIsFilterShortMovies,
+  handleValueInputSearchForm,
+  handleSetSubmitSearchFormActive,
+  handleSetValueInputSearchForm,
+  filterSearchShortFromLocal,
+  currentSearchInLocalSavedMovies,
+  isSubmitFixedStateFilter,
+  isPreloaderActive,
+  isMoviesNotFound,
   isSavedMoviesLink,
   isProfileMenu,
-  handleSavedMovies,
+  localMoviesBoxForShow,
+  localSavedMovies,
+  handleLocalSavedMovies,
+  getSavedMovies,
+  handleOpenPopup,
   handleDeleteMovies,
   handleIsSavedMoviesLink,
-  handleIsActiveButtonSave,
-  handleButtonCloseMenuProfile }) {
+  handleButtonCloseMenuProfile
+}) {
+
+
+  const [movies, setMovies] = useState([]);
+  const [isPushedButtonDelete, setIsPushedButtonDelete] = useState(false)
 
   useEffect(() => {
-    handleIsSavedMoviesLink();
-    handleSavedMovies();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return handleIsSavedMoviesLink() // ПЕРЕШЛИ НА СТРАНИЦУ - /saved-movies
   }, [])
+
+
+  // УДАЛЕНИЕ КАРТОЧКИ ИЗ DOM
+  function handleDeleteCardfromDOM(id) {
+    setIsPushedButtonDelete(true)
+    setMovies((prevCards) => {
+      const filterCards = prevCards.filter((card) => {
+        if (card._id !== id) {
+          return card;
+        }
+      })
+      return [...filterCards];
+    })
+  }
+
+
+  useEffect(() => {
+
+    if (localSavedMovies || localMoviesBoxForShow || filterSearchShortFromLocal) {
+
+      if (!isSubmitFixedStateFilter && isPushedButtonDelete) {
+        return;
+      }
+
+      if (!isSubmitFixedStateFilter && currentSearchInLocalSavedMovies) {
+        return setMovies(localMoviesBoxForShow)
+      }
+
+      if (isSubmitFixedStateFilter && currentSearchInLocalSavedMovies) {
+        return setMovies(filterSearchShortFromLocal)
+      }
+
+      if (moviesFromLocal) {
+        return setMovies(moviesFromLocal)
+      }
+
+    }
+  }, [moviesFromLocal, localSavedMovies, localMoviesBoxForShow, filterSearchShortFromLocal])
+
 
   return (
     <>
@@ -29,21 +84,29 @@ function SavedMovies({
         handleButtonCloseMenuProfile={handleButtonCloseMenuProfile}
       />
 
-      <SearchForm />
+      <SearchForm
+        resultSearchMovies={resultSearchMovies}
+        isFilterShortMovies={isFilterShortMovies}
+        handleSetIsFilterShortMovies={handleSetIsFilterShortMovies}
+        handleValueInputSearchForm={handleValueInputSearchForm}
+        handleSetSubmitSearchFormActive={handleSetSubmitSearchFormActive}
+        handleSetValueInputSearchForm={handleSetValueInputSearchForm}
+      />
 
       <MoviesCardList
+        cards={movies}
+        isPreloaderActive={isPreloaderActive}
+        isMoviesNotFound={isMoviesNotFound}
         isSavedMoviesLink={isSavedMoviesLink}
-        countedCards={countedSavedMovies}
-        handleIsActiveButtonSave={handleIsActiveButtonSave}
+        localSavedMovies={localSavedMovies}
+        handleLocalSavedMovies={handleLocalSavedMovies}
+        getSavedMovies={getSavedMovies}
+        handleOpenPopup={handleOpenPopup}
+        handleDeleteCardfromDOM={handleDeleteCardfromDOM}
         handleDeleteMovies={handleDeleteMovies}
-      />
-      <More
-        restCards={savedMovies}
-        addMoreCards={handleSavedMovies}
       />
     </>
   )
-
 }
 
 export default SavedMovies;

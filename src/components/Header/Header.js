@@ -1,10 +1,11 @@
 import React from 'react';
 import logo from './../../images/logo.svg';
-import { Link, useLocation } from 'react-router-dom';
-import { useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
 import ProfileButton from '../ProfileButton/ProfileButton';
 
 function Header({
+  pathesPages,
+  pathName,
   isRegLink,
   isLogLink,
   isProfileLink,
@@ -12,17 +13,11 @@ function Header({
   isSavedMoviesLink,
   isPageNotFound,
   handleIsProfileMenu,
+  goToMainPage,
 }) {
 
-  const history = useHistory();
-  const location = useLocation();
-  const pathName = location.pathname;
+  const { mainUrl, moviesUrl, savedMoviesUrl } = pathesPages;
 
-  const MainUrl = pathName === '/'; // URL ГЛАВНОЙ СТРАНИЦЫ
-
-  function goToMainPage() {
-    history.push('/')
-  }
 
   // СТЭЙТ ВНУТРЕННЕЙ ССЫЛКИ ИЛИ URL - TRUE
   const regLogLink = (isRegLink || isLogLink);
@@ -39,7 +34,7 @@ function Header({
 
   // ПОКАЗЫВАЕМ В ШАПКЕ ТОЛЬКО ЛОГО (ДЛЯ - /signup, /signin)
   function showOnlyLogo() {
-    return (regLogLink && !MainUrl) && 'header__head_only-logo'
+    return (regLogLink && !mainUrl) && 'header__head_only-logo'
   }
 
   // ОБРАБОТЧИК ДАЛЬНЕЙШЕЙ ЛОГИКИ ПРИ НАЖАТИИ НА ССЫЛКИ
@@ -61,8 +56,8 @@ function Header({
     if ((isProfileLink || isSavedMoviesLink || isMoviesLink) && (!regLogLink)) {
       return <>
         <ul className="header__links">
-          <li><Link to="/movies" className="header__link">Фильмы</Link></li>
-          <li><Link to="/saved-movies" className="header__link">Сохранённые фильмы</Link></li>
+          <li><Link to="/movies" className={`header__link ${moviesUrl && 'header__link_active'}`}>Фильмы</Link></li>
+          <li><Link to="/saved-movies" className={`header__link ${savedMoviesUrl && 'header__link_active'}`}>Сохранённые фильмы</Link></li>
         </ul>
         <button onClick={handleIsProfileMenu} type="button" className="header__menu-profile"></button>
         <span className="header__profile-button"><ProfileButton /></span>

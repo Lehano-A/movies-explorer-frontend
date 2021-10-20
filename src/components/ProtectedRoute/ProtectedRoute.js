@@ -1,12 +1,14 @@
 import React from "react";
 import { Route, Redirect } from "react-router";
+import { parseJSON } from "../../utils/helpers/jsonHandler";
 
-function ProtectedRoute({ component: Component, isLoggedIn, path, ...props }) {
-  console.log('khjjkhhmjjhkmhgjyrhgnfhgghn')
+function ProtectedRoute(props) {
+
+  const userAuthorized = parseJSON(localStorage.getItem('dataUser'))
 
   return (
-    <Route path={path}>
-      {isLoggedIn ? (<Component {...props} />) : (<Redirect to="/signin" />)}
+    <Route path={props.path} >
+      {userAuthorized ? props.children : (<Redirect to="/signin" />)}
     </Route>
   )
 }

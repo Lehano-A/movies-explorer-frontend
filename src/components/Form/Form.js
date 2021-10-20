@@ -1,31 +1,64 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { ValidationContext } from '../context/ValidationContext';
 
-function Form({
+export default function Form({
   name,
   buttonName,
   regQuestion,
-  inOrUp,
+  inOrup,
   regOrLogin,
   children,
   handleSubmit,
   profileButton,
   profileFormHeight,
-  handleOnChange
+  profileSubmitStyle,
+  errorSubmitMessage,
+
 }) {
 
-  return (
-    <>
-      <form onSubmit={handleSubmit} onChange={handleOnChange} className={`Form ${profileFormHeight}`} method="POST" name={name}>
-        {children}
-        <button type="submit" className={`form__submit ${profileButton}`}>{buttonName}</button>
-      </form>
-      <div className="form__reg-login-link-box">
-        <p className="form__reg-question">{regQuestion}</p>
-        <Link to={`/sign${inOrUp}`} className="form__signin-signup-link">{regOrLogin}</Link>
-      </div>
-    </>
+  const handlesValidation = React.useContext(ValidationContext);
+
+  const { values, handleChange, isValid, clickAtInput } = handlesValidation;
+
+  const valuesInputName = values().name;
+  const valuesInputEmail = values().email;
+
+
+  function checkButtonForm() {
+
+    if (!isValid()) {
+      if (buttonName === 'Редактировать') {
+        return 'profile__button-submit_disabled';
+      }
+      if (buttonName === 'Войти' || buttonName === 'Зарегистрироваться') {
+        return 'form__submit_disabled';
+      }
+    }
+  }
+
+  function checkValidInputs() {
+    if (!isValid() || (!valuesInputEmail && !valuesInputName)) { return true }
+  }
+
+
+
+  return (<>
+
+    <form profilesubmitstyle={profileSubmitStyle} innorup={inOrup} onSubmit={handleSubmit} onChange={handleChange} className={`Form ${profileFormHeight}`} method="POST" autoComplete="off" name={name}>
+      {children}
+
+      {clickAtInput && <span>{errorSubmitMessage}</span>}
+
+      <button type="submit" disabled={checkValidInputs() && true} className={`form__submit ${profileButton} ${checkButtonForm()}`}>{buttonName}</button>
+
+    </form>
+    <div className="form__reg-login-link-box">
+      <p className="form__reg-question">{regQuestion}</p>
+      <Link to={`/sign${inOrup}`} className="form__signin-signup-link">{regOrLogin}</Link>
+    </div>
+
+  </>
   )
 }
 
-export default Form;

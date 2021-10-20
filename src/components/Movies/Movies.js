@@ -1,34 +1,87 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import MenuProfile from "../MenuProfile/MenuProfile";
 import SearchForm from './SearchForm/SearchForm';
 import MoviesCardList from "./MoviesCardList/MoviesCardList";
 import More from "./More/More";
-import Preloader from "./Preloader/Preloader";
-
 
 function Movies({
-  selectedCards,
+
+  isLoggedIn,
   isMoviesLink,
   isProfileMenu,
-  resultSearchMovies,
   isPreloaderActive,
-  fewCards,
-
+  isMoviesNotFound,
+  isFilterShortMovies,
+  isLoadedSavedMovies,
+  isSavedMoviesLink,
+  handleLocalSavedMovies,
+  getSavedMovies,
+  setIsLoadedSavedMovies,
+  moviesFromApi,
+  fifthApiStep,
+  moviesBoxForMore,
+  isReloadedPage,
+  isSubmitFixedStateFilter,
+  currentSearchMoviesFromApi,
+  filterAfterSearchShortFromApi,
+  foundMoviesAfterSearchApi,
+  isPressedSubmitSearchForm,
+  handleOpenPopup,
   handleCountCards,
-  handleCountFewCards,
-  handleIsActiveButtonSave,
+  handleSetIsFilterShortMovies,
+  handleValueInputSearchForm,
+  handleSetSubmitSearchFormActive,
   handleIsMoviesLink,
-  handleSubmitSearchForm,
   handleButtonCloseMenuProfile,
   handleSetValueInputSearchForm,
   handleShowResultSearchMovies,
+  firstLoggingUser,
 }) {
 
-  useEffect(() => {
-    handleIsMoviesLink();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const [movies, setMovies] = useState([])
 
+
+  useEffect(() => {
+
+    if (isLoggedIn) {
+
+      if (localStorage.getItem('authAfterLogoutActive')) {
+        handleSetSubmitSearchFormActive()
+        localStorage.removeItem('authAfterLogoutActive')
+      }
+
+      handleIsMoviesLink();
+      return
+    }
+  }, [isLoggedIn])
+
+
+
+  useEffect(() => {
+    if (isReloadedPage && !isSavedMoviesLink && !firstLoggingUser) {
+      return handleSetSubmitSearchFormActive()
+    }
+  }, [isReloadedPage, isSavedMoviesLink, firstLoggingUser])
+
+
+
+  useEffect(() => {
+    // ОТ API
+    if (isReloadedPage && !isSubmitFixedStateFilter) {
+
+      localStorage.removeItem('reloadedPage')
+      return setMovies(moviesBoxForMore)
+    } // ЕСЛИ БЫЛА ОБНОВЛЕНА СТРАНИЦА, ТО ПОКАЗЫВАЕМ ФИЛЬМЫ ИЗ ХРАНИЛИЩА
+
+    if (filterAfterSearchShortFromApi.length >= 1 && currentSearchMoviesFromApi) {
+      return setMovies(filterAfterSearchShortFromApi)
+    }
+
+    if (fifthApiStep && !isSubmitFixedStateFilter && currentSearchMoviesFromApi) {
+      return setMovies(moviesBoxForMore)
+    }
+
+  }, [isReloadedPage, fifthApiStep, moviesFromApi, moviesBoxForMore, filterAfterSearchShortFromApi, isSubmitFixedStateFilter])
 
 
   return (
@@ -40,27 +93,36 @@ function Movies({
       />
 
       <SearchForm
-        handleSubmitSearchForm={handleSubmitSearchForm}
+        isFilterShortMovies={isFilterShortMovies}
+        isPreloaderActive={isPreloaderActive}
+        handleSetIsFilterShortMovies={handleSetIsFilterShortMovies}
+        handleValueInputSearchForm={handleValueInputSearchForm}
+        handleSetSubmitSearchFormActive={handleSetSubmitSearchFormActive}
         handleSetValueInputSearchForm={handleSetValueInputSearchForm}
       />
 
-
-      {resultSearchMovies && <MoviesCardList
-        Preloader={Preloader}
+      <MoviesCardList
+        cards={movies}
         isPreloaderActive={isPreloaderActive}
-        selectedCards={selectedCards}
-        handleIsActiveButtonSave={handleIsActiveButtonSave}
+        isMoviesNotFound={isMoviesNotFound}
+        isPressedSubmitSearchForm={isPressedSubmitSearchForm}
+        isMoviesLink={isMoviesLink}
+        getSavedMovies={getSavedMovies}
+        isLoadedSavedMovies={isLoadedSavedMovies}
+        setIsLoadedSavedMovies={setIsLoadedSavedMovies}
+        handleLocalSavedMovies={handleLocalSavedMovies}
+        handleOpenPopup={handleOpenPopup}
         handleShowResultSearchMovies={handleShowResultSearchMovies}
-      />}
+      />
 
       <More
-        selectedCards={selectedCards}
-        resultSearchMovies={resultSearchMovies}
+        resultSearchMovies={foundMoviesAfterSearchApi}
         addMoreCards={handleCountCards}
+        isSubmitFixedStateFilter={isSubmitFixedStateFilter}
+        filterAfterSearchShortFromApi={filterAfterSearchShortFromApi}
       />
     </>
   )
-
 }
 
 export default Movies;

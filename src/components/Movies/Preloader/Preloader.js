@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import './Preloader.css'
 import './_active/preloader_active.css'
 

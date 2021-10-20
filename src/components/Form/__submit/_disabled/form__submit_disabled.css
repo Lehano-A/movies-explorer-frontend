@@ -1,0 +1,6 @@
+.form__submit_disabled {
+  background-color: rgb(194, 194, 194);
+}
+.form__submit_disabled:hover {
+  border: 1px dashed rgb(143, 143, 143);
+}

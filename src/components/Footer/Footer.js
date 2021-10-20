@@ -1,7 +1,7 @@
 import React from "react";
 import { useLocation } from "react-router";
 
-function Footer({ isPageNotFound, isProfileLink, resultSearchMovies }) {
+function Footer({ isPageNotFound, isProfileLink }) {
 
   const location = useLocation();
   const pathName = location.pathname;
@@ -11,9 +11,9 @@ function Footer({ isPageNotFound, isProfileLink, resultSearchMovies }) {
       return 'footer_disabled';
     }
   }
-  // console.log(resultSearchMovies)
+
   return (
-    <footer className={`Footer ${disabledFooter()} ${resultSearchMovies.length === 0 && 'footer_indent'}`}>
+    <footer className={`Footer ${disabledFooter()} ${'footer_indent'}`}>
       <p className="footer__info-project">Учебный проект Яндекс.Практикум х BeatFilm.</p>
       <div className="footer__date-nav-box">
         <p className="footer__date">&copy; {new Date().getFullYear()}</p>

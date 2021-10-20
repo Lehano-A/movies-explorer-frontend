@@ -9,7 +9,9 @@ function MenuProfile({
   isProfileMenu,
   handleButtonCloseMenuProfile,
   handleIsMoviesLink,
-  handleIsSavedMoviesLink }) {
+  handleIsSavedMoviesLink
+}) {
+
 
   return (
     <div className={`MenuProfile ${isProfileMenu && 'menu-profile_open'}`}>
@@ -26,7 +28,6 @@ function MenuProfile({
       </div>
     </div>
   )
-
 }
 
 export default MenuProfile;

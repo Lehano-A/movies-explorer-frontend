@@ -36,7 +36,3 @@
 .header__link:visited {
   color: black;
 }
-
-.header__link:focus {
-  font-weight: 500;
-}

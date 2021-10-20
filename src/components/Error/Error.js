@@ -1,15 +1,13 @@
 import React from "react";
 
-function Error({ error, handleCloseError }) {
+function Error({ popup, handleOpenPopup }) {
 
   return (
 
-    <div onClick={handleCloseError} className={`Error ${error.active === true && 'error_active'}`}>
-      <p className="error__message">{error.message}</p>
+    <div onClick={handleOpenPopup} className={`error__popup ${popup.active && 'error__popup_active'}`}>
+      <p className="error__message">{popup.message}</p>
     </div>
-
   )
-
 }
 
 export default Error;
