@@ -17,7 +17,6 @@ function SignUp({
 
 
   useEffect(() => {
-
     handleIsRegLink();
   }, []);
 
@@ -54,14 +53,12 @@ function SignUp({
   function authAfterReg() {
     mainApi.signIn(dataForAuth.email, dataForAuth.password)
       .then((user) => {
-        console.log('sdcdscsdcsdc')
         handleSetFirstLoggingUserActive(); // ПЕРВОЕ ПОСЕЩЕНИЕ ПОЛЬЗОВАТЕЛЯ
         return console.log(user)
       })
       .catch((err) => {
 
         Object.keys(errorMessage).forEach((key) => {
-
           if (err === key) {
             handleClickAtInputActive();
 
@@ -91,7 +88,6 @@ function SignUp({
     mainApi.signUp(namedValue, emailValue, passwordValue)
       .then((user) => {
         console.log(user)
-    
         setDataForAuth({
           email: emailValue,
           password: passwordValue,
@@ -101,6 +97,8 @@ function SignUp({
         localStorage.setItem('dataUser', stringifyJSON(user));
         localStorage.setItem('userLogged', stringifyJSON(true));
         localStorage.setItem('savedMovies', stringifyJSON([]));
+        localStorage.setItem('authAfterLogoutActive', stringifyJSON(true));
+
         handleIsLoggedIn();
       })
       .catch((err) => {

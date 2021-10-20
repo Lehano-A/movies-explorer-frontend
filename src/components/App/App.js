@@ -945,7 +945,6 @@ function App() {
               <ProtectedRoute path='/' isLoggedIn={isLoggedIn}>
                 <Route path="/movies">
                   <Movies
-
                     isSavedMoviesLink={isSavedMoviesLink}
                     isLoggedIn={isLoggedIn}
                     isMoviesLink={isMoviesLink}

@@ -30,7 +30,7 @@ function MoviesCardList({
     return card.id;
   }
 
-console.log(cards)
+
   return (
     <section className="MoviesCardList">
 
