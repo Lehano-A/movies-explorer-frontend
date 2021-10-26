@@ -2,6 +2,7 @@ import React from "react";
 import MoviesCard from "../MoviesCard/MoviesCard";
 import Preloader from "./../Preloader/Preloader";
 
+
 function MoviesCardList({
   isMoviesLink,
   isPreloaderActive,
@@ -16,8 +17,10 @@ function MoviesCardList({
   handleOpenPopup,
   handleSetIsLikedCard,
   handleDeleteMovies,
-  handleDeleteCardfromDOM
+  handleDeleteCardfromDOM,
+  setIsLikeRemoved
 }) {
+
 
   // ИЗМЕНЕНИЕ КЛЮЧА movieId НА id - ДЛЯ ИСПОЛЬЗОВАНИЯ В KEY В ОДНОМ ФОРМАТЕ
   function checkId(card) {
@@ -56,14 +59,17 @@ function MoviesCardList({
                 handleSetIsLikedCard={handleSetIsLikedCard}
                 handleDeleteMovies={handleDeleteMovies}
                 handleDeleteCardfromDOM={handleDeleteCardfromDOM}
+                setIsLikeRemoved={setIsLikeRemoved}
                 key={checkId(card)}
                 card={card}
               />
             )
           })}
         </div>
+
+
       }
-    </section>
+    </section >
   )
 
 }

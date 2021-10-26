@@ -29,5 +29,5 @@ export {
   beatFilmUrl,
   regexEng,
   regexRu,
-  errorMessage
+  errorMessage,
 }

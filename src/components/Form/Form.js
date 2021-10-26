@@ -12,18 +12,15 @@ export default function Form({
   handleSubmit,
   profileButton,
   profileFormHeight,
-  profileSubmitStyle,
   errorSubmitMessage,
-
 }) {
 
-  const handlesValidation = React.useContext(ValidationContext);
 
+  const handlesValidation = React.useContext(ValidationContext);
   const { handleChange, isValid, clickAtInput } = handlesValidation;
 
 
   function checkButtonForm() {
-
     if (!isValid()) {
       if (buttonName === 'Редактировать') {
         return 'profile__button-submit_disabled';
@@ -32,25 +29,25 @@ export default function Form({
         return 'form__submit_disabled';
       }
     }
+    return;
   }
 
 
-  return (<>
+  return (
+    <>
+      <form innorup={inOrup} onSubmit={handleSubmit} onChange={handleChange} className={`Form ${profileFormHeight}`} method="POST" autoComplete="off" name={name}>
+        {children}
 
-    <form profilesubmitstyle={profileSubmitStyle} innorup={inOrup} onSubmit={handleSubmit} onChange={handleChange} className={`Form ${profileFormHeight}`} method="POST" autoComplete="off" name={name}>
-      {children}
+        {clickAtInput && <span>{errorSubmitMessage}</span>}
 
-      {clickAtInput && <span>{errorSubmitMessage}</span>}
+        <button type="submit" disabled={(!isValid()) && true} className={`form__submit ${profileButton} ${checkButtonForm()}`}>{buttonName}</button>
 
-      <button type="submit" disabled={!isValid() && true} className={`form__submit ${profileButton} ${checkButtonForm()}`}>{buttonName}</button>
-
-    </form>
-    <div className="form__reg-login-link-box">
-      <p className="form__reg-question">{regQuestion}</p>
-      <Link to={`/sign${inOrup}`} className="form__signin-signup-link">{regOrLogin}</Link>
-    </div>
-
-  </>
+      </form>
+      <div className="form__reg-login-link-box">
+        <p className="form__reg-question">{regQuestion}</p>
+        <Link to={`/sign${inOrup}`} className="form__signin-signup-link">{regOrLogin}</Link>
+      </div>
+    </>
   )
 }
 

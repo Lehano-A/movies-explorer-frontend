@@ -3,10 +3,9 @@ import Form from "../Form/Form";
 import MenuProfile from "../MenuProfile/MenuProfile";
 import mainApi from "../../utils/MainApi";
 import { ValidationContext } from './../context/ValidationContext';
-import { LoggedInContext } from './../context/LoggedInContext';
-import { stringifyJSON } from './../../utils/helpers/jsonHandler';
+import { CurrentUserContext } from '../context/CurrentUserContext';
+import { parseJSON, stringifyJSON } from './../../utils/helpers/jsonHandler';
 import { errorMessage } from "../../utils/constants/constants";
-
 
 function Profile({
   isProfileLink,
@@ -14,7 +13,6 @@ function Profile({
   isMoviesLink,
   isSavedMoviesLink,
   handleOpenPopup,
-  handleSetInputsProfile,
   handleIsNotLoggedIn,
   handleIsProfileLink,
   handleButtonCloseMenuProfile,
@@ -27,7 +25,15 @@ function Profile({
   setIsMoviesNotFound,
   setCurrentSearchMoviesFromApi,
   setCurrentSearchInLocalSavedMovies,
+  setIsSubmitProfileDisabled,
 }) {
+
+
+  useEffect(() => {
+
+    handleIsProfileLink();
+  }, []);
+
 
   useEffect(() => {
 
@@ -39,18 +45,19 @@ function Profile({
   }, [isMoviesLink, isSavedMoviesLink])
 
 
-  const dataUserContext = React.useContext(LoggedInContext)
+  const [isBlockedInput, setIsBlockedInput] = useState(false); // ЗАБЛОКИРОВАНЫ ЛИ ПОЛЯ, ВО ВРЕМЯ ЗАПРОСА
 
-  const [errorSubmitMessage, setErrorSubmitMessage] = useState('')
+  const nameUser = parseJSON(localStorage.getItem('dataUser'));
+
+  const [titleName, setTitleName] = useState(nameUser.name); // Привет, 'nameUser'
+
+  const [errorSubmitMessage, setErrorSubmitMessage] = useState('');
 
   const profileSubmitStyle = 'profile__button-submit_disabled';
 
-  const [titleName, setTitleName] = useState('');
 
-  const userEmailContext = dataUserContext.email;
-  const userNameContext = dataUserContext.name;
+  // КОНТЕКСТ ВАЛИДАЦИИ ФОРМ
   const handler = React.useContext(ValidationContext);
-
   const { errors, values, handleClickAtInputActive } = handler;
 
   const nameValue = values().name;
@@ -59,50 +66,24 @@ function Profile({
   const emailError = errors().email;
 
 
-  useEffect(() => {
-    handleIsProfileLink();
-    getDataUserFromLocal();
-  }, []);
-
-  useEffect(() => {
-
-  }, [isMoviesLink, isSavedMoviesLink])
-
-  // ПОЛУЧЕНИЕ ДАННЫХ ПОЛЬЗОВАТЕЛЯ ИЗ ЛОКАЛЬНОГО ХРАНИЛИЩА
-  function getDataUserFromLocal() {
-    const data = JSON.parse(localStorage.getItem('dataUser'));
-    handleSetInputsProfile(
-      {
-        name: data.name,
-        email: data.email
-      }
-    )
-    return;
-  }
-
-
-  // ОБРАБОТЧИК ПУСТЫХ ПОЛЕЙ ПРИ ОБНОВЛЕНИИ
-  function changeVoidValue() {
-    if (!emailValue) {
-      return { name: nameValue, email: userEmailContext }
-    }
-    if (!nameValue) {
-      return { name: userNameContext, email: emailValue }
-    }
-    return { name: nameValue, email: emailValue }
-  }
+  // КОНТЕКСТ ДАННЫХ ПОЛЬЗОВАТЕЛЯ
+  const currentUser = React.useContext(CurrentUserContext);
+  const { name, email } = currentUser;
 
 
   // РЕДАКТИРОВАНИЕ ДАННЫХ ПОЛЬЗОВАТЕЛЯ
   function editUserData(e) {
+    setIsBlockedInput(true)
+
     e.preventDefault();
-    console.log(emailValue === false, nameValue)
-    mainApi.editUserData(changeVoidValue())
+
+    mainApi.editUserData({ name: nameValue, email: emailValue })
       .then((user) => {
         handleOpenPopup({ active: true, message: 'Данные успешно обновлены' })
-        setTitleName(user.name)
-        console.log(user)
-        return localStorage.setItem('dataUser', stringifyJSON(user))
+        setTitleName(nameValue)
+        setIsSubmitProfileDisabled(true)
+        localStorage.setItem('dataUser', stringifyJSON(user))
+        return setIsBlockedInput(false)
       })
       .catch((err) => {
         Object.keys(errorMessage).forEach((key) => {
@@ -116,10 +97,10 @@ function Profile({
           }
         })
         console.log(err)
+        setIsBlockedInput(false)
         return;
       })
   }
-
 
 
   // РАЗЛОГИНИВАНИЕ ПОЛЬЗОВАТЕЛЯ
@@ -127,7 +108,7 @@ function Profile({
     e.preventDefault();
 
     mainApi.logoutUser()
-      .then((user) => {
+      .then(() => {
         setShowAllSavedCards(false);
         setMoviesBoxForMore([]);
         setFoundMoviesAfterSearchApi([]);
@@ -147,7 +128,6 @@ function Profile({
         Object.keys(errorMessage).forEach((key) => {
 
           if (err === key) {
-
             handleClickAtInputActive();
             return (
               <p className={`error__message_profile-position error__message_signin-signup_active`}>{errorMessage[err]}</p>
@@ -168,7 +148,7 @@ function Profile({
         handleButtonCloseMenuProfile={handleButtonCloseMenuProfile}
       />
 
-      <h1 className="profile__hello-title">Привет, {titleName ? titleName : userNameContext}!</h1>
+      <h1 className="profile__hello-title">Привет, {titleName}!</h1>
       <Form errorSubmitMessage={errorSubmitMessage} handleSubmit={editUserData} profilesubmitstyle={profileSubmitStyle} profileFormHeight="profile__form-height" profileButton="profile__button-submit" buttonName="Редактировать">
 
         <div className="profile__inputs-box">
@@ -177,12 +157,12 @@ function Profile({
 
           <div className="profile__name-box">
             <label htmlFor="name" className="profile__label">Имя</label>
-            <input name="name" defaultValue={userNameContext || nameValue} id="name" type="text" className="profile__input" minLength="2" maxLength="30" autoComplete="off" required></input>
+            <input disabled={isBlockedInput && true} name="name" defaultValue={name} id="name" type="text" className="profile__input" minLength="2" maxLength="30" autoComplete="off" required></input>
           </div>
 
           <div className="profile__email-box">
             <label htmlFor="email" className="profile__label">E-mail</label>
-            <input name="email" defaultValue={userEmailContext || emailValue} id="email" type="email" className="profile__input" maxLength="43" autoComplete="off" required></input>
+            <input disabled={isBlockedInput && true} name="email" defaultValue={email} id="email" type="email" className="profile__input" maxLength="43" autoComplete="off" required></input>
           </div>
 
           <span className={`form__not-valid form__not-valid_profile ${emailError && 'form__not-valid_active'}`}>{emailError}</span>

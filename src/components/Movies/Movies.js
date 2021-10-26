@@ -3,10 +3,10 @@ import MenuProfile from "../MenuProfile/MenuProfile";
 import SearchForm from './SearchForm/SearchForm';
 import MoviesCardList from "./MoviesCardList/MoviesCardList";
 import More from "./More/More";
+import { parseJSON } from './../../utils/helpers/jsonHandler'
 
 function Movies({
 
-  isLoggedIn,
   isMoviesLink,
   isProfileMenu,
   isPreloaderActive,
@@ -36,42 +36,42 @@ function Movies({
   handleSetValueInputSearchForm,
   handleShowResultSearchMovies,
   firstLoggingUser,
+  handleIsReloadedPageActive,
+  setIsLikeRemoved,
 }) {
 
   const [movies, setMovies] = useState([])
-
+  const afterRegBeforeFirstSubmit = parseJSON(localStorage.getItem('afterRegBeforeFirstSubmit'));
 
   useEffect(() => {
 
-    if (isLoggedIn) {
-
-      if (localStorage.getItem('authAfterLogoutActive')) {
-        handleSetSubmitSearchFormActive()
-        localStorage.removeItem('authAfterLogoutActive')
-      }
-
-      handleIsMoviesLink();
-      return
+    if (!afterRegBeforeFirstSubmit) {
+      handleValueInputSearchForm('') // ПРИ ВОЗВРАТЕ НА /movies - СБРАСЫВАЕМ ЗНАЧЕНИЕ ПОИСКА
+      handleIsReloadedPageActive();
     }
-  }, [isLoggedIn])
 
+    return handleIsMoviesLink();
+  }, [])
 
 
   useEffect(() => {
-    if (isReloadedPage && !isSavedMoviesLink && !firstLoggingUser) {
+    if (isReloadedPage && !isSavedMoviesLink && !firstLoggingUser && !afterRegBeforeFirstSubmit) {
       return handleSetSubmitSearchFormActive()
     }
-  }, [isReloadedPage, isSavedMoviesLink, firstLoggingUser])
-
+  }, [isReloadedPage,
+    isSavedMoviesLink,
+    firstLoggingUser,
+    afterRegBeforeFirstSubmit
+  ])
 
 
   useEffect(() => {
+
     // ОТ API
     if (isReloadedPage && !isSubmitFixedStateFilter) {
-
       localStorage.removeItem('reloadedPage')
       return setMovies(moviesBoxForMore)
-    } // ЕСЛИ БЫЛА ОБНОВЛЕНА СТРАНИЦА, ТО ПОКАЗЫВАЕМ ФИЛЬМЫ ИЗ ХРАНИЛИЩА
+    } // ЕСЛИ БЫЛА ОБНОВЛЕНА СТРАНИЦА, ТО ПОКАЗЫВАЕМ ФИЛЬМЫ ИЗ ХРАНИЛИЩА, КЛЮЧ - movies
 
     if (filterAfterSearchShortFromApi.length >= 1 && currentSearchMoviesFromApi) {
       return setMovies(filterAfterSearchShortFromApi)
@@ -80,8 +80,13 @@ function Movies({
     if (fifthApiStep && !isSubmitFixedStateFilter && currentSearchMoviesFromApi) {
       return setMovies(moviesBoxForMore)
     }
-
-  }, [isReloadedPage, fifthApiStep, moviesFromApi, moviesBoxForMore, filterAfterSearchShortFromApi, isSubmitFixedStateFilter])
+  }, [isReloadedPage,
+    fifthApiStep,
+    moviesFromApi,
+    moviesBoxForMore,
+    filterAfterSearchShortFromApi,
+    isSubmitFixedStateFilter
+  ])
 
 
   return (
@@ -113,6 +118,7 @@ function Movies({
         handleLocalSavedMovies={handleLocalSavedMovies}
         handleOpenPopup={handleOpenPopup}
         handleShowResultSearchMovies={handleShowResultSearchMovies}
+        setIsLikeRemoved={setIsLikeRemoved}
       />
 
       <More

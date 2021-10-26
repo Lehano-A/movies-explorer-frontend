@@ -27,6 +27,7 @@ class MainApi {
 
   // РЕДАКТИРОВАНИЕ ДАННЫХ ПОЛЬЗОВАТЕЛЯ
   editUserData(data) {
+    console.log(data)
     return fetch(`${this.baseUrl}/users/me`, {
       method: 'PATCH',
       withCredentials: true,
@@ -42,11 +43,21 @@ class MainApi {
       .then((res) => { return this._getResponse(res) })
   };
 
+  
+
+  // ПОЛУЧЕНИЕ ДАННЫХ ПРОФАЙЛА
+  getUserData(data) {
+    return fetch(`${this.baseUrl}/users/me`, {
+      method: 'GET',
+      credentials: 'include',
+    })
+      .then((res) => { return this._getResponse(res) })
+  };
+
 
 
   // РАЗЛОГИНИВАНИЕ ПОЛЬЗОВАТЕЛЯ
   logoutUser() {
-
     return fetch(`${this.baseUrl}/users/logout`, {
       withCredentials: true,
       credentials: 'include',
@@ -57,7 +68,7 @@ class MainApi {
 
 
   // РЕГИСТРАЦИЯ ПОЛЬЗОВАТЕЛЯ
-  signUp(name, email, password) {
+  signUp(email, password, name) {
 
     return fetch(`${this.baseUrl}/signup`, {
       method: 'POST',
@@ -67,9 +78,9 @@ class MainApi {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        name: `${name}`,
         email: `${email}`,
-        password: `${password}`
+        password: `${password}`,
+        name: `${name}`,
       }),
     })
       .then((res) => { return this._getResponse(res) })
@@ -90,7 +101,6 @@ class MainApi {
 
   // СОХРАНЕНИЕ ФИЛЬМА
   saveMovie(data) {
-
     return fetch(`${this.baseUrl}/movies`, {
       method: 'POST',
       credentials: 'include',

@@ -14,14 +14,12 @@ function PageNotFound({ handlePageNotFoundOpened }) {
   }
 
   return (
-    <>
-      <div className="PageNotFound">
-        <h1 className="page-not-found__title">404</h1>
+    <div className="PageNotFound">
+      <h1 className="page-not-found__title">404</h1>
 
-        <p className="page-not-found__description">Страница не найдена</p>
-        <Link onClick={goBack} className="page-not-found__back">Назад</Link>
-      </div>
-    </>
+      <p className="page-not-found__description">Страница не найдена</p>
+      <Link onClick={goBack} className="page-not-found__back">Назад</Link>
+    </div>
   )
 }
 

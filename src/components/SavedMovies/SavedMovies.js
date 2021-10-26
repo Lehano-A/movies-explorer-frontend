@@ -3,7 +3,6 @@ import MenuProfile from "../MenuProfile/MenuProfile";
 import SearchForm from "../Movies/SearchForm/SearchForm";
 import MoviesCardList from "../Movies/MoviesCardList/MoviesCardList";
 
-
 function SavedMovies({
   moviesFromLocal,
   resultSearchMovies,
@@ -26,12 +25,18 @@ function SavedMovies({
   handleOpenPopup,
   handleDeleteMovies,
   handleIsSavedMoviesLink,
-  handleButtonCloseMenuProfile
+  handleButtonCloseMenuProfile,
+  setFilterSearchShortFromLocal,
+  setLocalMoviesBoxForShow,
+  setMoviesFromLocal,
+  isLikeRemoved,
+  setIsLikeRemoved,
 }) {
 
 
   const [movies, setMovies] = useState([]);
-  const [isPushedButtonDelete, setIsPushedButtonDelete] = useState(false)
+  const [isDeleteComplete, setIsDeleteComplete] = useState(false)
+
 
   useEffect(() => {
     return handleIsSavedMoviesLink() // ПЕРЕШЛИ НА СТРАНИЦУ - /saved-movies
@@ -40,38 +45,55 @@ function SavedMovies({
 
   // УДАЛЕНИЕ КАРТОЧКИ ИЗ DOM
   function handleDeleteCardfromDOM(id) {
-    setIsPushedButtonDelete(true)
+
     setMovies((prevCards) => {
       const filterCards = prevCards.filter((card) => {
         if (card._id !== id) {
           return card;
         }
       })
+      setIsDeleteComplete(true);
       return [...filterCards];
     })
   }
 
 
+  // ЕСЛИ УДАЛИЛИ КАРТОЧКУ ИЛИ СНЯЛИ ЛАЙК
   useEffect(() => {
+    if (isDeleteComplete || isLikeRemoved) {
 
+      setMoviesFromLocal(movies)
+      setFilterSearchShortFromLocal(movies)
+      setLocalMoviesBoxForShow(movies)
+      setIsLikeRemoved(false)
+      return setIsDeleteComplete(false)
+    }
+  }, [isDeleteComplete, isLikeRemoved])
+
+
+  useEffect(() => {
     if (localSavedMovies || localMoviesBoxForShow || filterSearchShortFromLocal) {
 
-      if (!isSubmitFixedStateFilter && isPushedButtonDelete) {
-        return;
+      // ЕСЛИ ПОИСК ТОЛЬКО ПО САБМИТУ (БЕЗ ФИЛЬТРА)
+      if (!isFilterShortMovies && currentSearchInLocalSavedMovies) {
+        setMovies(localMoviesBoxForShow)
+        return
       }
 
+      // ЕСЛИ НЕТ ФИЛЬТРА И БЫЛА НАЖАТА КНОПКА ФИЛЬТРА
       if (!isSubmitFixedStateFilter && currentSearchInLocalSavedMovies) {
-        return setMovies(localMoviesBoxForShow)
+        return setMovies(localSavedMovies)
       }
 
+      // ЕСЛИ ЕСТЬ ФИЛЬТР И БЫЛА НАЖАТА КНОПКА ФИЛЬТРА
       if (isSubmitFixedStateFilter && currentSearchInLocalSavedMovies) {
         return setMovies(filterSearchShortFromLocal)
       }
 
+      // ПРИ ПЕРЕХОДЕ НА ССЫЛКУ - /saved-movies ПОКАЗЫВАЮТСЯ ВСЕ СОХРАНЁННЫЕ ФИЛЬМЫ
       if (moviesFromLocal) {
         return setMovies(moviesFromLocal)
       }
-
     }
   }, [moviesFromLocal, localSavedMovies, localMoviesBoxForShow, filterSearchShortFromLocal])
 
@@ -104,6 +126,7 @@ function SavedMovies({
         handleOpenPopup={handleOpenPopup}
         handleDeleteCardfromDOM={handleDeleteCardfromDOM}
         handleDeleteMovies={handleDeleteMovies}
+        setIsLikeRemoved={setIsLikeRemoved}
       />
     </>
   )

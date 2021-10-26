@@ -12,6 +12,7 @@ function MoviesCard({
   isSavedMoviesLink,
   handleOpenPopup,
   handleDeleteCardfromDOM,
+  setIsLikeRemoved,
 }) {
 
 
@@ -96,6 +97,13 @@ function MoviesCard({
   }, [])
 
 
+  useEffect(() => {
+    if (iconSaveButton === false) {
+      setIsLikeRemoved(true) // ДЛЯ /saved-movies
+    }
+  }, [iconSaveButton])
+
+
   // ДЕЛАЕМ ЛАЙК - АКТИВЕН
   function handleAddClassIconButtonActive() {
     setIconSaveButton('movies-card__button-save_active');
@@ -104,6 +112,7 @@ function MoviesCard({
 
   // ДЕЛАЕМ ЛАЙК - НЕАКТИВЕН
   function handleAddClassIconButtonNotActive() {
+
     setIconSaveButton(false)
   }
 
@@ -118,7 +127,6 @@ function MoviesCard({
   function handlePressButtonSaveNotPressed() {
     setIsPressedButtonSave(false)
   }
-
 
 
   // КНОПКА УДАЛЕНИЯ - АКТИВНА - /saved-movies
@@ -240,7 +248,7 @@ function MoviesCard({
   // 4 - SAVE
   // API СОХРАНЕНИЕ ФИЛЬМА
   function saveMovie() {
-    console.log(id)
+
     mainApi.saveMovie({
       country,
       director,
@@ -301,7 +309,6 @@ function MoviesCard({
 
     mainApi.deleteSavedMovie(idCard)
       .then(() => {
-
         handlePressButtonSaveNotPressed() // ДЕФОЛТИМ СОСТОЯНИЕ КНОПКИ
         handleAddClassIconButtonNotActive() // УБИРАЕМ АКТИВНЫЙ КЛАСС С ИКОНКИ
 
@@ -312,6 +319,7 @@ function MoviesCard({
         return getSavedMovies() // ОБНОВЛЯЕМ ХРАНИЛИЩЕ
       })
       .catch((err) => {
+        console.log(err)
 
         if (err === '403') {
           return handleOpenPopup({ active: true, message: errorMessage[403] })

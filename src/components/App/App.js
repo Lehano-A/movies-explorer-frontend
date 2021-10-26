@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Route, Switch, Redirect, useLocation } from 'react-router-dom';
 import { useHistory } from 'react-router';
-import { LoggedInContext } from '../context/LoggedInContext';
+import { CurrentUserContext } from '../context/CurrentUserContext';
 import { ValidationContext } from '../context/ValidationContext';
 import { parseJSON, stringifyJSON } from '../../utils/helpers/jsonHandler';
-import { errorMessage, regexEng, regexRu, } from '../../utils/constants/constants';
+import {
+  errorMessage,
+  widthWindowForFirstCount,
+  widthWindowForSecondaryCounts,
+} from '../../utils/constants/constants';
 
 import Header from '../Header/Header';
 import Main from '../Main/Main';
@@ -15,10 +19,7 @@ import SignIn from '../SignIn/SignIn';
 import PageNotFound from '../PageNotFound/PageNotFound';
 import Profile from '../Profile/Profile';
 import SavedMovies from '../SavedMovies/SavedMovies';
-
-import { widthWindowForFirstCount, widthWindowForSecondaryCounts } from '../../utils/constants/constants';
 import getWidthWindowBrowser from './../../utils/helpers/widthWindowBrowser';
-
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import mainApi from '../../utils/MainApi';
 import moviesApi from '../../utils/MoviesApi';
@@ -37,17 +38,71 @@ function App() {
   const [isFirstCountCards, setIsFirstCountCards] = useState(false) // ПЕРВИЧНЫЙ ОТБОР КАРТОЧЕК?
   const [isMoviesNotFound, setIsMoviesNotFound] = useState(false) // НИ ОДИН ФИЛЬМ ПО ЗАПРОСУ НЕ НАЙДЕН (MoviesCardList) - /movies и /saved-movies
   const [localSavedMovies, setLocalSavedMovies] = useState([]) // ФИЛЬМЫ ЗАПИСАННЫЕ ИЗ ХРАНИЛИЩА
+  const [isLikeRemoved, setIsLikeRemoved] = useState(false); //  БЫЛ ЛИ СНЯТ ЛАЙК С КАРТОЧКИ - ФЛАГ ДЛЯ /saved-movies
   const [firstLoggingUser, setFirstLoggingUser] = useState(false) // ПЕРВЫЙ ЛИ ЛОГИН, ПОСЛЕ РЕГИСТРАЦИИ
+
   const [isFilterShortMovies, setIsFilterShortMovies] = useState(false) // ЧЕКБОКС "КОРОТКОМЕТРАЖКИ"
-  const [isLoggedIn, setIsLoggedIn] = useState(parseJSON(localStorage.getItem('userLogged'))) //ЗАЛОГИНЕН ЛИ ПОЛЬЗОВАТЕЛЬ
+
+  const [isLoggedIn, setIsLoggedIn] = useState(parseJSON(localStorage.getItem('userLogged'))) // ЗАЛОГИНЕН ЛИ ПОЛЬЗОВАТЕЛЬ
+
+  const [currentUser, setCurrentUser] = useState(parseJSON(localStorage.getItem('dataUser'))) // ЗНАЧЕНИЕ ДЛЯ ПРОВАЙДЕРА КОНТЕКСТА
+
+  const [isSubmitProfileDisabled, setIsSubmitProfileDisabled] = useState(false); // disabled САБМИТА, ПОСЛЕ РЕДАКТИРОВАНИЯ
+
+
+  // STORAGE GET
+  // ПОЛУЧЕНИЕ ВСЕХ ФИЛЬМОВ ИЗ ХРАНИЛИЩА
+  function getMoviesFromStorage() {
+    return parseJSON(localStorage.getItem('movies'));
+  }
+
+  // ПОЛУЧЕНИЕ ВСЕХ СОХРАНЁННЫХ ФИЛЬМОВ ИЗ ХРАНИЛИЩА
+  function getSavedMoviesStorage() {
+    return parseJSON(localStorage.getItem('savedMovies'));
+  }
+
+
+  // ЗАПИСЫВАЕТСЯ ПОСЛЕ РЕГИСТРАЦИИ ПОЛЬЗОВАТЕЛЯ И УДАЛЯЕТСЯ, ПОСЛЕ ПЕРВОГО САБМИТА
+  function getAfterRegBeforeFirstSubmitStorage() {
+    return parseJSON(localStorage.getItem('afterRegBeforeFirstSubmit'))
+  }
+
+
+  // STORAGE SET
+  function setActiveAfterRegBeforeFirstSubmitStorage() {
+    return localStorage.setItem('afterRegBeforeFirstSubmit', stringifyJSON(true))
+  }
+
+
+  function setActiveAuthAfterLogoutStorage() {
+    return localStorage.setItem('authAfterLogoutActive', stringifyJSON(true))
+  }
+
+
+  function setActiveUserLoggedStorage() {
+    return localStorage.setItem('userLogged', stringifyJSON(true))
+  }
+
+
+  function setActiveReloadedPageStorage() {
+    return localStorage.setItem('reloadedPage', stringifyJSON(true))
+  }
+
+
+  function setEmptyMoviesFromStorage() {
+    return localStorage.setItem('movies', stringifyJSON([]))
+  }
+
+
+  function setEmptySavedMoviesFromStorage() {
+    return localStorage.setItem('savedMovies', stringifyJSON([]))
+  }
+
+
   const [isPressedSubmitSearchForm, setIsPressedSubmitSearchForm] = useState(false) // НАЖАТА ЛИ КНОПКА САБМИТА ПОИСКА ФИЛЬМОВ
   const [isPreloaderActive, setIsPreloaderActive] = useState(false)// ВКЛЮЧЁН ЛИ ПРЕЛОАДЕР
   const [windowBrowserClosed, setWindowBrowserClosed] = useState({ closed: false, againOpened: false })
   const [isReloadedPage, setIsReloadedPage] = useState(false) // ЗАЛОГИНИЛСЯ ЛИ ПОЛЬЗОВАТЕЛЬ, ПОСЛЕ ЛОГАУТА
-  const [authAfterLogout, setAuthAfterLogout] = useState(false) // ТАЙМЕР НА КНОПКУ ФИЛЬТРА ФИЛЬМА
-  const [reloadedPageStep, setReloadedPageStep] = useState(false)
-  const [loadingMovies, setLoadingMovies] = useState(false)
-
   const [firstApiStep, setFirstApiStep] = useState(false)
   const [secondApiStep, setSecondApiStep] = useState(false)
   const [fifthApiStep, setFifthStep] = useState(false)
@@ -55,6 +110,7 @@ function App() {
   const [secondLocalStep, setSecondLocalStep] = useState(false)
 
   const [isSubmitFixedStateFilter, setIsSubmitFixedStateFilter] = useState(false)
+
 
 
   // API
@@ -82,32 +138,25 @@ function App() {
   const [moviesFromLocal, setMoviesFromLocal] = useState([]); // /saved-movies
 
   // ОТФИЛЬТРОВАННЫЕ ЛОКАЛЬНЫЕ
-  const [filterSearchShortFromLocal, setFilterSearchShortFromLocal] = useState([]); // ОТФИЛЬТРОВАННЫЕ /saved-movies
+  const [filterSearchShortFromLocal, setFilterSearchShortFromLocal] = useState([]); // ОТФИЛЬТРОВАННЫЕ - /saved-movies
 
   // ПОИСК В ЛОКАЛЬНЫХ ФИЛЬМАХ
-  const [localMoviesAfterSearch, setLocalMoviesAfterSearch] = useState([]); // ОТФИЛЬТРОВАННЫЕ /saved-movies
+  const [localMoviesAfterSearch, setLocalMoviesAfterSearch] = useState([]); //ПОСЛЕ ПОИСКА НЕОТФИЛЬТРОВАННЫЕ - /saved-movies
 
-  const [localMoviesBoxForShow, setLocalMoviesBoxForShow] = useState([]); // ОТФИЛЬТРОВАННЫЕ /saved-movies
+  const [localMoviesBoxForShow, setLocalMoviesBoxForShow] = useState([]);
 
-  // ФЛАГ - ТЕКУЩИЙ ПОИСК ПО ЗНАЧЕНИЮ ПРОИСХОДИТ ПО ЛОКАЛЬНЫМ ФИЛЬМАМ
+  // ФЛАГ - ТЕКУЩИЙ ПОИСК ПО ЗНАЧЕНИЮ ПРОИСХОДИТ ПО ЛОКАЛЬНЫМ ФИЛЬМАМ - /saved-movies
   const [currentSearchInLocalSavedMovies, setCurrentSearchInLocalSavedMovies] = useState(false)
 
-  // /saved-movies - СИГНАЛ, ЧТО НУЖНО ПОКАЗАТЬ СРАЗУ ВСЕ СОХРАНЁННЫЕ КАРТОЧКИ (БЕЗ ОТБОРКИ)
+  // СИГНАЛ, ЧТО НУЖНО ПОКАЗАТЬ СРАЗУ ВСЕ СОХРАНЁННЫЕ КАРТОЧКИ (БЕЗ ОТБОРКИ)
   const [showAllSavedCards, setShowAllSavedCards] = useState(false)
 
   const [valueInputSearchForm, setValueInputSearchForm] = useState(''); // ЗНАЧЕНИЕ ИЗ ПОЛЯ ВВОДА ФОРМЫ ПОИСКА ФИЛЬМА
 
-
-  //  ОБЩЕЕ
+  // ОБЩЕЕ
   const [parametersForShowCards, setParametersForShowCards] = useState({
     movies: [],
     quantity: '',
-  })
-
-
-  const [formProfileInputs, setFormProfileInputs] = useState({ // ПОЛЯ ФОРМЫ ПРОФИЛЯ
-    name: '',
-    email: '',
   })
 
   const [popup, setPopup] = useState({});
@@ -130,14 +179,11 @@ function App() {
     return setIsReloadedPage(true)
   }
 
+
   function handleIsReloadedPageNotActive() {
     return setIsReloadedPage(false)
   }
 
-
-  function getMoviesApiFromLocal() {
-    return parseJSON(localStorage.getItem('movies'))
-  }
 
   // ПЕРЕНАПРАВЛЕНИЕ НА ГЛАВНУЮ
   function goToMainPage() {
@@ -152,23 +198,30 @@ function App() {
 
 
   // ТРЭКЕР ОБНОВЛЕНИЯ СТРАНИЦЫ
-  window.onload = () => {
-    console.log('ТРЭКЕР ОБНОВЛЕНИЯ СТРАНИЦЫ')
-    handleIsReloadedPageActive()
-    return localStorage.setItem('reloadedPage', stringifyJSON(true))
-  }
+  useEffect(() => {
+    if (!getAfterRegBeforeFirstSubmitStorage) {
+      if (document.readyState === 'complete') {
+        handleIsReloadedPageActive()
+        return localStorage.setItem('reloadedPage', stringifyJSON(true))
+      }
+    }
+  }, [])
+
 
   // ОБРАБОТЧИК ЛОКАЛЬНОГО ОБНОВЛЕНИЯ СОХРАНЁННЫХ ФИЛЬМОВ
+  // ЕСЛИ НЕТ ФИЛЬТРА И БЫЛ НАЖАТ САБМИТ (ИЛИ КНОПКА ФИЛЬТРА)
   function handleLocalSavedMovies(data) {
-    if (isLoggedIn && !firstLoggingUser) {
+    if (isLoggedIn) {
       return setLocalSavedMovies(data)
     }
   }
 
 
-  // ПЕРВОЕ ПОСЕЩЕНИЕ ПОЛЬЗОВАТЕЛЯ (signin) - АКТИВНО
-  function handleSetFirstLoggingUserActive() {
-    setFirstLoggingUser(true)
+  // ОЧИЩЕНИЕ ЛОКАЛЬНЫХ ПЕРЕМЕННЫХ ОТВЕЧАЮЩИЕ ЗА ФИЛЬМЫ ИЗ ХРАНИЛИЩА
+  function clearLocalVars() {
+    setLocalMoviesAfterSearch([])
+    setLocalMoviesBoxForShow([]) // ОЧИЩАЕМ ЛОКАЛЬНЫЙ МАССИВ ПОСЛЕ ПОИСКА
+    setFilterSearchShortFromLocal([])
   }
 
 
@@ -185,8 +238,8 @@ function App() {
 
 
   useEffect(() => {
-    if (localStorage.getItem('dataUser')) {
-      handleIsLoggedIn();
+    if (parseJSON(localStorage.getItem('dataUser'))) {
+      return handleIsLoggedIn();
     }
   }, [])
 
@@ -282,7 +335,7 @@ function App() {
     setIsPageNotFound(false)
     setIsProfileMenu(false)
     setCurrentSearchInLocalSavedMovies(false)
-    handleIsReloadedPageActive()
+    // handleIsReloadedPageActive()
     setIsFilterShortMovies(false)
     setCurrentSearchMoviesFromApi(false)
   }
@@ -372,36 +425,13 @@ function App() {
   }
 
 
-  // ЧЕКБОКС "КОРОТКОМЕТРАЖКИ" - ВКЛЮЧЕНО
-  // СТАТУС ФИКСИРУЕТ - САБМИТ
-  function handleSetIsFilterShortMovies(e) {
-    if (!timerFilterShortMovies) {
-      handleSetTimerFilterShortMoviesActive() // ВКЛЮЧИЛИ ТАЙМЕР
-      setTimeout(setTimerFilterShortMovies, 500, false);
-
-      const status = e.target.checked;
-      setIsFilterShortMovies(status)
-      handleSetSubmitSearchFormActive()
-    }
-  }
-
-
   // ЗНАЧЕНИЕ ПОЛЯ ФОРМЫ ПОИСКА ФИЛЬМА
   function handleValueInputSearchForm(valueInput) {
     setValueInputSearchForm(valueInput.toLowerCase());
   }
 
 
-  // ОБРАБОТЧИК ПОЛЕЙ ПРОФАЙЛА
-  function handleSetInputsProfile(data) {
-
-    setFormProfileInputs({
-      name: data.name,
-      email: data.email,
-    })
-  }
-
-
+  // ПЕРЕЗАГРУЗКА СТРАНИЦЫ
   // ЕСЛИ ОТКРЫТА СТРАНИЦА /saved-movies И ЗАПИСАНЫ КАРТОЧКИ В ХРАНИЛИЩЕ
   useEffect(() => {
 
@@ -416,75 +446,52 @@ function App() {
   }, [isSavedMoviesLink])
 
 
+  // ПЕРЕЗАГРУЗКА СТРАНИЦЫ
   // ЕСЛИ ОТКРЫТА СТРАНИЦА /movies И УЖЕ ЕСТЬ СОХРАНЁННЫЕ ФИЛЬМЫ В ХРАНИЛИЩЕ
   useEffect(() => {
-
     if (pathesPages.moviesUrl) {
 
-      if (firstLoggingUser) {
-        console.log('sdcdscdscsdcds')
+      const apiMoviesFromStorage = getMoviesFromStorage();
+
+      // ЕСЛИ НЕТ В ХРАНИЛИЩЕ "firstLogAfterReg", ТО ЗНАЧИТ ЧТО ПЕРВЫЙ ПОИСК ФИЛЬМОВ, ПОСЛЕ РЕГИСТРАЦИИ БЫЛ ПРОИЗВЕДЁН
+      if (!parseJSON(localStorage.getItem('firstLogAfterReg'))) {
         handleSetFirstLoggingUserNotActive();
         return;
       }
-      const apiMoviesFromLocal = getMoviesApiFromLocal();
 
-      if (firstLoggingUser) {
-        setAuthAfterLogout(true)
-        setLoadingMovies(true)
-        return;
-      }
-
-      if (apiMoviesFromLocal.length === 0) {
+      if (!apiMoviesFromStorage) {
         moviesApi.getMovies()
           .then((data) => {
             localStorage.setItem('movies', JSON.stringify(data)); // ДУБЛИРУЕМ В ЛОКАЛЬНОЕ ХРАНИЛИЩЕ
             setMoviesFromApi(data); // ЗАПИСЫВАЕМ ВСЕ ФИЛЬМЫ ИЗ API
-            setLoadingMovies(true)
           })
           .catch((err) => {
             console.log(err)
             return handleOpenPopup({ active: true, message: errorMessage[500] });
           })
       }
-      setLoadingMovies(true)
     }
   }, [isReloadedPage])
 
 
 
+  // ЧЕКБОКС "КОРОТКОМЕТРАЖКИ" - ВКЛЮЧЕНО/ВЫКЛЮЧЕНО
+  function handleSetIsFilterShortMovies(e) {
+    const isAfterRegBeforeFirstSubmit = getAfterRegBeforeFirstSubmitStorage();
+    const savedMoviesStorage = getSavedMoviesStorage();
 
-  useEffect(() => {
-    if ((moviesFromApi && loadingMovies) || authAfterLogout) {
+    if (!isAfterRegBeforeFirstSubmit && savedMoviesStorage) { // БЫЛ ЛИ ПЕРВЫЙ САБМИТ, ПОСЛЕ РЕГИСТРАЦИИ?
+      if (!timerFilterShortMovies) {
 
-      const apiMoviesFromLocal = getMoviesApiFromLocal();
+        handleSetTimerFilterShortMoviesActive() // ВКЛЮЧИЛИ ТАЙМЕР
+        setTimeout(setTimerFilterShortMovies, 500, false);
 
-      if (apiMoviesFromLocal.length >= 1) {
-        setLoadingMovies(false)
-        setAuthAfterLogout(false)
-        handleIsMoviesLink();
-        setMoviesFromApi(apiMoviesFromLocal)
-        setIsPressedSubmitSearchForm(true)
-        setFoundMoviesAfterSearchApi(apiMoviesFromLocal)
-        setShowAllSavedCards(false)
-        setIsFirstCountCards(true)
-        setIsSubmitFixedStateFilter(true)
-        setReloadedPageStep(true)
-        return
+        const status = e.target.checked;
+        setIsFilterShortMovies(status)
+        handleSetSubmitSearchFormActive()
       }
-      return;
     }
-  }, [moviesFromApi, loadingMovies, authAfterLogout])
-
-
-
-
-  useEffect(() => {
-    if (reloadedPageStep) {
-      setIsSubmitFixedStateFilter(false)
-      return handleCountCards()
-    }
-  }, [reloadedPageStep])
-
+  }
 
 
 
@@ -532,13 +539,14 @@ function App() {
     setSecondApiStep(true)
   }
 
+
+
   // 2.2
   // ПОИСК ФИЛЬМОВ ПО ЗНАЧЕНИЮ ИЗ ПОЛЯ - /saved-movies
   function handleSearchInLocalSavedMoviesByValue() {
     moviesFromLocal.forEach((movie) => {
       const valueFromInputSearch = movie.nameRU.trim().toLowerCase().includes(valueInputSearchForm);
       const { duration } = movie;
-
       if (valueFromInputSearch) { // ЕСЛИ ЗНАЧЕНИЕ ПОЛЯ СОВПАДАЕТ С НАЗВАНИЕМ ФИЛЬМА ИЗ ВСЕГО СПИСКА
         if (duration <= 40 && isFilterShortMovies) { // ЕСЛИ КОРОТКОМЕТРАЖКА И ФИЛЬТР ВКЛЮЧЁН
           setFilterSearchShortFromLocal((prevMovies) => { return [...prevMovies, movie] })
@@ -550,12 +558,20 @@ function App() {
   }
 
 
+
   // 1
   // САБМИТ ФОРМЫ ПОИСКА ФИЛЬМОВ - НАЧАЛО
   useEffect(() => {
 
     if (isPressedSubmitSearchForm) {
-      localStorage.setItem('movies', stringifyJSON([]));
+
+      if (isMoviesLink && getAfterRegBeforeFirstSubmitStorage()) { // ЕСЛИ ПОСЛЕ РЕГИСТРАЦИИ - ЭТО ПЕРВЫЙ САБМИТ
+        localStorage.removeItem('afterRegBeforeFirstSubmit') // ТОГДА УДАЛЯЕМ
+      }
+
+      handleIsReloadedPageActive()
+      parseJSON(localStorage.getItem('movies'))
+      setEmptyMoviesFromStorage();
       setFifthStep(false)
       setShowAllSavedCards(false);
       handleSubmitFixedStateFilter() // ПРОВЕРЯЕМ СТАТУС ЧЕКБОКСА - БЕРЁМ ЕГО В РАБОТУ ИЛИ НЕТ
@@ -574,10 +590,10 @@ function App() {
           movies: [],
           quantity: '',
         })
-        setLocalMoviesAfterSearch([])
+        setLocalMoviesAfterSearch([]) // ОЧИЩАЕМ ЛОКАЛЬНЫЙ МАССИВ ПОСЛЕ ПОИСКА
         setLocalMoviesBoxForShow([]) // ОЧИЩАЕМ ЛОКАЛЬНЫЙ МАССИВ ПОСЛЕ ПОИСКА
         setFilterSearchShortFromLocal([]) // ОЧИЩАЕМ ЛОКАЛЬНЫЙ ОТФИЛЬТРОВАННЫЙ МАССИВ
-        setCurrentSearchInLocalSavedMovies(true) // СООБЩАЕМ, ЧТО БУДЕТ ПРОИСХОДИТЬ ПОИСК ПО СОХРАНЁННЫМ КАРТОЧКАМ
+        setCurrentSearchInLocalSavedMovies(true) // СООБЩАЕМ, ЧТО БУДЕТ ПОИСК ПО СОХРАНЁННЫМ КАРТОЧКАМ
         setShowAllSavedCards(true); // ДАЁМ СИГНАЛ, ЧТО ПОКАЗЫВАТЬ НУЖНО СРАЗУ ВСЕ КАРТОЧКИ
         handleSearchInLocalSavedMoviesByValue()
         return;
@@ -597,6 +613,7 @@ function App() {
   }, [isPressedSubmitSearchForm]) // ОТСЛЕЖИВАЕМ НАЖАТИЕ САБМИТА ПОИСКА ФИЛЬМОВ
 
 
+
   // 2
   // ПОИСК КАРТОЧЕК ПО ЗНАЧЕНИЮ ИЗ ПОЛЯ
   useEffect(() => { // ЕСЛИ ИЩЕМ В СОХРАНЁННЫХ КАРТОЧКАХ ИЛИ ПОЛУЧИЛИ ФИЛЬМЫ ОТ API + ЕСТЬ ЗНАЧЕНИЕ В ПОЛЕ ВВОДА
@@ -609,9 +626,7 @@ function App() {
       handleSetPreloaderNotActive(); // ВЫКЛЮЧАЕМ ПРЕЛОАДЕР
       handleSearchMoviesApiByValue() // 2 ШАГ - ПОИСК КАРТОЧЕК ПО ЗНАЧЕНИЮ ИЗ ПОЛЯ ВВОДА - ОБЩЕЕ
     }
-
   }, [firstApiStep, moviesFromApi, moviesFromLocal, secondLocalStep])
-
 
 
 
@@ -625,12 +640,9 @@ function App() {
       setSecondLocalStep(false)
 
       if (firstLoggingUser) {
-
         setFirstLoggingUser(false);
         return handleCountCards(); // ЗАПУСК ОТБОРА КАРТОЧЕК
       }
-
-
 
       if (currentSearchMoviesFromApi) {
 
@@ -641,6 +653,7 @@ function App() {
         if (filterAfterSearchShortFromApi.length === 0 && isSubmitFixedStateFilter) {
           return setIsMoviesNotFound(true) // АКТИВАЦИЯ НАДПИСИ "НИЧЕГО НЕ НАЙДЕНО"
         }
+
 
         // ОТ API
         if (moviesFromApi.length === 0 && foundMoviesAfterSearchApi.length >= 1) {
@@ -656,10 +669,10 @@ function App() {
         }
 
         if (moviesFromApi.length >= 1 && currentSearchMoviesFromApi) {
-
           return handleCountCards(); // ЗАПУСК ОТБОРА КАРТОЧЕК
         }
       }
+
 
       // ЛОКАЛЬНЫЕ
       if (currentSearchInLocalSavedMovies) {
@@ -705,6 +718,7 @@ function App() {
     foundMoviesAfterSearchApi,
     localMoviesAfterSearch, firstLoggingUser
   ])
+
 
 
   // 4
@@ -776,13 +790,13 @@ function App() {
 
 
 
-
   // ЕСЛИ ЗАВЕРШЁН 4 ШАГ, ТО ВКЛЮЧАЕМ ОБРАБОТЧИК ОТОБРАННЫХ КАРТОЧЕК
   useEffect(() => {
     if (parametersForShowCards) {
       return handleSelectedCards()
     }
   }, [parametersForShowCards])
+
 
 
   // РАБОТА КНПОКИ "ЕЩЁ" - ОТОБРАЖЕНИЕ ОТОБРАННЫХ КАРТОЧЕК
@@ -796,7 +810,6 @@ function App() {
     pickedAnyCards.forEach((card) => {
       currentNumberCards.push(card);
     })
-
 
     // ЛОКАЛЬНЫЕ
     // ЕСЛИ ТЕКУЩИЙ ПОИСК ЛОКАЛЬНЫЙ И НЕТ ФИЛЬТРА, ТО
@@ -825,18 +838,17 @@ function App() {
 
   // ВАЛИДАТОР ФОРМ
   const validatorEmail = require('email-validator'); // ВАЛИДАТОР EMAIL
-
-  const [values, setValues] = React.useState({ name: formProfileInputs.name, email: formProfileInputs.email }); // ДЛЯ ОБРАБОТЧИКА ОШИБОК
-  const [errors, setErrors] = React.useState({}); // ДЛЯ ОБРАБОТЧИКА ОШИБОК
-  const [isValid, setIsValid] = React.useState(false); // ДЛЯ ОБРАБОТЧИКА ОШИБОК
+  const [values, setValues] = useState(currentUser); // ДЛЯ ОБРАБОТЧИКА ОШИБОК
+  const [errors, setErrors] = useState({}); // ДЛЯ ОБРАБОТЧИКА ОШИБОК
+  const [isValid, setIsValid] = useState(false); // ДЛЯ ОБРАБОТЧИКА ОШИБОК
   const [clickAtInput, setClickAtInput] = useState(false) // ЭЛЕМЕНТ ТЕКСТА ОШИБКИ ФОРМЫ
-
 
 
   // ВВОД ТЕКСТА В ПОЛЕ ФОРМЫ ПРИВОДИТ В АКТИВНОЕ СОСТОЯНИЕ ЭЛЕМЕНТ ТЕКСТА ОШИБКИ
   function handleClickAtInputActive() {
     return setClickAtInput(true)
   }
+
 
   // ВВОД ТЕКСТА В ПОЛЕ ФОРМЫ ПРИВОДИТ В НЕАКТИВНОЕ СОСТОЯНИЕ ЭЛЕМЕНТ ТЕКСТА ОШИБКИ
   function handleClickAtInputNotActive() {
@@ -850,10 +862,9 @@ function App() {
     const name = target.name;
     const value = target.value;
 
-
     if (target) {
-      setValues();
-      handleClickAtInputNotActive();
+      handleClickAtInputNotActive(); // ВВОД ТЕКСТА В ПОЛЕ ВВОДА УБИРАЕТ ОШИБКУ-ПОДСКАЗКУ
+      setIsSubmitProfileDisabled(false); // СБРОС disabled С САБМИТА
     }
 
     setValues({ ...values, [name]: value });
@@ -863,29 +874,37 @@ function App() {
     if (name === 'email') {
       return validatorEmail.validate(value) ? setIsValid(true) : setIsValid(false);
     }
-
-    if (name === 'email') {
-      return validatorEmail.validate(value) ? setIsValid(true) : setIsValid(false);
-    }
     setIsValid(target.closest("form").checkValidity());
   };
+
 
 
   function getErrorMessageForm() {
     return errors;
   }
 
+  
   function getValueInput() {
     return values;
   }
 
+
+  // ПОЛУЧЕНИЕ ИНФОРМАЦИИ О ВАЛИДНОСТИ/НЕВАЛИДНОСТИ ПОЛЯ ВВОДА
   function getIsValidInput() {
+
+    // ЕСЛИ ОТКРЫТА СТРАНИЦА /profile
+    if (pathesPages.profileUrl) {
+      if ((values.name === undefined || values.name === null) ||
+        (currentUser.name === values.name && currentUser.email === values.email) || isSubmitProfileDisabled) {
+        return;
+      }
+    }
     return isValid;
   }
 
 
   return (
-    <LoggedInContext.Provider value={parseJSON(localStorage.getItem('dataUser'))}>
+    <CurrentUserContext.Provider value={currentUser}>
       <ValidationContext.Provider value={{
         handleChange: handleChangeInputs,
         errors: getErrorMessageForm,
@@ -906,28 +925,36 @@ function App() {
               isProfileLink={isProfileLink}
               isMoviesLink={isMoviesLink}
               isSavedMoviesLink={isSavedMoviesLink}
+              isMainLink={isMainLink}
               isPageNotFound={isPageNotFound}
               handleIsProfileMenu={handleIsProfileMenu}
               goToMainPage={goToMainPage}
+              isLoggedIn={isLoggedIn}
             />
 
             <Switch>
 
               <Route exact path="/">
-                {isLoggedIn ? (<Redirect to="/movies" />) : (<Main handleClickByLogo={handleClickByLogo} />)}
+                <Main handleClickByLogo={handleClickByLogo} />
               </Route>
 
               <Route path="/signup">
-                <SignUp
-                  isMainLink={isMainLink}
-                  isLogLink={isLogLink}
-                  handleIsLoggedIn={handleIsLoggedIn}
-                  handleSetFirstLoggingUserActive={handleSetFirstLoggingUserActive}
-                  handleIsRegLink={handleIsRegLink}
-                  handleRedirectMovies={handleRedirectMovies}
-                />
+                {!isLoggedIn ?
+                  <SignUp
+                    isMainLink={isMainLink}
+                    isLogLink={isLogLink}
+                    handleIsLoggedIn={handleIsLoggedIn}
+                    handleIsRegLink={handleIsRegLink}
+                    handleRedirectMovies={handleRedirectMovies}
+                    setCurrentUser={setCurrentUser}
+                    setActiveAfterRegBeforeFirstSubmitStorage={setActiveAfterRegBeforeFirstSubmitStorage}
+                    setActiveAuthAfterLogoutStorage={setActiveAuthAfterLogoutStorage}
+                    setActiveUserLoggedStorage={setActiveUserLoggedStorage}
+                    setEmptyMoviesFromStorage={setEmptyMoviesFromStorage}
+                    setEmptySavedMoviesFromStorage={setEmptySavedMoviesFromStorage}
+                  />
+                  : <Redirect to="/movies" />}
               </Route>
-
 
               <Route path="/signin">
                 {!isLoggedIn ?
@@ -937,96 +964,113 @@ function App() {
                     handleIsLoggedIn={handleIsLoggedIn}
                     handleIsLogLink={handleIsLogLink}
                     stringifyJSON={stringifyJSON}
-                    parseJSON={parseJSON}
+                    getSavedMoviesStorage={getSavedMoviesStorage}
+                    getSavedMovies={getSavedMovies}
+                    setEmptySavedMoviesFromStorage={setEmptySavedMoviesFromStorage}
+                    setActiveAuthAfterLogoutStorage={setActiveAuthAfterLogoutStorage}
+                    setActiveUserLoggedStorage={setActiveUserLoggedStorage}
+                    setActiveReloadedPageStorage={setActiveReloadedPageStorage}
+                    setCurrentUser={setCurrentUser}
                   />
-                  : <Redirect to="/" />}
-
+                  : <Redirect to="/movies" />}
               </Route>
-              <ProtectedRoute path='/' isLoggedIn={isLoggedIn}>
-                <Route path="/movies">
-                  <Movies
-                    isSavedMoviesLink={isSavedMoviesLink}
-                    isLoggedIn={isLoggedIn}
-                    isMoviesLink={isMoviesLink}
-                    isProfileMenu={isProfileMenu}
-                    isPreloaderActive={isPreloaderActive}
-                    isMoviesNotFound={isMoviesNotFound}
-                    isFilterShortMovies={isFilterShortMovies}
-                    isLoadedSavedMovies={isLoadedSavedMovies}
-                    moviesFromApi={moviesFromApi}
-                    handleLocalSavedMovies={handleLocalSavedMovies}
-                    getSavedMovies={getSavedMovies}
-                    setIsLoadedSavedMovies={setIsLoadedSavedMovies}
-                    fifthApiStep={fifthApiStep}
-                    moviesBoxForMore={moviesBoxForMore}
-                    isReloadedPage={isReloadedPage}
-                    isSubmitFixedStateFilter={isSubmitFixedStateFilter}
-                    currentSearchMoviesFromApi={currentSearchMoviesFromApi}
-                    filterAfterSearchShortFromApi={filterAfterSearchShortFromApi}
-                    foundMoviesAfterSearchApi={foundMoviesAfterSearchApi}
-                    isPressedSubmitSearchForm={isPressedSubmitSearchForm}
-                    windowBrowserClosed={windowBrowserClosed}
-                    handleOpenPopup={handleOpenPopup}
-                    handleCountCards={handleCountCards}
-                    handleSetIsFilterShortMovies={handleSetIsFilterShortMovies}
-                    handleValueInputSearchForm={handleValueInputSearchForm}
-                    handleSetSubmitSearchFormActive={handleSetSubmitSearchFormActive}
-                    handleIsMoviesLink={handleIsMoviesLink}
-                    handleButtonCloseMenuProfile={handleButtonCloseMenuProfile}
-                    handleSetValueInputSearchForm={handleButtonCloseMenuProfile}
-                    handleShowResultSearchMovies={handleButtonCloseMenuProfile}
-                  />
-                </Route>
 
-                <Route path="/profile">
-                  <Profile
-                    isProfileLink={isProfileLink}
-                    isProfileMenu={isProfileMenu}
-                    isMoviesLink={isMoviesLink}
-                    isSavedMoviesLink={isSavedMoviesLink}
-                    handleOpenPopup={handleOpenPopup}
-                    handleSetInputsProfile={handleSetInputsProfile}
-                    handleIsNotLoggedIn={handleIsNotLoggedIn}
-                    handleIsProfileLink={handleIsProfileLink}
-                    handleButtonCloseMenuProfile={handleButtonCloseMenuProfile}
-                    goToMainPage={goToMainPage}
-                    setShowAllSavedCards={setShowAllSavedCards}
-                    setMoviesBoxForMore={setMoviesBoxForMore}
-                    setFoundMoviesAfterSearchApi={setFoundMoviesAfterSearchApi}
-                    setMoviesFromApi={setMoviesFromApi}
-                    setFilterAfterSearchShortFromApi={setFilterAfterSearchShortFromApi}
-                    setIsMoviesNotFound={setIsMoviesNotFound}
-                    setCurrentSearchMoviesFromApi={setCurrentSearchMoviesFromApi}
-                    setCurrentSearchInLocalSavedMovies={setCurrentSearchInLocalSavedMovies}
-                  />
-                </Route>
-
-                <Route path="/saved-movies">
-                  <SavedMovies
-                    moviesFromLocal={moviesFromLocal}
-                    isFilterShortMovies={isFilterShortMovies}
-                    handleSetIsFilterShortMovies={handleSetIsFilterShortMovies}
-                    handleValueInputSearchForm={handleValueInputSearchForm}
-                    handleSetSubmitSearchFormActive={handleSetSubmitSearchFormActive}
-                    filterSearchShortFromLocal={filterSearchShortFromLocal}
-                    currentSearchInLocalSavedMovies={currentSearchInLocalSavedMovies}
-                    isSubmitFixedStateFilter={isSubmitFixedStateFilter}
-                    isPreloaderActive={isPreloaderActive}
-                    isMoviesNotFound={isMoviesNotFound}
-                    isSavedMoviesLink={isSavedMoviesLink}
-                    isProfileMenu={isProfileMenu}
-                    localMoviesBoxForShow={localMoviesBoxForShow}
-                    localSavedMovies={localSavedMovies}
-                    handleLocalSavedMovies={handleLocalSavedMovies}
-                    getSavedMovies={getSavedMovies}
-                    handleOpenPopup={handleOpenPopup}
-                    handleIsSavedMoviesLink={handleIsSavedMoviesLink}
-                    handleButtonCloseMenuProfile={handleButtonCloseMenuProfile}
-                  />
-                </Route>
+              <ProtectedRoute path='/movies' isLoggedIn={isLoggedIn}>
+                <Movies
+                  isSavedMoviesLink={isSavedMoviesLink}
+                  isLoggedIn={isLoggedIn}
+                  isMoviesLink={isMoviesLink}
+                  isProfileMenu={isProfileMenu}
+                  isPreloaderActive={isPreloaderActive}
+                  isMoviesNotFound={isMoviesNotFound}
+                  isFilterShortMovies={isFilterShortMovies}
+                  isLoadedSavedMovies={isLoadedSavedMovies}
+                  moviesFromApi={moviesFromApi}
+                  handleLocalSavedMovies={handleLocalSavedMovies}
+                  getSavedMovies={getSavedMovies}
+                  setIsLoadedSavedMovies={setIsLoadedSavedMovies}
+                  fifthApiStep={fifthApiStep}
+                  moviesBoxForMore={moviesBoxForMore}
+                  isReloadedPage={isReloadedPage}
+                  isSubmitFixedStateFilter={isSubmitFixedStateFilter}
+                  currentSearchMoviesFromApi={currentSearchMoviesFromApi}
+                  filterAfterSearchShortFromApi={filterAfterSearchShortFromApi}
+                  foundMoviesAfterSearchApi={foundMoviesAfterSearchApi}
+                  isPressedSubmitSearchForm={isPressedSubmitSearchForm}
+                  windowBrowserClosed={windowBrowserClosed}
+                  handleOpenPopup={handleOpenPopup}
+                  handleCountCards={handleCountCards}
+                  handleSetIsFilterShortMovies={handleSetIsFilterShortMovies}
+                  handleValueInputSearchForm={handleValueInputSearchForm}
+                  handleSetSubmitSearchFormActive={handleSetSubmitSearchFormActive}
+                  handleIsMoviesLink={handleIsMoviesLink}
+                  handleButtonCloseMenuProfile={handleButtonCloseMenuProfile}
+                  handleSetValueInputSearchForm={handleButtonCloseMenuProfile}
+                  handleShowResultSearchMovies={handleButtonCloseMenuProfile}
+                  setActiveAfterRegBeforeFirstSubmitStorage={setActiveAfterRegBeforeFirstSubmitStorage}
+                  handleIsReloadedPageActive={handleIsReloadedPageActive}
+                  setIsLikeRemoved={setIsLikeRemoved}
+                />
               </ProtectedRoute>
 
-              <Route component={() => { return <PageNotFound  handlePageNotFoundOpened={handlePageNotFoundOpened} /> }} />
+              <ProtectedRoute path='/profile' isLoggedIn={isLoggedIn}>
+                <Profile
+                  isProfileLink={isProfileLink}
+                  isProfileMenu={isProfileMenu}
+                  isMoviesLink={isMoviesLink}
+                  isSavedMoviesLink={isSavedMoviesLink}
+                  handleOpenPopup={handleOpenPopup}
+                  handleIsNotLoggedIn={handleIsNotLoggedIn}
+                  handleIsProfileLink={handleIsProfileLink}
+                  handleButtonCloseMenuProfile={handleButtonCloseMenuProfile}
+                  goToMainPage={goToMainPage}
+                  setShowAllSavedCards={setShowAllSavedCards}
+                  setMoviesBoxForMore={setMoviesBoxForMore}
+                  setFoundMoviesAfterSearchApi={setFoundMoviesAfterSearchApi}
+                  setMoviesFromApi={setMoviesFromApi}
+                  setFilterAfterSearchShortFromApi={setFilterAfterSearchShortFromApi}
+                  setIsMoviesNotFound={setIsMoviesNotFound}
+                  setCurrentSearchMoviesFromApi={setCurrentSearchMoviesFromApi}
+                  setCurrentSearchInLocalSavedMovies={setCurrentSearchInLocalSavedMovies}
+                  setIsSubmitProfileDisabled={setIsSubmitProfileDisabled}
+                />
+              </ProtectedRoute>
+
+              <ProtectedRoute path='/saved-movies' isLoggedIn={isLoggedIn}>
+                <SavedMovies
+                  moviesFromLocal={moviesFromLocal}
+                  isFilterShortMovies={isFilterShortMovies}
+                  handleSetIsFilterShortMovies={handleSetIsFilterShortMovies}
+                  handleValueInputSearchForm={handleValueInputSearchForm}
+                  handleSetSubmitSearchFormActive={handleSetSubmitSearchFormActive}
+                  filterSearchShortFromLocal={filterSearchShortFromLocal}
+                  currentSearchInLocalSavedMovies={currentSearchInLocalSavedMovies}
+                  isSubmitFixedStateFilter={isSubmitFixedStateFilter}
+                  isPreloaderActive={isPreloaderActive}
+                  isMoviesNotFound={isMoviesNotFound}
+                  isSavedMoviesLink={isSavedMoviesLink}
+                  isProfileMenu={isProfileMenu}
+                  localMoviesBoxForShow={localMoviesBoxForShow}
+                  localSavedMovies={localSavedMovies}
+                  handleLocalSavedMovies={handleLocalSavedMovies}
+                  getSavedMovies={getSavedMovies}
+                  handleOpenPopup={handleOpenPopup}
+                  handleIsSavedMoviesLink={handleIsSavedMoviesLink}
+                  handleButtonCloseMenuProfile={handleButtonCloseMenuProfile}
+                  clearLocalVars={clearLocalVars}
+                  setFilterSearchShortFromLocal={setFilterSearchShortFromLocal}
+                  setLocalMoviesBoxForShow={setLocalMoviesBoxForShow}
+                  localMoviesAfterSearch={localMoviesAfterSearch}
+                  setMoviesFromLocal={setMoviesFromLocal}
+                  isLikeRemoved={isLikeRemoved}
+                  setIsLikeRemoved={setIsLikeRemoved}
+                />
+              </ProtectedRoute>
+
+              <Route>
+                <PageNotFound handlePageNotFoundOpened={handlePageNotFoundOpened} />
+              </Route>
+
             </Switch>
 
             <Footer
@@ -1043,7 +1087,7 @@ function App() {
         </div>
 
       </ValidationContext.Provider>
-    </LoggedInContext.Provider>
+    </CurrentUserContext.Provider>
   )
 };
 

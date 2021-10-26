@@ -21,3 +21,5 @@ class MoviesApi {
 const moviesApi = new MoviesApi();
 
 export default moviesApi;
+
+

@@ -11,9 +11,11 @@ function Header({
   isProfileLink,
   isMoviesLink,
   isSavedMoviesLink,
+  isMainLink,
   isPageNotFound,
   handleIsProfileMenu,
   goToMainPage,
+  isLoggedIn
 }) {
 
   const { mainUrl, moviesUrl, savedMoviesUrl } = pathesPages;
@@ -37,6 +39,14 @@ function Header({
     return (regLogLink && !mainUrl) && 'header__head_only-logo'
   }
 
+
+  function changeLinkStyleWhenMainPage() {
+    if (mainUrl) {
+      return 'header__link_main-page';
+    }
+    return;
+  }
+
   // ОБРАБОТЧИК ДАЛЬНЕЙШЕЙ ЛОГИКИ ПРИ НАЖАТИИ НА ССЫЛКИ
   // РЕГИСТРАЦИИ, АУТЕНТИФИКАЦИИ И ПРОФИЛЯ
   function handleRegLogProfile() {
@@ -51,21 +61,21 @@ function Header({
       return <h1 className="signup__title">Рады видеть!</h1>;
     }
 
-    // ЕСЛИ ПОЛЬЗОВАТЕЛЬ ЗАЛОГИНЕН, ТО ИНИЦИАЛИЗИРУЮТСЯ ССЫЛКИ: (ВРЕМЕННОЕ УСЛОВИЕ)
-    // ФИЛЬМЫ, СОХРАНЁННЫЕ ФИЛЬМЫ И АККАУНТ
-    if ((isProfileLink || isSavedMoviesLink || isMoviesLink) && (!regLogLink)) {
+    // ЕСЛИ ПОЛЬЗОВАТЕЛЬ ЗАЛОГИНЕН, ТО ИНИЦИАЛИЗИРУЮТСЯ ССЫЛКИ:
+    // ФИЛЬМЫ, СОХРАНЁННЫЕ ФИЛЬМЫ И ПРОФАЙЛ
+    if ((isMainLink || isProfileLink || isSavedMoviesLink || isMoviesLink) && (!regLogLink && isLoggedIn)) {
       return <>
         <ul className="header__links">
-          <li><Link to="/movies" className={`header__link ${moviesUrl && 'header__link_active'}`}>Фильмы</Link></li>
-          <li><Link to="/saved-movies" className={`header__link ${savedMoviesUrl && 'header__link_active'}`}>Сохранённые фильмы</Link></li>
+          <li><Link to="/movies" className={`header__link ${moviesUrl && 'header__link_active'} ${changeLinkStyleWhenMainPage()}`}>Фильмы</Link></li>
+          <li><Link to="/saved-movies" className={`header__link ${savedMoviesUrl && 'header__link_active'} ${changeLinkStyleWhenMainPage()}`}>Сохранённые фильмы</Link></li>
         </ul>
         <button onClick={handleIsProfileMenu} type="button" className="header__menu-profile"></button>
-        <span className="header__profile-button"><ProfileButton /></span>
+        <span className="header__profile-button"><ProfileButton mainPage={mainUrl} /></span>
       </>
     }
 
     // ЕСЛИ ПОЛЬЗОВАТЕЛЬ НЕЗАЛОГИНЕН
-    if (!isProfileLink) {
+    if (!isLoggedIn) {
       return <ul className="header__signin-signup-box">
         <li><Link to="/signup" className="header__link-signup">Регистрация</Link></li>
         <li><Link to="/signin" className="header__link-signin">Войти</Link></li>

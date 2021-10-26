@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Form from "../Form/Form";
 import mainApi from "../../utils/MainApi";
-import { errorMessage } from './../../utils/constants/constants';
+
+import {
+  errorMessage,
+} from './../../utils/constants/constants';
+
 import { ValidationContext } from './../context/ValidationContext';
 
 function SignIn({
@@ -10,14 +14,18 @@ function SignIn({
   handleIsLoggedIn,
   handleIsLogLink,
   stringifyJSON,
-  parseJSON,
+  getSavedMoviesStorage,
+  getSavedMovies,
+  setEmptySavedMoviesFromStorage,
+  setActiveAuthAfterLogoutStorage,
+  setActiveUserLoggedStorage,
+  setActiveReloadedPageStorage,
+  setCurrentUser,
 }) {
 
 
   useEffect(() => {
-
     handleIsLogLink();
-
   }, []);
 
 
@@ -31,6 +39,9 @@ function SignIn({
   }, [isRegLink, isMainLink])
 
 
+  const [loggedAfterGetDataProfile, setLoggedAfterGetDataProfile] = useState(false)
+
+  const [isBlockedInput, setIsBlockedInput] = useState(false); // ЗАБЛОКИРОВАНЫ ЛИ ПОЛЯ, ВО ВРЕМЯ ЗАПРОСА
 
   const [errorSubmitMessage, setErrorSubmitMessage] = useState('')
 
@@ -39,30 +50,53 @@ function SignIn({
   const { errors, values, handleClickAtInputActive } = handler;
 
   const emailError = errors().email;
-  const emailValue = values().email;
 
   const passwordError = errors().password;
-  const passwordValue = values().password;
 
+
+  // АВТОРИЗАЦИЯ, ТОЛЬКО ПОСЛЕ ПОЛУЧЕНИЯ ПРОФАЙЛА
+  useEffect(() => {
+    if (loggedAfterGetDataProfile) {
+      setLoggedAfterGetDataProfile(false);
+      return handleIsLoggedIn();
+    }
+    return;
+  }, [loggedAfterGetDataProfile])
+
+
+  // ПОЛУЧЕНИЕ ДАННЫХ ПРОФАЙЛА
+  function getDataUser() {
+    mainApi.getUserData()
+      .then((data) => {
+        localStorage.setItem('dataUser', stringifyJSON(data.user));
+        return setLoggedAfterGetDataProfile(true);
+      })
+      .catch((err) => { console.log(err) })
+  }
 
 
   // АУТЕНТИФИКАЦИЯ ПОЛЬЗОВАТЕЛЯ
   function handleSubmitSignIn(e) {
 
+    setIsBlockedInput(true)
+
     e.preventDefault()
+    const emailValue = values().email;
+    const passwordValue = values().password;
 
     mainApi.signIn(emailValue, passwordValue)
-      .then((res) => {
-
-        if (!parseJSON(localStorage.getItem('savedMovies'))) {
-          localStorage.setItem('savedMovies', stringifyJSON([]));
+      .then((dataUser) => {
+        getDataUser(); // ПОЛУЧЕНИЕ ДАННЫХ ПРОФАЙЛА
+        if (!getSavedMoviesStorage()) {
+          setEmptySavedMoviesFromStorage();
         }
-        localStorage.setItem('authAfterLogoutActive', stringifyJSON(true))
-        localStorage.setItem('dataUser', stringifyJSON(res))
-        localStorage.setItem('userLogged', stringifyJSON(true))
-        localStorage.setItem('reloadedPage', stringifyJSON(true))
-
-        return handleIsLoggedIn();
+        getSavedMovies(); // ЕСЛИ НЕТ СОХРАНЁННЫХ, ТО ЗАПИШЕТ ПУСТОЙ МАССИВ
+        setActiveAuthAfterLogoutStorage();
+        setActiveUserLoggedStorage();
+        setActiveReloadedPageStorage();
+        setCurrentUser(dataUser);
+        setIsBlockedInput(false)
+        return;
       })
       .catch((err) => {
 
@@ -76,7 +110,8 @@ function SignIn({
             )
           }
         })
-        return console.log(err);
+        console.log(err);
+        return setIsBlockedInput(false)
       })
   }
 
@@ -88,11 +123,11 @@ function SignIn({
       <Form errorSubmitMessage={errorSubmitMessage} buttonName="Войти" handleSubmit={handleSubmitSignIn} regQuestion="Ещё не зарегистрированы?" inOrup="up" regOrLogin="Регистрация">
         <div className="form__input-box">
           <label htmlFor="email" className="form__label">E-mail</label>
-          <input name="email" type="email" className="form__input" maxLength="43" required></input>
+          <input disabled={isBlockedInput && true} name="email" type="email" className="form__input" maxLength="43" required></input>
           <span htmlFor="email" className={`form__not-valid ${emailError && 'form__not-valid_active'}`}>{emailError}</span>
 
           <label htmlFor="password" className="form__label">Пароль</label>
-          <input name="password" type="password" className="form__input" minLength="7" maxLength="30" autoComplete="off" required></input>
+          <input disabled={isBlockedInput && true} name="password" type="password" className="form__input" minLength="7" maxLength="30" autoComplete="off" required></input>
           <span className={`form__not-valid ${passwordError} && 'form__not-valid_active'}`}>{passwordError}</span>
         </div>
       </Form>

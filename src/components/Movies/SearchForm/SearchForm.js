@@ -12,6 +12,7 @@ function SearchForm({
 
   let valueInput = React.createRef();
 
+
   // ВКЛЮЧИЛИ ТАЙМЕР
   function handleSetTimerActive() {
     setTimer(true)
@@ -29,14 +30,6 @@ function SearchForm({
       handleValueInputSearchForm(valueInput.current.value)
     }
   }
-
-
-
-
-
-
-
-
 
 
   return (
