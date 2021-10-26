@@ -7,7 +7,6 @@ class MainApi {
 
   // АУТЕНТИФИКАЦИЯ ПОЛЬЗОВАТЕЛЯ
   signIn(email, password) {
-
     return fetch(`${this.baseUrl}/signin`, {
       method: 'POST',
       withCredentials: true,
@@ -27,7 +26,6 @@ class MainApi {
 
   // РЕДАКТИРОВАНИЕ ДАННЫХ ПОЛЬЗОВАТЕЛЯ
   editUserData(data) {
-    console.log(data)
     return fetch(`${this.baseUrl}/users/me`, {
       method: 'PATCH',
       withCredentials: true,
@@ -43,7 +41,7 @@ class MainApi {
       .then((res) => { return this._getResponse(res) })
   };
 
-  
+
 
   // ПОЛУЧЕНИЕ ДАННЫХ ПРОФАЙЛА
   getUserData(data) {
@@ -69,7 +67,6 @@ class MainApi {
 
   // РЕГИСТРАЦИЯ ПОЛЬЗОВАТЕЛЯ
   signUp(email, password, name) {
-
     return fetch(`${this.baseUrl}/signup`, {
       method: 'POST',
       credentials: 'include',
@@ -140,7 +137,6 @@ class MainApi {
 
 
   _getResponse(res) {
-
     if (!res.ok) {
       return Promise.reject(`${res.status}`)
     }
