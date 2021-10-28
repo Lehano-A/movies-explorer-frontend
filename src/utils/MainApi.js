@@ -47,6 +47,7 @@ class MainApi {
   getUserData(data) {
     return fetch(`${this.baseUrl}/users/me`, {
       method: 'GET',
+      withCredentials: true,
       credentials: 'include',
     })
       .then((res) => { return this._getResponse(res) })
@@ -69,8 +70,8 @@ class MainApi {
   signUp(email, password, name) {
     return fetch(`${this.baseUrl}/signup`, {
       method: 'POST',
+      withCredentials: true,
       credentials: 'include',
-
       headers: {
         'Content-Type': 'application/json',
       },
@@ -89,6 +90,7 @@ class MainApi {
   getSavedMovies() {
     return fetch(`${this.baseUrl}/movies`, {
       method: 'GET',
+      withCredentials: true,
       credentials: 'include',
     })
       .then((res) => { return this._getResponse(res) })
@@ -100,6 +102,7 @@ class MainApi {
   saveMovie(data) {
     return fetch(`${this.baseUrl}/movies`, {
       method: 'POST',
+      withCredentials: true,
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
@@ -127,6 +130,7 @@ class MainApi {
   deleteSavedMovie(idCard) {
     return fetch(`${this.baseUrl}/movies/${idCard}`, {
       method: 'DELETE',
+      withCredentials: true,
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',

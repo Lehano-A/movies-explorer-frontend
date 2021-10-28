@@ -26,6 +26,7 @@ function Profile({
   setCurrentSearchMoviesFromApi,
   setCurrentSearchInLocalSavedMovies,
   setIsSubmitProfileDisabled,
+  setCurrentUser
 }) {
 
 
@@ -83,6 +84,7 @@ function Profile({
         setTitleName(nameValue)
         setIsSubmitProfileDisabled(true)
         localStorage.setItem('dataUser', stringifyJSON(user))
+        setCurrentUser(parseJSON(localStorage.getItem('dataUser')))
         return setIsBlockedInput(false)
       })
       .catch((err) => {
@@ -117,6 +119,7 @@ function Profile({
         setIsMoviesNotFound(false) // УБИРАЕМ НАДПИСЬ - "НИЧЕГО НЕ НАЙДЕНО"
         setCurrentSearchMoviesFromApi(false) // СИГНАЛ, ЧТО ПОИСК ОТ API
         setCurrentSearchInLocalSavedMovies(false) // СИГНАЛ, ЧТО ПОИСК ЛОКАЛЬНЫЙ
+        localStorage.removeItem('timeBetweenRequests')
         localStorage.removeItem('reloadedPage')
         localStorage.removeItem('dataUser');
         localStorage.removeItem('userLogged');

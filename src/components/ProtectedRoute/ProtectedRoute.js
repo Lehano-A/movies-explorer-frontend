@@ -8,7 +8,7 @@ function ProtectedRoute(props) {
 
   return (
     <Route path={props.path} >
-      {userAuthorized ? props.children : (<Redirect to="/signin" />)}
+      {userAuthorized ? props.children : (<Redirect to="/" />)}
     </Route>
   )
 }

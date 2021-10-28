@@ -25,6 +25,7 @@ import mainApi from '../../utils/MainApi';
 import moviesApi from '../../utils/MoviesApi';
 import Error from '../Error/Error';
 
+
 function App() {
 
   const [isMainLink, setIsMainLink] = useState(false)
@@ -37,7 +38,6 @@ function App() {
   const [isProfileMenu, setIsProfileMenu] = useState(false)
   const [isFirstCountCards, setIsFirstCountCards] = useState(false) // ПЕРВИЧНЫЙ ОТБОР КАРТОЧЕК?
   const [isMoviesNotFound, setIsMoviesNotFound] = useState(false) // НИ ОДИН ФИЛЬМ ПО ЗАПРОСУ НЕ НАЙДЕН (MoviesCardList) - /movies и /saved-movies
-  const [localSavedMovies, setLocalSavedMovies] = useState([]) // ФИЛЬМЫ ЗАПИСАННЫЕ ИЗ ХРАНИЛИЩА
   const [isLikeRemoved, setIsLikeRemoved] = useState(false); //  БЫЛ ЛИ СНЯТ ЛАЙК С КАРТОЧКИ - ФЛАГ ДЛЯ /saved-movies
   const [firstLoggingUser, setFirstLoggingUser] = useState(false) // ПЕРВЫЙ ЛИ ЛОГИН, ПОСЛЕ РЕГИСТРАЦИИ
 
@@ -55,6 +55,7 @@ function App() {
   function getMoviesFromStorage() {
     return parseJSON(localStorage.getItem('movies'));
   }
+
 
   // ПОЛУЧЕНИЕ ВСЕХ СОХРАНЁННЫХ ФИЛЬМОВ ИЗ ХРАНИЛИЩА
   function getSavedMoviesStorage() {
@@ -98,11 +99,12 @@ function App() {
     return localStorage.setItem('savedMovies', stringifyJSON([]))
   }
 
-
+  const [timeBetweenRequestsStorage, setTimeBetweenRequestsStorage] = useState(false); // МОЖНО ЛИ ДЕЛАТЬ НОВЫЙ ЗАПРОС К СЕРВЕРУ ЗА ФИЛЬМАМИ
   const [isPressedSubmitSearchForm, setIsPressedSubmitSearchForm] = useState(false) // НАЖАТА ЛИ КНОПКА САБМИТА ПОИСКА ФИЛЬМОВ
   const [isPreloaderActive, setIsPreloaderActive] = useState(false)// ВКЛЮЧЁН ЛИ ПРЕЛОАДЕР
   const [windowBrowserClosed, setWindowBrowserClosed] = useState({ closed: false, againOpened: false })
   const [isReloadedPage, setIsReloadedPage] = useState(false) // ЗАЛОГИНИЛСЯ ЛИ ПОЛЬЗОВАТЕЛЬ, ПОСЛЕ ЛОГАУТА
+  const [nullApiStep, setNullApiStep] = useState(false) // ПЕРВЫЙ ФЛАГ ДЛЯ САБМИТА, ПОСЛЕ ЕГО НАЖАТИЯ
   const [firstApiStep, setFirstApiStep] = useState(false)
   const [secondApiStep, setSecondApiStep] = useState(false)
   const [fifthApiStep, setFifthStep] = useState(false)
@@ -208,23 +210,6 @@ function App() {
   }, [])
 
 
-  // ОБРАБОТЧИК ЛОКАЛЬНОГО ОБНОВЛЕНИЯ СОХРАНЁННЫХ ФИЛЬМОВ
-  // ЕСЛИ НЕТ ФИЛЬТРА И БЫЛ НАЖАТ САБМИТ (ИЛИ КНОПКА ФИЛЬТРА)
-  function handleLocalSavedMovies(data) {
-    if (isLoggedIn) {
-      return setLocalSavedMovies(data)
-    }
-  }
-
-
-  // ОЧИЩЕНИЕ ЛОКАЛЬНЫХ ПЕРЕМЕННЫХ ОТВЕЧАЮЩИЕ ЗА ФИЛЬМЫ ИЗ ХРАНИЛИЩА
-  function clearLocalVars() {
-    setLocalMoviesAfterSearch([])
-    setLocalMoviesBoxForShow([]) // ОЧИЩАЕМ ЛОКАЛЬНЫЙ МАССИВ ПОСЛЕ ПОИСКА
-    setFilterSearchShortFromLocal([])
-  }
-
-
   // ПЕРВОЕ ПОСЕЩЕНИЕ ПОЛЬЗОВАТЕЛЯ (signin) - НЕАКТИВНО
   function handleSetFirstLoggingUserNotActive() {
     setFirstLoggingUser(false)
@@ -244,12 +229,12 @@ function App() {
   }, [])
 
 
-  // ПОЛУЧЕНИЕ СОХРАНЁННЫХ ФИЛЬМОВ
+  // ПОЛУЧЕНИЕ ФИЛЬМОВ С ЛАЙКОМ
   function getSavedMovies() {
 
     mainApi.getSavedMovies()
       .then((movies) => {
-        handleLocalSavedMovies(movies);
+        // handleLocalSavedMovies(movies);
         localStorage.setItem('savedMovies', JSON.stringify(movies));
         return setIsLoadedSavedMovies(true) // СООБЩАЕМ, ЧТО КАРТОЧКИ ЗАГРУЖЕНЫ В ЛОКАЛЬНОЕ ХРАНИЛИЩЕ
       })
@@ -473,16 +458,15 @@ function App() {
     }
   }, [isReloadedPage])
 
-
+  const [isFilterShortMoviesDisabled, setIsFilterShortMoviesDisabled] = useState(false)
 
   // ЧЕКБОКС "КОРОТКОМЕТРАЖКИ" - ВКЛЮЧЕНО/ВЫКЛЮЧЕНО
   function handleSetIsFilterShortMovies(e) {
     const isAfterRegBeforeFirstSubmit = getAfterRegBeforeFirstSubmitStorage();
     const savedMoviesStorage = getSavedMoviesStorage();
-
     if (!isAfterRegBeforeFirstSubmit && savedMoviesStorage) { // БЫЛ ЛИ ПЕРВЫЙ САБМИТ, ПОСЛЕ РЕГИСТРАЦИИ?
       if (!timerFilterShortMovies) {
-
+        setIsFilterShortMoviesDisabled(true)
         handleSetTimerFilterShortMoviesActive() // ВКЛЮЧИЛИ ТАЙМЕР
         setTimeout(setTimerFilterShortMovies, 500, false);
 
@@ -500,7 +484,6 @@ function App() {
   function handleGetMovies() {
     moviesApi.getMovies()
       .then((data) => {
-
         setMoviesFromApi(data); // ЗАПИСЫВАЕМ ВСЕ ФИЛЬМЫ ИЗ API
         localStorage.setItem('movies', JSON.stringify(data)); // ДУБЛИРУЕМ В ЛОКАЛЬНОЕ ХРАНИЛИЩЕ
         setFirstApiStep(true)
@@ -544,6 +527,7 @@ function App() {
   // 2.2
   // ПОИСК ФИЛЬМОВ ПО ЗНАЧЕНИЮ ИЗ ПОЛЯ - /saved-movies
   function handleSearchInLocalSavedMoviesByValue() {
+
     moviesFromLocal.forEach((movie) => {
       const valueFromInputSearch = movie.nameRU.trim().toLowerCase().includes(valueInputSearchForm);
       const { duration } = movie;
@@ -555,6 +539,43 @@ function App() {
       }
     })
     setSecondLocalStep(true)
+  }
+
+  const [canMakeRequestToServer, setCanMakeRequestToServer] = useState(null);
+
+
+
+  // ПРОВЕРКА ПРОЙДЕННОГО ВРЕМЕНИ МЕЖДУ ЗАПРОСАМИ К СЕРВЕРУ ЗА ФИЛЬМАМИ
+  function checkTimeBetweenRequests() {
+    // КЛЮЧ:
+    // ЗАФИКСИРОВАННОЕ ВРЕМЯ ПРИ ПЕРВОМ ОБРАЩЕНИИ К СЕРВЕРУ ЗА ФИЛЬМАМИ + 3600000 МС (1 ЧАС)
+    // ТО ВРЕМЯ, ПО ИСТЕЧЕНИИ КОТОРОГО, БУДЕТ ПРОИЗВЕДЁН ЗАПРОС К СЕРВЕРУ ПРИ ОЧЕРЕДНОМ САБМИТЕ
+    const timeStorage = parseJSON(localStorage.getItem('timeBetweenRequests'))
+
+    if (timeStorage) { // ЕСЛИ КЛЮЧ ЕСТЬ
+      const currentTime = Date.now();
+
+      const checkTime = timeStorage - currentTime;
+
+      if (checkTime > 0) { // ЕСЛИ ОСТАЛОСЬ КАКОЕ-ТО ВРЕМЯ, ТОГДА ЗАПРОС К ФИЛЬМАМ БУДЕТ ПРОИСХОДИТЬ В ХРАНИЛИЩЕ
+
+        const moviesSto = parseJSON(localStorage.getItem('movies'))
+
+        setMoviesFromApi(moviesSto)
+        setIsLoadedSavedMovies(true) // СООБЩАЕМ, ЧТО КАРТОЧКИ ЗАГРУЖЕНЫ В ЛОКАЛЬНОЕ ХРАНИЛИЩЕ
+        setCanMakeRequestToServer(false)       
+        return;
+      }
+      if (checkTime <= 0) { // ЕСЛИ ВРЕМЯ ПРОШЛО        
+        setTimeBetweenRequestsStorage(true) // МОЖНО ДЕЛАТЬ НОВЫЙ ЗАПРОС
+        return localStorage.setItem('timeBetweenRequests', stringifyJSON(Date.now() + 30000))
+      }
+    }
+
+    if (!timeStorage) { // ЕСЛИ КЛЮЧА НЕТ
+      localStorage.setItem('timeBetweenRequests', stringifyJSON(Date.now() + 30000))
+      setTimeBetweenRequestsStorage(true) // МОЖНО ДЕЛАТЬ НОВЫЙ ЗАПРОС
+    }
   }
 
 
@@ -570,16 +591,15 @@ function App() {
       }
 
       handleIsReloadedPageActive()
-      parseJSON(localStorage.getItem('movies'))
-      setEmptyMoviesFromStorage();
       setFifthStep(false)
       setShowAllSavedCards(false);
       handleSubmitFixedStateFilter() // ПРОВЕРЯЕМ СТАТУС ЧЕКБОКСА - БЕРЁМ ЕГО В РАБОТУ ИЛИ НЕТ
       setMoviesBoxForMore([]);
       setFoundMoviesAfterSearchApi([]);
-      setMoviesFromApi([]);
       setFilterAfterSearchShortFromApi([]);
       handleSetIsFirstCoundCardsActive();
+      setCanMakeRequestToServer(null)
+      setTimeBetweenRequestsStorage(false) // ДЕФОЛТИМ ВРЕМЯ ОБРАЩЕНИЯ К СЕРВЕРУ
       setIsMoviesNotFound(false) // УБИРАЕМ НАДПИСЬ - "НИЧЕГО НЕ НАЙДЕНО"
       setCurrentSearchMoviesFromApi(false) // СИГНАЛ, ЧТО ПОИСК ОТ API
       setCurrentSearchInLocalSavedMovies(false) // СИГНАЛ, ЧТО ПОИСК ЛОКАЛЬНЫЙ
@@ -603,30 +623,50 @@ function App() {
       setCurrentSearchMoviesFromApi(true) // СООБЩАЕМ, ЧТО БУДЕТ ПРОИСХОДИТЬ ПОИСК ПО КАРТОЧКАМ ОТ API
 
       if (windowBrowserClosed.againOpened) {
-
         setFirstApiStep(true)
         return
       }
 
-      handleGetMovies() // ПОЛУЧЕНИЕ ВСЕХ ФИЛЬМОВ ИЗ API - /movies
+      checkTimeBetweenRequests() // ПРОВЕРКА ПРОЙДЕННОГО ВРЕМЕНИ МЕЖДУ ЗАПРОСАМИ К СЕРВЕРУ ЗА ФИЛЬМАМИ
+      setNullApiStep(true)
+
+      return
     }
   }, [isPressedSubmitSearchForm]) // ОТСЛЕЖИВАЕМ НАЖАТИЕ САБМИТА ПОИСКА ФИЛЬМОВ
 
 
 
+  // ЕСЛИ ШАГ 1 ЗАВЕРШЁН
+  useEffect(() => {
+
+    if (nullApiStep) {
+      if (timeBetweenRequestsStorage) { // ЕСЛИ МОЖНО ДЕЛАТЬ НОВЫЙ ЗАПРОС К СЕРВЕРУ       
+        setNullApiStep(false)
+        return handleGetMovies() // ПОЛУЧЕНИЕ ВСЕХ ФИЛЬМОВ ИЗ API - /movies
+      }
+
+      setNullApiStep(false)
+      setFirstApiStep(true)
+      return
+    }
+  }, [nullApiStep])
+
+
+
   // 2
   // ПОИСК КАРТОЧЕК ПО ЗНАЧЕНИЮ ИЗ ПОЛЯ
-  useEffect(() => { // ЕСЛИ ИЩЕМ В СОХРАНЁННЫХ КАРТОЧКАХ ИЛИ ПОЛУЧИЛИ ФИЛЬМЫ ОТ API + ЕСТЬ ЗНАЧЕНИЕ В ПОЛЕ ВВОДА
+  useEffect(() => { // ЕСЛИ ИЩЕМ В СОХРАНЁННЫХ КАРТОЧКАХ ИЛИ ПОЛУЧИЛИ ФИЛЬМЫ ОТ API ИЛИ В ХРАНИЛИЩЕ
 
-    if ((firstApiStep || secondLocalStep) && (moviesFromApi || moviesFromLocal)) {
+    if ((firstApiStep || secondLocalStep) && (moviesFromApi || moviesFromLocal || canMakeRequestToServer)) {
       setFirstApiStep(false)
+      setIsLoadedSavedMovies(true)
 
-      // ЕСЛИ ПОИСК В ЛОКАЛЬНЫХ ФИЛЬМАХ
+      // ЕСЛИ ПОИСК В ЛОКАЛЬНЫХ ФИЛЬМАХ   
       handleSubmitSearchFormNotActive(); // ДЕФОЛТИМ САБМИТ ПОИСКА ФИЛЬМОВ
       handleSetPreloaderNotActive(); // ВЫКЛЮЧАЕМ ПРЕЛОАДЕР
       handleSearchMoviesApiByValue() // 2 ШАГ - ПОИСК КАРТОЧЕК ПО ЗНАЧЕНИЮ ИЗ ПОЛЯ ВВОДА - ОБЩЕЕ
     }
-  }, [firstApiStep, moviesFromApi, moviesFromLocal, secondLocalStep])
+  }, [firstApiStep, moviesFromApi, moviesFromLocal, secondLocalStep, canMakeRequestToServer])
 
 
 
@@ -724,7 +764,6 @@ function App() {
   // 4
   // ПРОВЕРКА ПАРАМЕТРОВ И РАБОТА ОТБОРА КАРТОЧЕК КНОПКОЙ "ЕЩЁ"
   function handleCountCards() {
-
     let movies = null;
 
     if (isReloadedPage && pathesPages.moviesUrl) {
@@ -802,7 +841,6 @@ function App() {
   // РАБОТА КНПОКИ "ЕЩЁ" - ОТОБРАЖЕНИЕ ОТОБРАННЫХ КАРТОЧЕК
   function handleSelectedCards() {
     const { movies, quantity } = parametersForShowCards;
-
     const pickedAnyCards = movies.splice(0, quantity);
 
     let currentNumberCards = [];
@@ -883,7 +921,7 @@ function App() {
     return errors;
   }
 
-  
+
   function getValueInput() {
     return values;
   }
@@ -901,7 +939,6 @@ function App() {
     }
     return isValid;
   }
-
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -964,8 +1001,9 @@ function App() {
                     handleIsLoggedIn={handleIsLoggedIn}
                     handleIsLogLink={handleIsLogLink}
                     stringifyJSON={stringifyJSON}
-                    getSavedMoviesStorage={getSavedMoviesStorage}
                     getSavedMovies={getSavedMovies}
+                    getMoviesFromStorage={getMoviesFromStorage}
+                    getSavedMoviesStorage={getSavedMoviesStorage}
                     setEmptySavedMoviesFromStorage={setEmptySavedMoviesFromStorage}
                     setActiveAuthAfterLogoutStorage={setActiveAuthAfterLogoutStorage}
                     setActiveUserLoggedStorage={setActiveUserLoggedStorage}
@@ -986,7 +1024,7 @@ function App() {
                   isFilterShortMovies={isFilterShortMovies}
                   isLoadedSavedMovies={isLoadedSavedMovies}
                   moviesFromApi={moviesFromApi}
-                  handleLocalSavedMovies={handleLocalSavedMovies}
+                  // handleLocalSavedMovies={handleLocalSavedMovies}
                   getSavedMovies={getSavedMovies}
                   setIsLoadedSavedMovies={setIsLoadedSavedMovies}
                   fifthApiStep={fifthApiStep}
@@ -1010,6 +1048,9 @@ function App() {
                   setActiveAfterRegBeforeFirstSubmitStorage={setActiveAfterRegBeforeFirstSubmitStorage}
                   handleIsReloadedPageActive={handleIsReloadedPageActive}
                   setIsLikeRemoved={setIsLikeRemoved}
+                  timerFilterShortMovies={timerFilterShortMovies}
+                  isFilterShortMoviesDisabled={isFilterShortMoviesDisabled}
+                  setIsFilterShortMoviesDisabled={setIsFilterShortMoviesDisabled}
                 />
               </ProtectedRoute>
 
@@ -1033,6 +1074,7 @@ function App() {
                   setCurrentSearchMoviesFromApi={setCurrentSearchMoviesFromApi}
                   setCurrentSearchInLocalSavedMovies={setCurrentSearchInLocalSavedMovies}
                   setIsSubmitProfileDisabled={setIsSubmitProfileDisabled}
+                  setCurrentUser={setCurrentUser}
                 />
               </ProtectedRoute>
 
@@ -1051,19 +1093,20 @@ function App() {
                   isSavedMoviesLink={isSavedMoviesLink}
                   isProfileMenu={isProfileMenu}
                   localMoviesBoxForShow={localMoviesBoxForShow}
-                  localSavedMovies={localSavedMovies}
-                  handleLocalSavedMovies={handleLocalSavedMovies}
                   getSavedMovies={getSavedMovies}
                   handleOpenPopup={handleOpenPopup}
                   handleIsSavedMoviesLink={handleIsSavedMoviesLink}
                   handleButtonCloseMenuProfile={handleButtonCloseMenuProfile}
-                  clearLocalVars={clearLocalVars}
                   setFilterSearchShortFromLocal={setFilterSearchShortFromLocal}
-                  setLocalMoviesBoxForShow={setLocalMoviesBoxForShow}
-                  localMoviesAfterSearch={localMoviesAfterSearch}
                   setMoviesFromLocal={setMoviesFromLocal}
                   isLikeRemoved={isLikeRemoved}
                   setIsLikeRemoved={setIsLikeRemoved}
+                  setLocalMoviesAfterSearch={setLocalMoviesAfterSearch}
+                  valueInputSearchForm={valueInputSearchForm}
+                  timerFilterShortMovies={timerFilterShortMovies}
+                  isFilterShortMoviesDisabled={isFilterShortMoviesDisabled}
+                  setIsFilterShortMoviesDisabled={setIsFilterShortMoviesDisabled}
+                  setLocalMoviesBoxForShow={setLocalMoviesBoxForShow}
                 />
               </ProtectedRoute>
 

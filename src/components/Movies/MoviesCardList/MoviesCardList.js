@@ -9,8 +9,6 @@ function MoviesCardList({
   isMoviesNotFound,
   cards,
   isLoadedSavedMovies,
-  localSavedMovies,
-  handleLocalSavedMovies,
   getSavedMovies,
   setIsLoadedSavedMovies,
   isSavedMoviesLink,
@@ -18,7 +16,8 @@ function MoviesCardList({
   handleSetIsLikedCard,
   handleDeleteMovies,
   handleDeleteCardfromDOM,
-  setIsLikeRemoved
+  setIsLikeRemoved,
+  isFilterShortMovies,
 }) {
 
 
@@ -53,13 +52,12 @@ function MoviesCardList({
                 isLoadedSavedMovies={isLoadedSavedMovies}
                 setIsLoadedSavedMovies={setIsLoadedSavedMovies}
                 getSavedMovies={getSavedMovies}
-                localSavedMovies={localSavedMovies}
-                handleLocalSavedMovies={handleLocalSavedMovies}
                 handleOpenPopup={handleOpenPopup}
                 handleSetIsLikedCard={handleSetIsLikedCard}
                 handleDeleteMovies={handleDeleteMovies}
                 handleDeleteCardfromDOM={handleDeleteCardfromDOM}
                 setIsLikeRemoved={setIsLikeRemoved}
+                isFilterShortMovies={isFilterShortMovies}              
                 key={checkId(card)}
                 card={card}
               />

@@ -14,13 +14,14 @@ function SignIn({
   handleIsLoggedIn,
   handleIsLogLink,
   stringifyJSON,
+  getMoviesFromStorage,
   getSavedMoviesStorage,
   getSavedMovies,
   setEmptySavedMoviesFromStorage,
   setActiveAuthAfterLogoutStorage,
   setActiveUserLoggedStorage,
   setActiveReloadedPageStorage,
-  setCurrentUser,
+  setCurrentUser,  
 }) {
 
 
@@ -87,10 +88,15 @@ function SignIn({
     mainApi.signIn(emailValue, passwordValue)
       .then((dataUser) => {
         getDataUser(); // ПОЛУЧЕНИЕ ДАННЫХ ПРОФАЙЛА
-        if (!getSavedMoviesStorage()) {
-          setEmptySavedMoviesFromStorage();
+
+        if (!getSavedMoviesStorage()) { // ЕСЛИ НЕТ В ХРАНИЛИЩЕ СОХРАНЁННЫХ ФИЛЬМОВ
+          setEmptySavedMoviesFromStorage(); // СОЗДАЁМ ПУСТОЙ МАССИВ
         }
-        getSavedMovies(); // ЕСЛИ НЕТ СОХРАНЁННЫХ, ТО ЗАПИШЕТ ПУСТОЙ МАССИВ
+        if (!getMoviesFromStorage()) { // ЕСЛИ НЕТ В ХРАНИЛИЩЕ ФИЛЬМОВ          
+          getSavedMovies(); // ТОГДА СКАЧИВАЕМ МАССИВ С СЕРВЕРА
+                            // ЕСЛИ НЕТ И НА СЕРВЕРЕ, ТО СОЗДАСТСЯ ПУСТОЙ МАССИВ
+        }
+
         setActiveAuthAfterLogoutStorage();
         setActiveUserLoggedStorage();
         setActiveReloadedPageStorage();

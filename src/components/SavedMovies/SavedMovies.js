@@ -20,7 +20,6 @@ function SavedMovies({
   isProfileMenu,
   localMoviesBoxForShow,
   localSavedMovies,
-  handleLocalSavedMovies,
   getSavedMovies,
   handleOpenPopup,
   handleDeleteMovies,
@@ -30,7 +29,12 @@ function SavedMovies({
   setLocalMoviesBoxForShow,
   setMoviesFromLocal,
   isLikeRemoved,
-  setIsLikeRemoved,
+  setIsLikeRemoved,  
+  setLocalMoviesAfterSearch,
+  valueInputSearchForm,
+  timerFilterShortMovies,
+  isFilterShortMoviesDisabled,
+  setIsFilterShortMoviesDisabled
 }) {
 
 
@@ -43,26 +47,32 @@ function SavedMovies({
   }, [])
 
 
-  // УДАЛЕНИЕ КАРТОЧКИ ИЗ DOM
-  function handleDeleteCardfromDOM(id) {
-
-    setMovies((prevCards) => {
+  // ФИЛЬТР УДАЛЁННОЙ КАРТОЧКИ ИЗ МАССИВ
+  function filterCard(handle, id) {
+    handle((prevCards) => {
       const filterCards = prevCards.filter((card) => {
         if (card._id !== id) {
           return card;
         }
       })
-      setIsDeleteComplete(true);
       return [...filterCards];
     })
+  }
+
+
+  // УДАЛЕНИЕ КАРТОЧКИ ИЗ DOM
+  function handleDeleteCardfromDOM(id) {
+    filterCard(setMovies, id)
+    filterCard(setMoviesFromLocal, id)
+    setIsDeleteComplete(true)
+    return;
   }
 
 
   // ЕСЛИ УДАЛИЛИ КАРТОЧКУ ИЛИ СНЯЛИ ЛАЙК
   useEffect(() => {
     if (isDeleteComplete || isLikeRemoved) {
-
-      setMoviesFromLocal(movies)
+      setLocalMoviesAfterSearch(movies)
       setFilterSearchShortFromLocal(movies)
       setLocalMoviesBoxForShow(movies)
       setIsLikeRemoved(false)
@@ -74,18 +84,18 @@ function SavedMovies({
   useEffect(() => {
     if (localSavedMovies || localMoviesBoxForShow || filterSearchShortFromLocal) {
 
-      // ЕСЛИ ПОИСК ТОЛЬКО ПО САБМИТУ (БЕЗ ФИЛЬТРА)
-      if (!isFilterShortMovies && currentSearchInLocalSavedMovies) {
+      // БЕЗ САБМИТА - ЕСЛИ ВЫКЛЮЧИЛИ ФИЛЬТР
+      if (!isFilterShortMovies && currentSearchInLocalSavedMovies && valueInputSearchForm) {
         setMovies(localMoviesBoxForShow)
         return
       }
 
-      // ЕСЛИ НЕТ ФИЛЬТРА И БЫЛА НАЖАТА КНОПКА ФИЛЬТРА
+      // САБМИТ - ЕСЛИ НЕТ ФИЛЬТРА
       if (!isSubmitFixedStateFilter && currentSearchInLocalSavedMovies) {
-        return setMovies(localSavedMovies)
+        return setMovies(moviesFromLocal)
       }
 
-      // ЕСЛИ ЕСТЬ ФИЛЬТР И БЫЛА НАЖАТА КНОПКА ФИЛЬТРА
+      // БЕЗ САБМИТА - ЕСЛИ ВКЛЮЧИЛИ ФИЛЬТР
       if (isSubmitFixedStateFilter && currentSearchInLocalSavedMovies) {
         return setMovies(filterSearchShortFromLocal)
       }
@@ -109,6 +119,9 @@ function SavedMovies({
       <SearchForm
         resultSearchMovies={resultSearchMovies}
         isFilterShortMovies={isFilterShortMovies}
+        isFilterShortMoviesDisabled={isFilterShortMoviesDisabled}
+        setIsFilterShortMoviesDisabled={setIsFilterShortMoviesDisabled}
+        timerFilterShortMovies={timerFilterShortMovies}
         handleSetIsFilterShortMovies={handleSetIsFilterShortMovies}
         handleValueInputSearchForm={handleValueInputSearchForm}
         handleSetSubmitSearchFormActive={handleSetSubmitSearchFormActive}
@@ -120,13 +133,13 @@ function SavedMovies({
         isPreloaderActive={isPreloaderActive}
         isMoviesNotFound={isMoviesNotFound}
         isSavedMoviesLink={isSavedMoviesLink}
-        localSavedMovies={localSavedMovies}
-        handleLocalSavedMovies={handleLocalSavedMovies}
         getSavedMovies={getSavedMovies}
         handleOpenPopup={handleOpenPopup}
         handleDeleteCardfromDOM={handleDeleteCardfromDOM}
         handleDeleteMovies={handleDeleteMovies}
         setIsLikeRemoved={setIsLikeRemoved}
+        isFilterShortMovies={isFilterShortMovies}
+
       />
     </>
   )

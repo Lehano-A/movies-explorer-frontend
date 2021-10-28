@@ -306,7 +306,6 @@ function MoviesCard({
   // 3 - DELETE
   // API УДАЛЕНИЯ ФИЛЬМА ИЗ СОХРАНЁННЫХ
   function deleteMovie() {
-
     mainApi.deleteSavedMovie(idCard)
       .then(() => {
         handlePressButtonSaveNotPressed() // ДЕФОЛТИМ СОСТОЯНИЕ КНОПКИ
@@ -315,7 +314,6 @@ function MoviesCard({
         if (isSavedMoviesLink) { // ЕСЛИ ОТКРЫТА СТРАНИЦА /saved-movies
           handleDeleteCardfromDOM(idCard); // УДАЛЯЕМ КАРТОЧКУ ИЗ DOM
         }
-
         return getSavedMovies() // ОБНОВЛЯЕМ ХРАНИЛИЩЕ
       })
       .catch((err) => {

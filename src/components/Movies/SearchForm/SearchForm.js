@@ -1,15 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
 
 function SearchForm({
   isFilterShortMovies,
+  isFilterShortMoviesDisabled,
+  setIsFilterShortMoviesDisabled,
   isPreloaderActive,
   handleValueInputSearchForm,
   handleSetSubmitSearchFormActive,
   handleSetIsFilterShortMovies,
+  timerFilterShortMovies,
 }) {
 
-  const [timer, setTimer] = useState(false); // ТАЙМЕР НА КНОПКУ СОХРАНЕНИЯ ФИЛЬМА
+  // ТАЙМЕР ДЛЯ КНОПКИ ФИЛЬТРА
+  useEffect(() => {
+    if (!timerFilterShortMovies) {
+      return setIsFilterShortMoviesDisabled(false)
+    }
+  }, [timerFilterShortMovies])
 
+
+  const [timer, setTimer] = useState(false); // ТАЙМЕР НА КНОПКУ СОХРАНЕНИЯ ФИЛЬМА
   let valueInput = React.createRef();
 
 
@@ -43,7 +54,7 @@ function SearchForm({
 
         <div className="search-form__short-films">
           <label className="search-form__label">
-            <input className={`search-form__invisible-checkbox ${isFilterShortMovies && 'search-form__visible-checkbox_active'}`}
+            <input disabled={isFilterShortMoviesDisabled && true} className={`search-form__invisible-checkbox ${isFilterShortMovies && 'search-form__visible-checkbox_active'}`}
               type="checkbox" id="shortFilms" onChange={handleSetIsFilterShortMovies}></input>
             <span className="search-form__visible-checkbox">
               <span className="search-form__switch"></span>

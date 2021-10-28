@@ -116,7 +116,7 @@ function SignUp({
         })
         setSuccessReg(true);
         localStorage.setItem('dataUser', stringifyJSON({ name: user.name, email: user.email }))
-        setActiveAfterRegBeforeFirstSubmitStorage() // УДАЛИТСЯ ТОЛЬКО ПОСЛЕ ТОГО, КАК ОСУЩЕСТВИТСЯ ПЕРВЫЙ ПОИСК
+        setActiveAfterRegBeforeFirstSubmitStorage() // УДАЛИТСЯ ИЗ ХРАНИЛИЩА, КАК ТОЛЬКО ОСУЩЕСТВИТСЯ ПЕРВЫЙ ПОИСК
         setActiveUserLoggedStorage();
         setEmptySavedMoviesFromStorage();
         setActiveAuthAfterLogoutStorage();

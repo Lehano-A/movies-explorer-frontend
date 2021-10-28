@@ -6,7 +6,6 @@ import More from "./More/More";
 import { parseJSON } from './../../utils/helpers/jsonHandler'
 
 function Movies({
-
   isMoviesLink,
   isProfileMenu,
   isPreloaderActive,
@@ -38,6 +37,9 @@ function Movies({
   firstLoggingUser,
   handleIsReloadedPageActive,
   setIsLikeRemoved,
+  isFilterShortMoviesDisabled,
+  setIsFilterShortMoviesDisabled,
+  timerFilterShortMovies,
 }) {
 
   const [movies, setMovies] = useState([])
@@ -100,6 +102,9 @@ function Movies({
       <SearchForm
         isFilterShortMovies={isFilterShortMovies}
         isPreloaderActive={isPreloaderActive}
+        isFilterShortMoviesDisabled={isFilterShortMoviesDisabled}
+        setIsFilterShortMoviesDisabled={setIsFilterShortMoviesDisabled}
+        timerFilterShortMovies={timerFilterShortMovies}
         handleSetIsFilterShortMovies={handleSetIsFilterShortMovies}
         handleValueInputSearchForm={handleValueInputSearchForm}
         handleSetSubmitSearchFormActive={handleSetSubmitSearchFormActive}
@@ -119,6 +124,7 @@ function Movies({
         handleOpenPopup={handleOpenPopup}
         handleShowResultSearchMovies={handleShowResultSearchMovies}
         setIsLikeRemoved={setIsLikeRemoved}
+
       />
 
       <More
