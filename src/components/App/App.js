@@ -568,12 +568,12 @@ function App() {
       }
       if (checkTime <= 0) { // ЕСЛИ ВРЕМЯ ПРОШЛО        
         setTimeBetweenRequestsStorage(true) // МОЖНО ДЕЛАТЬ НОВЫЙ ЗАПРОС
-        return localStorage.setItem('timeBetweenRequests', stringifyJSON(Date.now() + 30000))
+        return localStorage.setItem('timeBetweenRequests', stringifyJSON(Date.now() + 600000)) // 10 МИНУТ
       }
     }
 
     if (!timeStorage) { // ЕСЛИ КЛЮЧА НЕТ
-      localStorage.setItem('timeBetweenRequests', stringifyJSON(Date.now() + 30000))
+      localStorage.setItem('timeBetweenRequests', stringifyJSON(Date.now() + 600000)) // 10 МИНУТ
       setTimeBetweenRequestsStorage(true) // МОЖНО ДЕЛАТЬ НОВЫЙ ЗАПРОС
     }
   }
