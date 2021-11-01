@@ -1,21 +1,25 @@
-const widthWindowForFirstCount = {
+const WidthWindowForFirstCount = {
   big: { from: 1210, quantity: 12 },
   middle: { from: 751, to: 1209, quantity: 8 },
   low: { from: 320, to: 750, quantity: 5 },
 }
 
-const widthWindowForSecondaryCounts = {
+const WidthWindowForSecondaryCounts = {
   big: { from: 1210, quantity: 3 },
   middle: { from: 751, to: 1209, quantity: 2 },
   low: { from: 320, to: 750, quantity: 1 },
 }
 
-const beatFilmUrl = 'https://api.nomoreparties.co'
+const DurationMovie = 40;
 
-const regexEng = /^[\u0400-\u04FF\s-]+$/
-const regexRu = /^[\u0061-\u007A\s-]+$/
+const QuantitySavedMovies = 100;
 
-const errorMessage = {
+const BeatFilmUrl = 'https://api.nomoreparties.co'
+
+const RegexEng = /^[\u0400-\u04FF\s-]+$/
+const RegexRu = /^[\u0061-\u007A\s-]+$/
+
+const ErrorMessage = {
   '400': 'Данный запрос не может быть выполнен.',
   '401': 'Неправильные почта или пароль',
   '403': 'Вы не являетесь владельцем этой карточки',
@@ -24,10 +28,12 @@ const errorMessage = {
 }
 
 export {
-  widthWindowForFirstCount,
-  widthWindowForSecondaryCounts,
-  beatFilmUrl,
-  regexEng,
-  regexRu,
-  errorMessage,
+  WidthWindowForFirstCount,
+  WidthWindowForSecondaryCounts,
+  DurationMovie,
+  QuantitySavedMovies,
+  BeatFilmUrl,
+  RegexEng,
+  RegexRu,
+  ErrorMessage,
 }

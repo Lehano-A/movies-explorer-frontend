@@ -29,12 +29,13 @@ function SavedMovies({
   setLocalMoviesBoxForShow,
   setMoviesFromLocal,
   isLikeRemoved,
-  setIsLikeRemoved,  
+  setIsLikeRemoved,
   setLocalMoviesAfterSearch,
   valueInputSearchForm,
   timerFilterShortMovies,
   isFilterShortMoviesDisabled,
-  setIsFilterShortMoviesDisabled
+  setIsFilterShortMoviesDisabled,
+  handleIsReloadedPageActive
 }) {
 
 
@@ -43,6 +44,7 @@ function SavedMovies({
 
 
   useEffect(() => {
+    handleIsReloadedPageActive();
     return handleIsSavedMoviesLink() // ПЕРЕШЛИ НА СТРАНИЦУ - /saved-movies
   }, [])
 
@@ -81,6 +83,7 @@ function SavedMovies({
   }, [isDeleteComplete, isLikeRemoved])
 
 
+  
   useEffect(() => {
     if (localSavedMovies || localMoviesBoxForShow || filterSearchShortFromLocal) {
 

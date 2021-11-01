@@ -42,9 +42,9 @@ class MainApi {
   };
 
 
-
+  
   // ПОЛУЧЕНИЕ ДАННЫХ ПРОФАЙЛА
-  getUserData(data) {
+  getUserData() {
     return fetch(`${this.baseUrl}/users/me`, {
       method: 'GET',
       withCredentials: true,

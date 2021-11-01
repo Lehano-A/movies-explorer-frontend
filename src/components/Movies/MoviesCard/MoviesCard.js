@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import getTimeFromMinutes from '../../../utils/helpers/timeFromMinutes';
 import mainApi from "../../../utils/MainApi";
-import { beatFilmUrl } from '../../../utils/constants/constants';
-import { errorMessage } from './../../../utils/constants/constants';
+import { BeatFilmUrl, ErrorMessage } from '../../../utils/constants/constants';
 
 function MoviesCard({
   isMoviesLink,
@@ -34,7 +33,7 @@ function MoviesCard({
 
   const [isPressedButtonDelete, setIsPressedButtonDelete] = useState(false); // НАЖАТА ЛИ КНОПКА УДАЛЕНИЯ - /saved-movies
 
-  const [timer, setTimer] = useState(false); // ТАЙМЕР НА КНОПКУ СОХРАНЕНИЯ ФИЛЬМА
+  const [timer, setTimer] = useState(false); // БЛОКИРОВКА СОХРАНЕНИЯ И УДАЛЕНИЯ ФИЛЬМА
 
   const [idCard, setIdCard] = useState(''); // id (или _id) - ДЛЯ УДАЛЕНИЯ - /movies и /saved-movies
 
@@ -141,8 +140,8 @@ function MoviesCard({
   }
 
 
-  // ВКЛЮЧИЛИ ТАЙМЕР
-  function handleSetTimerActive() {
+  // ВКЛЮЧИЛИ БЛОКИРОВКУ КНОПКИ
+  function timerActive() {
     setTimer(true)
   }
 
@@ -159,6 +158,7 @@ function MoviesCard({
   }
 
 
+
   // ПРОВЕРКА КАРТОЧЕК НА ЛАЙК - /movies
   useEffect(() => {
     if (isLoadedSavedMovies) {
@@ -167,16 +167,21 @@ function MoviesCard({
   }, [isLoadedSavedMovies]) // ЕСЛИ СОХРАНЁННЫЕ ФИЛЬМЫ ЗАГРУЖЕНЫ В ХРАНИЛИЩЕ
 
 
+
   // ПРОВЕРКА КАРТОЧЕК НА ЛАЙК (СТАВИТСЯ, ЕСЛИ ОНА НАШЛАСЬ В ХРАНИЛИЩЕ - НА СТРАНИЦЕ /movies)
   function checkLike() {
     const savedMovies = getMoviesLocalStorage() // БЕРЁМ ФИЛЬМЫ ИЗ ХРАНИЛИЩА
 
     savedMovies.forEach((idSavedCard) => {
-      if (idSavedCard.movieId === card.id) { // ЕСЛИ ТЕКУЩАЯ КАРТОЧКА НАШЛАСЬ В ХРАНИЛИЩЕ
+      const { movieId } = idSavedCard;
+      const cardId = card.id;
+
+      if (movieId === cardId) { // ЕСЛИ ТЕКУЩАЯ КАРТОЧКА НАШЛАСЬ В ХРАНИЛИЩЕ
         setIsLocalLikedMovie(true) // ТОГДА ЛАЙК - АКТИВЕН
       }
     })
   }
+
 
 
   // ПОЛУЧЕНИЕ _id (КАК В БД) ДЛЯ ВОЗМОЖНОСТИ УДАЛИТЬ ФИЛЬМ ПО ТОГГЛУ - /movies
@@ -192,11 +197,12 @@ function MoviesCard({
   }
 
 
+
   // 1 - SAVE
   // КНОПКА СОХРАНЕНИЯ
   function buttonSave(e) {
     if (!timer) {
-      handleSetTimerActive() // ВКЛЮЧИЛИ ТАЙМЕР
+      timerActive() // ВКЛЮЧИЛИ ТАЙМЕР
       setTimeout(setTimer, 400, false);
       handlePressButtonSavePressed() // СООБЩАЕМ, ЧТО БЫЛА НАЖАТА КНОПКА
 
@@ -204,7 +210,6 @@ function MoviesCard({
       const activeLike = button.contains('movies-card__button-save_active') // СТОИТ ИЛИ НЕ СТОИТ ЛАЙК
 
       if (activeLike) { // ЕСЛИ ЛАЙК АКТИВЕН
-
         get_IdCurrentCardFromLocal(); // ТО ПОЛУЧАЕМ _id ТЕКУЩЕЙ КАРТОЧКИ ИЗ ХРАНИЛИЩА
         return buttonDelete() // И ДЕЛАЕМ ЗАПРОС НА УДАЛЕНИЕ
       }
@@ -213,6 +218,7 @@ function MoviesCard({
     }
     return;
   }
+
 
 
   // 2 - SAVE
@@ -227,10 +233,11 @@ function MoviesCard({
         handleSetThumbnail(card.thumbnail)
         return;
       }
-      handleSetImage(`${beatFilmUrl}${card.image.url}`)
-      handleSetThumbnail(`${beatFilmUrl}${card.image.formats.thumbnail.url}`)
+      handleSetImage(`${BeatFilmUrl}${card.image.url}`)
+      handleSetThumbnail(`${BeatFilmUrl}${card.image.formats.thumbnail.url}`)
     }
   }, [isPressedButtonSave, isSignalForSaveApi])
+
 
 
   // 3 - SAVE
@@ -243,6 +250,7 @@ function MoviesCard({
       return;
     }
   }, [thumbnail]) // ЕСЛИ ПОЯВИЛСЯ КЛЮЧ С ИЗОБРАЖЕНИЕМ ДЛЯ КАРТОЧКИ
+
 
 
   // 4 - SAVE
@@ -274,9 +282,10 @@ function MoviesCard({
       .catch((err) => {
         console.log(err);
 
-        return handleOpenPopup({ active: true, message: errorMessage[500] })
+        return handleOpenPopup({ active: true, message: ErrorMessage[500] })
       })
   }
+
 
 
   // 1 - DELETE
@@ -286,45 +295,50 @@ function MoviesCard({
     if (isSavedMoviesLink) {
       setIdCard(card._id)
     }
-
     handleSetIsPressedButtonDeleteActive() // СООБЩИЛИ, ЧТО КНОПКА УДАЛЕНИЯ НАЖАТА
+    return;
   }
+
 
 
   // 2 - DELETE
   // ЗАПРОС НА УДАЛЕНИЕ ФИЛЬМА
   useEffect(() => {
+
     if (_isMounted.current) {
       if (isPressedButtonDelete) {
         deleteMovie();
         handleSetIsPressedButtonDeleteNotActive() // СБРОСИЛИ СОСТОЯНИЕ УДАЛЕНИЯ
       }
     }
+    return
   }, [isPressedButtonDelete]) // ЕСЛИ КНОПКУ УДАЛЕНИЯ КАРТОЧКИ НАЖАЛИ
+
 
 
   // 3 - DELETE
   // API УДАЛЕНИЯ ФИЛЬМА ИЗ СОХРАНЁННЫХ
   function deleteMovie() {
+
     mainApi.deleteSavedMovie(idCard)
       .then(() => {
+        
         handlePressButtonSaveNotPressed() // ДЕФОЛТИМ СОСТОЯНИЕ КНОПКИ
         handleAddClassIconButtonNotActive() // УБИРАЕМ АКТИВНЫЙ КЛАСС С ИКОНКИ
 
         if (isSavedMoviesLink) { // ЕСЛИ ОТКРЫТА СТРАНИЦА /saved-movies
           handleDeleteCardfromDOM(idCard); // УДАЛЯЕМ КАРТОЧКУ ИЗ DOM
         }
+
         return getSavedMovies() // ОБНОВЛЯЕМ ХРАНИЛИЩЕ
       })
       .catch((err) => {
         console.log(err)
 
         if (err === '403') {
-          return handleOpenPopup({ active: true, message: errorMessage[403] })
+          return handleOpenPopup({ active: true, message: ErrorMessage[403] })
         }
-
-        return handleOpenPopup({ active: true, message: errorMessage[500] })
-
+        return handleOpenPopup({ active: true, message: ErrorMessage[500] })
       })
   }
 
@@ -334,7 +348,7 @@ function MoviesCard({
     <figure className="MoviesCard" >
 
       <div className="movies-card__poster-box">
-        <a href={trailer} target="_blank" rel='noreferrer'><img className="movies-card__poster" src={card.thumbnail ? card.image : `${beatFilmUrl}${card.image.url}`} alt="Постер фильма"></img></a>
+        <a href={trailer} target="_blank" rel='noreferrer'><img className="movies-card__poster" src={card.thumbnail ? card.image : `${BeatFilmUrl}${card.image.url}`} alt="Постер фильма"></img></a>
       </div>
 
       <div className="movies-card__title-duration-button-box">

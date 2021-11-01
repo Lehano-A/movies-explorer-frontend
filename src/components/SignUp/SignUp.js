@@ -3,9 +3,7 @@ import Form from "../Form/Form";
 import mainApi from "../../utils/MainApi";
 import { ValidationContext } from './../context/ValidationContext'
 import { stringifyJSON } from "../../utils/helpers/jsonHandler";
-import {
-  errorMessage,
-} from "././../../utils/constants/constants";
+import { ErrorMessage } from "././../../utils/constants/constants";
 
 
 function SignUp({
@@ -17,9 +15,10 @@ function SignUp({
   setCurrentUser,
   setActiveAfterRegBeforeFirstSubmitStorage,
   setActiveAuthAfterLogoutStorage,
-  setActiveUserLoggedStorage,
   setEmptyMoviesFromStorage,
   setEmptySavedMoviesFromStorage,
+  getDataUser,
+  setIsAuth
 }) {
 
 
@@ -29,14 +28,13 @@ function SignUp({
 
 
   useEffect(() => {
-
     if (isLogLink || isMainLink) {
       handler.errors().name = '';
       return handler.errors().email = '';
     }
     return;
-
   }, [isLogLink, isMainLink])
+
 
   const _isMounted = useRef(true);
 
@@ -58,26 +56,29 @@ function SignUp({
 
   // АВТОАУТЕНТИФИКАЦИЯ, ПОСЛЕ РЕГИСТРАЦИИ
   function authAfterReg() {
+    setDataForAuth({});
+    setSuccessReg(false);
+
     mainApi.signIn(dataForAuth.email, dataForAuth.password)
       .then((dataUser) => {
 
+        getDataUser(); // ПОЛУЧЕНИЕ ДАННЫХ ПРОФАЙЛА
         localStorage.setItem('dataUser', stringifyJSON(dataUser))
         setActiveAuthAfterLogoutStorage();
-        setActiveUserLoggedStorage();
         setEmptyMoviesFromStorage();
         setEmptySavedMoviesFromStorage();
         handleRedirectMovies();
         setCurrentUser(dataUser);
-        return setIsBlockedInput(false);
+        return setIsAuth(localStorage.setItem('isAuth', stringifyJSON(true)));
       })
       .catch((err) => {
 
-        Object.keys(errorMessage).forEach((key) => {
+        Object.keys(ErrorMessage).forEach((key) => {
           if (err === key) {
             handleClickAtInputActive();
 
             return setErrorSubmitMessage(
-              <p className={`error__message_signin-signup error__message_signin-signup_active`}>{errorMessage[err]}</p>
+              <p className={`error__message_signin-signup error__message_signin-signup_active`}>{ErrorMessage[err]}</p>
             )
           }
         })
@@ -92,7 +93,7 @@ function SignUp({
       if (dataForAuth && successReg) {
         return authAfterReg();
       }
-      return;
+      return
     }
   }, [dataForAuth, successReg])
 
@@ -100,6 +101,7 @@ function SignUp({
 
   // РЕГИСТРАЦИЯ ПОЛЬЗОВАТЕЛЯ
   function handleSubmitSignUp(e) {
+
     setIsBlockedInput(true)
 
     e.preventDefault();
@@ -117,26 +119,27 @@ function SignUp({
         setSuccessReg(true);
         localStorage.setItem('dataUser', stringifyJSON({ name: user.name, email: user.email }))
         setActiveAfterRegBeforeFirstSubmitStorage() // УДАЛИТСЯ ИЗ ХРАНИЛИЩА, КАК ТОЛЬКО ОСУЩЕСТВИТСЯ ПЕРВЫЙ ПОИСК
-        setActiveUserLoggedStorage();
         setEmptySavedMoviesFromStorage();
         setActiveAuthAfterLogoutStorage();
+        setIsBlockedInput(false);
         return handleIsLoggedIn();
       })
       .catch((err) => {
 
-        Object.keys(errorMessage).forEach((key) => {
+        Object.keys(ErrorMessage).forEach((key) => {
 
           if (err === key) {
             handleClickAtInputActive();
 
             return setErrorSubmitMessage(
-              <p className={`error__message_signin-signup error__message_signin-signup_active`}>{errorMessage[err]}</p>
+              <p className={`error__message_signin-signup error__message_signin-signup_active`}>{ErrorMessage[err]}</p>
             )
           }
         })
         console.log(err)
         return;
       })
+
   }
 
   return (

@@ -1,10 +1,10 @@
 import React from "react";
 
-function Error({ popup, handleOpenPopup }) {
+function Error({ popup, handleClosePopup }) {
 
   return (
-    
-    <div onClick={handleOpenPopup} className={`error__popup ${popup.active && 'error__popup_active'}`}>
+
+    <div onClick={handleClosePopup} className={`error__popup ${popup.active && 'error__popup_active'}`}>
       <p className="error__message">{popup.message}</p>
     </div>
   )

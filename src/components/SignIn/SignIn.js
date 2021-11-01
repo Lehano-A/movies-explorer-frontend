@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Form from "../Form/Form";
 import mainApi from "../../utils/MainApi";
-
-import {
-  errorMessage,
-} from './../../utils/constants/constants';
-
+import { ErrorMessage } from './../../utils/constants/constants';
 import { ValidationContext } from './../context/ValidationContext';
+
 
 function SignIn({
   isMainLink,
   isRegLink,
-  handleIsLoggedIn,
   handleIsLogLink,
   stringifyJSON,
   getMoviesFromStorage,
@@ -19,9 +15,10 @@ function SignIn({
   getSavedMovies,
   setEmptySavedMoviesFromStorage,
   setActiveAuthAfterLogoutStorage,
-  setActiveUserLoggedStorage,
   setActiveReloadedPageStorage,
-  setCurrentUser,  
+  setCurrentUser,
+  setIsAuth,
+  getDataUser
 }) {
 
 
@@ -40,11 +37,9 @@ function SignIn({
   }, [isRegLink, isMainLink])
 
 
-  const [loggedAfterGetDataProfile, setLoggedAfterGetDataProfile] = useState(false)
-
   const [isBlockedInput, setIsBlockedInput] = useState(false); // ЗАБЛОКИРОВАНЫ ЛИ ПОЛЯ, ВО ВРЕМЯ ЗАПРОСА
 
-  const [errorSubmitMessage, setErrorSubmitMessage] = useState('')
+  const [errorSubmitMessage, setErrorSubmitMessage] = useState('');
 
   const handler = React.useContext(ValidationContext);
 
@@ -53,27 +48,6 @@ function SignIn({
   const emailError = errors().email;
 
   const passwordError = errors().password;
-
-
-  // АВТОРИЗАЦИЯ, ТОЛЬКО ПОСЛЕ ПОЛУЧЕНИЯ ПРОФАЙЛА
-  useEffect(() => {
-    if (loggedAfterGetDataProfile) {
-      setLoggedAfterGetDataProfile(false);
-      return handleIsLoggedIn();
-    }
-    return;
-  }, [loggedAfterGetDataProfile])
-
-
-  // ПОЛУЧЕНИЕ ДАННЫХ ПРОФАЙЛА
-  function getDataUser() {
-    mainApi.getUserData()
-      .then((data) => {
-        localStorage.setItem('dataUser', stringifyJSON(data.user));
-        return setLoggedAfterGetDataProfile(true);
-      })
-      .catch((err) => { console.log(err) })
-  }
 
 
   // АУТЕНТИФИКАЦИЯ ПОЛЬЗОВАТЕЛЯ
@@ -92,27 +66,26 @@ function SignIn({
         if (!getSavedMoviesStorage()) { // ЕСЛИ НЕТ В ХРАНИЛИЩЕ СОХРАНЁННЫХ ФИЛЬМОВ
           setEmptySavedMoviesFromStorage(); // СОЗДАЁМ ПУСТОЙ МАССИВ
         }
-        if (!getMoviesFromStorage()) { // ЕСЛИ НЕТ В ХРАНИЛИЩЕ ФИЛЬМОВ          
+        if (!getMoviesFromStorage()) { // ЕСЛИ НЕТ В ХРАНИЛИЩЕ ФИЛЬМОВ
           getSavedMovies(); // ТОГДА СКАЧИВАЕМ МАССИВ С СЕРВЕРА
-                            // ЕСЛИ НЕТ И НА СЕРВЕРЕ, ТО СОЗДАСТСЯ ПУСТОЙ МАССИВ
+          // ЕСЛИ НЕТ И НА СЕРВЕРЕ, ТО СОЗДАСТСЯ ПУСТОЙ МАССИВ
         }
-
         setActiveAuthAfterLogoutStorage();
-        setActiveUserLoggedStorage();
         setActiveReloadedPageStorage();
         setCurrentUser(dataUser);
         setIsBlockedInput(false)
+        setIsAuth(localStorage.setItem('isAuth', stringifyJSON(true)))
         return;
       })
       .catch((err) => {
 
-        Object.keys(errorMessage).forEach((key) => {
+        Object.keys(ErrorMessage).forEach((key) => {
 
           if (err === key) {
             handleClickAtInputActive();
 
             return setErrorSubmitMessage(
-              <p className={`error__message_signin-signup error__message_signin-signup_active`}>{errorMessage[err]}</p>
+              <p className={`error__message_signin-signup error__message_signin-signup_active`}>{ErrorMessage[err]}</p>
             )
           }
         })

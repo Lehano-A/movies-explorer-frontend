@@ -5,7 +5,7 @@ import mainApi from "../../utils/MainApi";
 import { ValidationContext } from './../context/ValidationContext';
 import { CurrentUserContext } from '../context/CurrentUserContext';
 import { parseJSON, stringifyJSON } from './../../utils/helpers/jsonHandler';
-import { errorMessage } from "../../utils/constants/constants";
+import { ErrorMessage } from "../../utils/constants/constants";
 
 function Profile({
   isProfileLink,
@@ -26,12 +26,13 @@ function Profile({
   setCurrentSearchMoviesFromApi,
   setCurrentSearchInLocalSavedMovies,
   setIsSubmitProfileDisabled,
-  setCurrentUser
+  setCurrentUser,
+  setFilterSearchShortFromLocal,
+  setMoviesFromLocal,
 }) {
 
 
   useEffect(() => {
-
     handleIsProfileLink();
   }, []);
 
@@ -88,13 +89,13 @@ function Profile({
         return setIsBlockedInput(false)
       })
       .catch((err) => {
-        Object.keys(errorMessage).forEach((key) => {
+        Object.keys(ErrorMessage).forEach((key) => {
 
           if (err === key) {
             handleClickAtInputActive();
 
             return setErrorSubmitMessage(
-              <p className={`error__message_profile-position error__message_signin-signup_active`}>{errorMessage[err]}</p>
+              <p className={`error__message_profile-position error__message_signin-signup_active`}>{ErrorMessage[err]}</p>
             )
           }
         })
@@ -116,6 +117,8 @@ function Profile({
         setFoundMoviesAfterSearchApi([]);
         setMoviesFromApi([]);
         setFilterAfterSearchShortFromApi([]);
+        setFilterSearchShortFromLocal([])
+        setMoviesFromLocal([])
         setIsMoviesNotFound(false) // УБИРАЕМ НАДПИСЬ - "НИЧЕГО НЕ НАЙДЕНО"
         setCurrentSearchMoviesFromApi(false) // СИГНАЛ, ЧТО ПОИСК ОТ API
         setCurrentSearchInLocalSavedMovies(false) // СИГНАЛ, ЧТО ПОИСК ЛОКАЛЬНЫЙ
@@ -123,17 +126,19 @@ function Profile({
         localStorage.removeItem('reloadedPage')
         localStorage.removeItem('dataUser');
         localStorage.removeItem('userLogged');
+        localStorage.removeItem('isAuth');
+        localStorage.removeItem('pressedSubmit');
         handleIsNotLoggedIn();
         return goToMainPage();
       })
       .catch((err) => {
 
-        Object.keys(errorMessage).forEach((key) => {
+        Object.keys(ErrorMessage).forEach((key) => {
 
           if (err === key) {
             handleClickAtInputActive();
             return (
-              <p className={`error__message_profile-position error__message_signin-signup_active`}>{errorMessage[err]}</p>
+              <p className={`error__message_profile-position error__message_signin-signup_active`}>{ErrorMessage[err]}</p>
             )
           }
         })

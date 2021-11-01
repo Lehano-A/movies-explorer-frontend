@@ -43,7 +43,9 @@ function Movies({
 }) {
 
   const [movies, setMovies] = useState([])
+
   const afterRegBeforeFirstSubmit = parseJSON(localStorage.getItem('afterRegBeforeFirstSubmit'));
+
 
   useEffect(() => {
 

@@ -4,11 +4,15 @@ import AboutProject from "./AboutProject/AboutProject";
 import Tech from "./Techs/Techs";
 import AboutMe from "./AboutMe/AboutMe";
 
-function Main({ handleClickByLogo }) {
+function Main({
+  handleClickByLogo,
+}) {
+
 
   useEffect(() => {
     handleClickByLogo();
   });
+
 
   return (
     <main>

@@ -5,9 +5,11 @@ import { CurrentUserContext } from '../context/CurrentUserContext';
 import { ValidationContext } from '../context/ValidationContext';
 import { parseJSON, stringifyJSON } from '../../utils/helpers/jsonHandler';
 import {
-  errorMessage,
-  widthWindowForFirstCount,
-  widthWindowForSecondaryCounts,
+  DurationMovie,
+  QuantitySavedMovies,
+  ErrorMessage,
+  WidthWindowForFirstCount,
+  WidthWindowForSecondaryCounts,
 } from '../../utils/constants/constants';
 
 import Header from '../Header/Header';
@@ -43,12 +45,15 @@ function App() {
 
   const [isFilterShortMovies, setIsFilterShortMovies] = useState(false) // ЧЕКБОКС "КОРОТКОМЕТРАЖКИ"
 
-  const [isLoggedIn, setIsLoggedIn] = useState(parseJSON(localStorage.getItem('userLogged'))) // ЗАЛОГИНЕН ЛИ ПОЛЬЗОВАТЕЛЬ
+  const [isLoggedIn, setIsLoggedIn] = useState(false) // ЗАЛОГИНЕН ЛИ ПОЛЬЗОВАТЕЛЬ
 
   const [currentUser, setCurrentUser] = useState(parseJSON(localStorage.getItem('dataUser'))) // ЗНАЧЕНИЕ ДЛЯ ПРОВАЙДЕРА КОНТЕКСТА
 
   const [isSubmitProfileDisabled, setIsSubmitProfileDisabled] = useState(false); // disabled САБМИТА, ПОСЛЕ РЕДАКТИРОВАНИЯ
 
+  const [isFilterShortMoviesDisabled, setIsFilterShortMoviesDisabled] = useState(false)
+
+  const [isAuth, setIsAuth] = useState(parseJSON(localStorage.getItem(('isAuth')))) // ПРОШЁЛ ЛИ ПОЛЬЗОВАТЕЛЬ АВТОРИЗАЦИЮ
 
   // STORAGE GET
   // ПОЛУЧЕНИЕ ВСЕХ ФИЛЬМОВ ИЗ ХРАНИЛИЩА
@@ -80,11 +85,6 @@ function App() {
   }
 
 
-  function setActiveUserLoggedStorage() {
-    return localStorage.setItem('userLogged', stringifyJSON(true))
-  }
-
-
   function setActiveReloadedPageStorage() {
     return localStorage.setItem('reloadedPage', stringifyJSON(true))
   }
@@ -98,6 +98,7 @@ function App() {
   function setEmptySavedMoviesFromStorage() {
     return localStorage.setItem('savedMovies', stringifyJSON([]))
   }
+
 
   const [timeBetweenRequestsStorage, setTimeBetweenRequestsStorage] = useState(false); // МОЖНО ЛИ ДЕЛАТЬ НОВЫЙ ЗАПРОС К СЕРВЕРУ ЗА ФИЛЬМАМИ
   const [isPressedSubmitSearchForm, setIsPressedSubmitSearchForm] = useState(false) // НАЖАТА ЛИ КНОПКА САБМИТА ПОИСКА ФИЛЬМОВ
@@ -222,25 +223,23 @@ function App() {
   }
 
 
-  useEffect(() => {
-    if (parseJSON(localStorage.getItem('dataUser'))) {
-      return handleIsLoggedIn();
-    }
-  }, [])
-
-
   // ПОЛУЧЕНИЕ ФИЛЬМОВ С ЛАЙКОМ
   function getSavedMovies() {
 
     mainApi.getSavedMovies()
       .then((movies) => {
-        // handleLocalSavedMovies(movies);
-        localStorage.setItem('savedMovies', JSON.stringify(movies));
+        let moviesBox = [];
+        movies.forEach((movie) => {
+          if (movie.owner === currentUser._id) {
+            moviesBox.push(movie)
+          }
+        })
+        localStorage.setItem('savedMovies', JSON.stringify(moviesBox));
         return setIsLoadedSavedMovies(true) // СООБЩАЕМ, ЧТО КАРТОЧКИ ЗАГРУЖЕНЫ В ЛОКАЛЬНОЕ ХРАНИЛИЩЕ
       })
       .catch((err) => {
         console.log(err)
-        return handleOpenPopup({ active: true, message: errorMessage[500] })
+        return handleOpenPopup({ active: true, message: ErrorMessage[500] })
       })
   }
 
@@ -307,6 +306,7 @@ function App() {
     setIsPageNotFound(false)
     setIsProfileMenu(false)
     setIsFilterShortMovies(false)
+    setIsMoviesNotFound(false)
   }
 
 
@@ -320,7 +320,6 @@ function App() {
     setIsPageNotFound(false)
     setIsProfileMenu(false)
     setCurrentSearchInLocalSavedMovies(false)
-    // handleIsReloadedPageActive()
     setIsFilterShortMovies(false)
     setCurrentSearchMoviesFromApi(false)
   }
@@ -364,8 +363,13 @@ function App() {
 
   // ОБРАБОТЧИК ОТКРЫТИЯ ОКНА ОШИБКИ
   function handleOpenPopup(data) {
-
     return setPopup(data);
+  }
+
+
+  // ОБРАБОТЧИК ЗАКРЫТИЯ ОКНА ОШИБКИ
+  function handleClosePopup() {
+    return setPopup({});
   }
 
 
@@ -416,6 +420,31 @@ function App() {
   }
 
 
+
+  // ПРИКРЕПЛЕНИЕ ТОКЕНА
+  useEffect(() => {
+    if (isAuth) {
+      return getDataUser()
+    }
+    setIsLoggedIn(false)
+  }, [])
+
+
+
+  // ПОЛУЧЕНИЕ ДАННЫХ ПРОФАЙЛА
+  function getDataUser() {
+    mainApi.getUserData()
+      .then((data) => {
+        localStorage.setItem('dataUser', stringifyJSON(data.user));
+
+        setIsLoggedIn(true)
+        return
+      })
+      .catch((err) => { console.log(err) })
+  }
+
+
+
   // ПЕРЕЗАГРУЗКА СТРАНИЦЫ
   // ЕСЛИ ОТКРЫТА СТРАНИЦА /saved-movies И ЗАПИСАНЫ КАРТОЧКИ В ХРАНИЛИЩЕ
   useEffect(() => {
@@ -429,6 +458,7 @@ function App() {
       }
     }
   }, [isSavedMoviesLink])
+
 
 
   // ПЕРЕЗАГРУЗКА СТРАНИЦЫ
@@ -452,20 +482,22 @@ function App() {
           })
           .catch((err) => {
             console.log(err)
-            return handleOpenPopup({ active: true, message: errorMessage[500] });
+            return handleOpenPopup({ active: true, message: ErrorMessage[500] });
           })
       }
     }
   }, [isReloadedPage])
 
-  const [isFilterShortMoviesDisabled, setIsFilterShortMoviesDisabled] = useState(false)
+
 
   // ЧЕКБОКС "КОРОТКОМЕТРАЖКИ" - ВКЛЮЧЕНО/ВЫКЛЮЧЕНО
   function handleSetIsFilterShortMovies(e) {
     const isAfterRegBeforeFirstSubmit = getAfterRegBeforeFirstSubmitStorage();
     const savedMoviesStorage = getSavedMoviesStorage();
+
     if (!isAfterRegBeforeFirstSubmit && savedMoviesStorage) { // БЫЛ ЛИ ПЕРВЫЙ САБМИТ, ПОСЛЕ РЕГИСТРАЦИИ?
       if (!timerFilterShortMovies) {
+
         setIsFilterShortMoviesDisabled(true)
         handleSetTimerFilterShortMoviesActive() // ВКЛЮЧИЛИ ТАЙМЕР
         setTimeout(setTimerFilterShortMovies, 500, false);
@@ -490,7 +522,7 @@ function App() {
       })
       .catch((err) => {
         console.log(err)
-        return handleOpenPopup({ active: true, message: errorMessage[500] });
+        return handleOpenPopup({ active: true, message: ErrorMessage[500] });
       })
   }
 
@@ -512,7 +544,7 @@ function App() {
       const { duration } = movie;
 
       if (valueFromInputSearch) { // ЕСЛИ ЗНАЧЕНИЕ ПОЛЯ СОВПАДАЕТ С НАЗВАНИЕМ ФИЛЬМА ИЗ ВСЕГО СПИСКА
-        if (duration <= 40 && isSubmitFixedStateFilter) { // ЕСЛИ КОРОТКОМЕТРАЖКА И ФИЛЬТР ВКЛЮЧЁН
+        if (duration <= DurationMovie && isSubmitFixedStateFilter) { // ЕСЛИ КОРОТКОМЕТРАЖКА И ФИЛЬТР ВКЛЮЧЁН
 
           setFilterAfterSearchShortFromApi((prevMovies) => { return [...prevMovies, movie] })
         }
@@ -532,7 +564,7 @@ function App() {
       const valueFromInputSearch = movie.nameRU.trim().toLowerCase().includes(valueInputSearchForm);
       const { duration } = movie;
       if (valueFromInputSearch) { // ЕСЛИ ЗНАЧЕНИЕ ПОЛЯ СОВПАДАЕТ С НАЗВАНИЕМ ФИЛЬМА ИЗ ВСЕГО СПИСКА
-        if (duration <= 40 && isFilterShortMovies) { // ЕСЛИ КОРОТКОМЕТРАЖКА И ФИЛЬТР ВКЛЮЧЁН
+        if (duration <= DurationMovie && isFilterShortMovies) { // ЕСЛИ КОРОТКОМЕТРАЖКА И ФИЛЬТР ВКЛЮЧЁН
           setFilterSearchShortFromLocal((prevMovies) => { return [...prevMovies, movie] })
         }
         setLocalMoviesAfterSearch((prevMovies) => { return [...prevMovies, movie] }) // ЗАПИСЫВАЕМ ФИЛЬМ В МАССИВ НАЙДЕННЫХ ФИЛЬМОВ
@@ -563,10 +595,10 @@ function App() {
 
         setMoviesFromApi(moviesSto)
         setIsLoadedSavedMovies(true) // СООБЩАЕМ, ЧТО КАРТОЧКИ ЗАГРУЖЕНЫ В ЛОКАЛЬНОЕ ХРАНИЛИЩЕ
-        setCanMakeRequestToServer(false)       
+        setCanMakeRequestToServer(false)
         return;
       }
-      if (checkTime <= 0) { // ЕСЛИ ВРЕМЯ ПРОШЛО        
+      if (checkTime <= 0) { // ЕСЛИ ВРЕМЯ ПРОШЛО
         setTimeBetweenRequestsStorage(true) // МОЖНО ДЕЛАТЬ НОВЫЙ ЗАПРОС
         return localStorage.setItem('timeBetweenRequests', stringifyJSON(Date.now() + 600000)) // 10 МИНУТ
       }
@@ -640,7 +672,7 @@ function App() {
   useEffect(() => {
 
     if (nullApiStep) {
-      if (timeBetweenRequestsStorage) { // ЕСЛИ МОЖНО ДЕЛАТЬ НОВЫЙ ЗАПРОС К СЕРВЕРУ       
+      if (timeBetweenRequestsStorage) { // ЕСЛИ МОЖНО ДЕЛАТЬ НОВЫЙ ЗАПРОС К СЕРВЕРУ
         setNullApiStep(false)
         return handleGetMovies() // ПОЛУЧЕНИЕ ВСЕХ ФИЛЬМОВ ИЗ API - /movies
       }
@@ -661,7 +693,7 @@ function App() {
       setFirstApiStep(false)
       setIsLoadedSavedMovies(true)
 
-      // ЕСЛИ ПОИСК В ЛОКАЛЬНЫХ ФИЛЬМАХ   
+      // ЕСЛИ ПОИСК В ЛОКАЛЬНЫХ ФИЛЬМАХ
       handleSubmitSearchFormNotActive(); // ДЕФОЛТИМ САБМИТ ПОИСКА ФИЛЬМОВ
       handleSetPreloaderNotActive(); // ВЫКЛЮЧАЕМ ПРЕЛОАДЕР
       handleSearchMoviesApiByValue() // 2 ШАГ - ПОИСК КАРТОЧЕК ПО ЗНАЧЕНИЮ ИЗ ПОЛЯ ВВОДА - ОБЩЕЕ
@@ -790,16 +822,16 @@ function App() {
 
     const currentWidthWindow = getWidthWindowBrowser(); // ТЕКУЩАЯ ШИРИНА ОКНА БРАУЗЕРА
     let parametersWindow = null; // СБРОС ПАРАМЕТРОВ ОКНА БРАУЗЕРА
-    let quantity = null; // СБРОС КОЛИЧЕСТВА НУЖНЫХ КАРТОЧЕК (ОПРЕДЕЛЯЕТСЯ ОТНОСИТЕЛЬ ШИРИНЫ ОКНА БРАУЗЕРА)
+    let quantity = null; // СБРОС КОЛИЧЕСТВА НУЖНЫХ КАРТОЧЕК (ОПРЕДЕЛЯЕТСЯ ОТНОСИТЕЛЬНО ШИРИНЫ ОКНА БРАУЗЕРА)
 
 
     // КАКОЙ ПО СЧЁТУ ОТБОР - ПЕРВИЧНЫЙ ИЛИ ВТОРИЧНЫЙ
     if (isFirstCountCards || windowBrowserClosed.againOpened) {
 
-      parametersWindow = widthWindowForFirstCount // ПЕРВИЧНЫЙ ОТБОР (ОТОБРАЗИТСЯ СРАЗУ 12/8/5)
+      parametersWindow = WidthWindowForFirstCount // ПЕРВИЧНЫЙ ОТБОР (ОТОБРАЗИТСЯ СРАЗУ 12/8/5)
       handleSetIsFirstCoundCardsNotActive() // СООБЩАЕМ, ЧТО ПЕРВИЧНЫЙ ОТБОР ПРОШЁЛ
     } else {
-      parametersWindow = widthWindowForSecondaryCounts // ВТОРИЧНЫЙ ОТБОР (БУДЕТ ОТОБРАЖАТЬСЯ ПРИ НАЖАТИИ НА КНОПКУ "ЕЩЁ" 3/2/1)
+      parametersWindow = WidthWindowForSecondaryCounts // ВТОРИЧНЫЙ ОТБОР (БУДЕТ ОТОБРАЖАТЬСЯ ПРИ НАЖАТИИ НА КНОПКУ "ЕЩЁ" 3/2/1)
     }
 
     // ПРОВЕРКА ШИРИНЫ ОКНА
@@ -818,7 +850,7 @@ function App() {
       }
 
     } else {
-      quantity = 100;
+      quantity = QuantitySavedMovies;
     };
 
     setParametersForShowCards({
@@ -838,7 +870,7 @@ function App() {
 
 
 
-  // РАБОТА КНПОКИ "ЕЩЁ" - ОТОБРАЖЕНИЕ ОТОБРАННЫХ КАРТОЧЕК
+  // РАБОТА КНОПКИ "ЕЩЁ" - ОТОБРАЖЕНИЕ ОТОБРАННЫХ КАРТОЧЕК
   function handleSelectedCards() {
     const { movies, quantity } = parametersForShowCards;
     const pickedAnyCards = movies.splice(0, quantity);
@@ -872,7 +904,7 @@ function App() {
     return setFifthStep(true) // ШАГ 5 - НАЧАТ
   };
 
-
+  
 
   // ВАЛИДАТОР ФОРМ
   const validatorEmail = require('email-validator'); // ВАЛИДАТОР EMAIL
@@ -914,7 +946,6 @@ function App() {
     }
     setIsValid(target.closest("form").checkValidity());
   };
-
 
 
   function getErrorMessageForm() {
@@ -972,7 +1003,9 @@ function App() {
             <Switch>
 
               <Route exact path="/">
-                <Main handleClickByLogo={handleClickByLogo} />
+                <Main
+                  handleClickByLogo={handleClickByLogo}
+                />
               </Route>
 
               <Route path="/signup">
@@ -986,9 +1019,10 @@ function App() {
                     setCurrentUser={setCurrentUser}
                     setActiveAfterRegBeforeFirstSubmitStorage={setActiveAfterRegBeforeFirstSubmitStorage}
                     setActiveAuthAfterLogoutStorage={setActiveAuthAfterLogoutStorage}
-                    setActiveUserLoggedStorage={setActiveUserLoggedStorage}
                     setEmptyMoviesFromStorage={setEmptyMoviesFromStorage}
                     setEmptySavedMoviesFromStorage={setEmptySavedMoviesFromStorage}
+                    setIsAuth={setIsAuth}
+                    getDataUser={getDataUser}
                   />
                   : <Redirect to="/movies" />}
               </Route>
@@ -1006,9 +1040,11 @@ function App() {
                     getSavedMoviesStorage={getSavedMoviesStorage}
                     setEmptySavedMoviesFromStorage={setEmptySavedMoviesFromStorage}
                     setActiveAuthAfterLogoutStorage={setActiveAuthAfterLogoutStorage}
-                    setActiveUserLoggedStorage={setActiveUserLoggedStorage}
                     setActiveReloadedPageStorage={setActiveReloadedPageStorage}
                     setCurrentUser={setCurrentUser}
+                    setIsAuth={setIsAuth}
+                    handleRedirectMovies={handleRedirectMovies}
+                    getDataUser={getDataUser}
                   />
                   : <Redirect to="/movies" />}
               </Route>
@@ -1024,7 +1060,6 @@ function App() {
                   isFilterShortMovies={isFilterShortMovies}
                   isLoadedSavedMovies={isLoadedSavedMovies}
                   moviesFromApi={moviesFromApi}
-                  // handleLocalSavedMovies={handleLocalSavedMovies}
                   getSavedMovies={getSavedMovies}
                   setIsLoadedSavedMovies={setIsLoadedSavedMovies}
                   fifthApiStep={fifthApiStep}
@@ -1056,6 +1091,7 @@ function App() {
 
               <ProtectedRoute path='/profile' isLoggedIn={isLoggedIn}>
                 <Profile
+
                   isProfileLink={isProfileLink}
                   isProfileMenu={isProfileMenu}
                   isMoviesLink={isMoviesLink}
@@ -1075,6 +1111,8 @@ function App() {
                   setCurrentSearchInLocalSavedMovies={setCurrentSearchInLocalSavedMovies}
                   setIsSubmitProfileDisabled={setIsSubmitProfileDisabled}
                   setCurrentUser={setCurrentUser}
+                  setFilterSearchShortFromLocal={setFilterSearchShortFromLocal}
+                  setMoviesFromLocal={setMoviesFromLocal}
                 />
               </ProtectedRoute>
 
@@ -1107,6 +1145,8 @@ function App() {
                   isFilterShortMoviesDisabled={isFilterShortMoviesDisabled}
                   setIsFilterShortMoviesDisabled={setIsFilterShortMoviesDisabled}
                   setLocalMoviesBoxForShow={setLocalMoviesBoxForShow}
+                  handleIsReloadedPageActive={handleIsReloadedPageActive}
+                  getDataUser={getDataUser}
                 />
               </ProtectedRoute>
 
@@ -1124,6 +1164,7 @@ function App() {
             <Error
               popup={popup}
               handleOpenPopup={handleOpenPopup}
+              handleClosePopup={handleClosePopup}
             />
 
           </div>
