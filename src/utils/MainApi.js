@@ -42,7 +42,7 @@ class MainApi {
   };
 
 
-  
+
   // ПОЛУЧЕНИЕ ДАННЫХ ПРОФАЙЛА
   getUserData() {
     return fetch(`${this.baseUrl}/users/me`, {

@@ -5,6 +5,8 @@ import { CurrentUserContext } from '../context/CurrentUserContext';
 import { ValidationContext } from '../context/ValidationContext';
 import { parseJSON, stringifyJSON } from '../../utils/helpers/jsonHandler';
 import {
+  RegexName,
+  RegexEmail,
   DurationMovie,
   QuantitySavedMovies,
   ErrorMessage,
@@ -54,6 +56,8 @@ function App() {
   const [isFilterShortMoviesDisabled, setIsFilterShortMoviesDisabled] = useState(false)
 
   const [isAuth, setIsAuth] = useState(parseJSON(localStorage.getItem(('isAuth')))) // ПРОШЁЛ ЛИ ПОЛЬЗОВАТЕЛЬ АВТОРИЗАЦИЮ
+
+  const [isSavedMoviesDownloaded, setIsSavedMoviesDownloaded] = useState(false) // ЗАГРУЗКА СОХРАНЁННЫХ ФИЛЬМОВ, ПОСЛЕ АТВОРИЗАЦИИ
 
   // STORAGE GET
   // ПОЛУЧЕНИЕ ВСЕХ ФИЛЬМОВ ИЗ ХРАНИЛИЩА
@@ -175,6 +179,8 @@ function App() {
     moviesUrl: pathName === '/movies',
     savedMoviesUrl: pathName === '/saved-movies',
     profileUrl: pathName === '/profile',
+    signupUrl: pathName === '/signup',
+    signinUrl: pathName === '/signin',
   }
 
 
@@ -428,6 +434,17 @@ function App() {
     }
     setIsLoggedIn(false)
   }, [])
+
+
+
+  // ПОЛУЧЕНИЕ СОХРАНЁННЫХ ФИЛЬМОВ С СЕРВЕРА
+  useEffect(() => {
+    if (isLoggedIn && !isSavedMoviesDownloaded && parseJSON(localStorage.getItem('dataUser'))) {
+      setIsSavedMoviesDownloaded(true)
+      getSavedMovies()
+      return setValues({ ...values, name: { ...values.name, value: currentUser.name }, email: { ...values.email, value: currentUser.email } })
+    }
+  }, [isLoggedIn])
 
 
 
@@ -904,15 +921,29 @@ function App() {
     return setFifthStep(true) // ШАГ 5 - НАЧАТ
   };
 
-  
 
   // ВАЛИДАТОР ФОРМ
-  const validatorEmail = require('email-validator'); // ВАЛИДАТОР EMAIL
-  const [values, setValues] = useState(currentUser); // ДЛЯ ОБРАБОТЧИКА ОШИБОК
+  const [values, setValues] = useState(
+    {
+      name: {
+        value: '',
+        isValid: false,
+      },
+      email: {
+        value: '',
+        isValid: false,
+      },
+      password: {
+        value: '',
+        isValid: false,
+      }
+    }
+  ); // ДЛЯ ОБРАБОТЧИКА ОШИБОК
   const [errors, setErrors] = useState({}); // ДЛЯ ОБРАБОТЧИКА ОШИБОК
   const [isValid, setIsValid] = useState(false); // ДЛЯ ОБРАБОТЧИКА ОШИБОК
   const [clickAtInput, setClickAtInput] = useState(false) // ЭЛЕМЕНТ ТЕКСТА ОШИБКИ ФОРМЫ
-
+  const [isRegexEmail, setIsRegexEmail] = useState(false)
+  const [isRegexName, setIsRegexName] = useState(false)
 
   // ВВОД ТЕКСТА В ПОЛЕ ФОРМЫ ПРИВОДИТ В АКТИВНОЕ СОСТОЯНИЕ ЭЛЕМЕНТ ТЕКСТА ОШИБКИ
   function handleClickAtInputActive() {
@@ -937,17 +968,35 @@ function App() {
       setIsSubmitProfileDisabled(false); // СБРОС disabled С САБМИТА
     }
 
-    setValues({ ...values, [name]: value });
+    setValues({ ...values, [name]: { ...values.name, 'value': value } });
+
     setErrors({ ...errors, [name]: target.validationMessage });
 
 
-    if (name === 'email') {
-      return validatorEmail.validate(value) ? setIsValid(true) : setIsValid(false);
+    if (name === 'name' && !target.validationMessage) {
+      setIsRegexName(value.match(RegexName))
+
+      value.match(RegexName) ?
+        setValues({ ...values, name: { value: value, isValid: true } }) :
+        setValues({ ...values, name: { value: value, isValid: false } })
     }
+
+    if (name === 'email') {
+      setIsRegexEmail(value.match(RegexEmail));
+
+      value.match(RegexEmail) ?
+        setValues({ ...values, email: { value: value, isValid: true } }) :
+        setValues({ ...values, email: { value: value, isValid: false } })
+    }
+
+    if (name === 'password' && !target.validationMessage) {
+      setValues({ ...values, password: { value: value, isValid: true } })
+    }
+
     setIsValid(target.closest("form").checkValidity());
   };
 
-
+  // console.log(values)
   function getErrorMessageForm() {
     return errors;
   }
@@ -961,15 +1010,32 @@ function App() {
   // ПОЛУЧЕНИЕ ИНФОРМАЦИИ О ВАЛИДНОСТИ/НЕВАЛИДНОСТИ ПОЛЯ ВВОДА
   function getIsValidInput() {
 
-    // ЕСЛИ ОТКРЫТА СТРАНИЦА /profile
-    if (pathesPages.profileUrl) {
-      if ((values.name === undefined || values.name === null) ||
-        (currentUser.name === values.name && currentUser.email === values.email) || isSubmitProfileDisabled) {
+    // ЕСЛИ ОТКРЫТА СТРАНИЦА /signup
+    if (pathesPages.signupUrl) {
+      if ((values.name.value === '' || values.email.value === '' || values.password.value === '' || isRegexEmail === null || isRegexName === null)) {
+              return;
+      }
+    }
+
+
+    // ЕСЛИ ОТКРЫТА СТРАНИЦА /signin
+    if (pathesPages.signinUrl) {
+      if (values.email.value === '' || values.password.value === '' || isRegexEmail === null || isRegexName === null) {
         return;
       }
     }
+
+    // ЕСЛИ ОТКРЫТА СТРАНИЦА /profile
+    if (pathesPages.profileUrl) {
+      if ((values.name.value === undefined || values.name.value === null) ||
+        (currentUser.name === values.name.value && currentUser.email === values.email.value) || isSubmitProfileDisabled || isRegexEmail === null || isRegexName === null || isRegexName === null) {
+        return;
+      }
+    }
+
     return isValid;
   }
+
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -977,10 +1043,12 @@ function App() {
         handleChange: handleChangeInputs,
         errors: getErrorMessageForm,
         values: getValueInput,
-        isValid: getIsValidInput,
+        isValidForm: isValid,
+        checkValidValueInput: getIsValidInput,
         clickAtInput: clickAtInput,
         handleClickAtInputActive: handleClickAtInputActive,
         handleClickAtInputNotActive: handleClickAtInputNotActive,
+        pathName: pathName,
       }}>
         <div className="page">
           <div className="page__box">
@@ -998,6 +1066,8 @@ function App() {
               handleIsProfileMenu={handleIsProfileMenu}
               goToMainPage={goToMainPage}
               isLoggedIn={isLoggedIn}
+              isRegexName={isRegexName}
+              isRegexEmail={isRegexEmail}
             />
 
             <Switch>
@@ -1035,8 +1105,6 @@ function App() {
                     handleIsLoggedIn={handleIsLoggedIn}
                     handleIsLogLink={handleIsLogLink}
                     stringifyJSON={stringifyJSON}
-                    getSavedMovies={getSavedMovies}
-                    getMoviesFromStorage={getMoviesFromStorage}
                     getSavedMoviesStorage={getSavedMoviesStorage}
                     setEmptySavedMoviesFromStorage={setEmptySavedMoviesFromStorage}
                     setActiveAuthAfterLogoutStorage={setActiveAuthAfterLogoutStorage}
@@ -1091,7 +1159,8 @@ function App() {
 
               <ProtectedRoute path='/profile' isLoggedIn={isLoggedIn}>
                 <Profile
-
+                  currentUser={currentUser}
+                  isLoggedIn={isLoggedIn}
                   isProfileLink={isProfileLink}
                   isProfileMenu={isProfileMenu}
                   isMoviesLink={isMoviesLink}
@@ -1113,6 +1182,8 @@ function App() {
                   setCurrentUser={setCurrentUser}
                   setFilterSearchShortFromLocal={setFilterSearchShortFromLocal}
                   setMoviesFromLocal={setMoviesFromLocal}
+                  setValues={setValues}
+                  setIsSavedMoviesDownloaded={setIsSavedMoviesDownloaded}
                 />
               </ProtectedRoute>
 
@@ -1146,7 +1217,6 @@ function App() {
                   setIsFilterShortMoviesDisabled={setIsFilterShortMoviesDisabled}
                   setLocalMoviesBoxForShow={setLocalMoviesBoxForShow}
                   handleIsReloadedPageActive={handleIsReloadedPageActive}
-                  getDataUser={getDataUser}
                 />
               </ProtectedRoute>
 

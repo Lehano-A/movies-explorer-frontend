@@ -322,7 +322,6 @@ function MoviesCard({
 
     mainApi.deleteSavedMovie(idCard)
       .then(() => {
-        
         handlePressButtonSaveNotPressed() // ДЕФОЛТИМ СОСТОЯНИЕ КНОПКИ
         handleAddClassIconButtonNotActive() // УБИРАЕМ АКТИВНЫЙ КЛАСС С ИКОНКИ
 

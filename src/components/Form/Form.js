@@ -17,11 +17,12 @@ export default function Form({
 
 
   const handlesValidation = React.useContext(ValidationContext);
-  const { handleChange, isValid, clickAtInput } = handlesValidation;
+  const { handleChange, values, checkValidValueInput, clickAtInput } = handlesValidation;
 
 
   function checkButtonForm() {
-    if (!isValid()) {
+    console.log(values())
+    if (!checkValidValueInput()) {
       if (buttonName === 'Редактировать') {
         return 'profile__button-submit_disabled';
       }
@@ -40,7 +41,7 @@ export default function Form({
 
         {clickAtInput && <span>{errorSubmitMessage}</span>}
 
-        <button type="submit" disabled={(!isValid()) && true} className={`form__submit ${profileButton} ${checkButtonForm()}`}>{buttonName}</button>
+        <button type="submit" disabled={!checkValidValueInput() && true} className={`form__submit ${profileButton} ${checkButtonForm()}`}>{buttonName}</button>
 
       </form>
       <div className="form__reg-login-link-box">

@@ -8,6 +8,7 @@ import { parseJSON, stringifyJSON } from './../../utils/helpers/jsonHandler';
 import { ErrorMessage } from "../../utils/constants/constants";
 
 function Profile({
+  isLoggedIn,
   isProfileLink,
   isProfileMenu,
   isMoviesLink,
@@ -29,16 +30,12 @@ function Profile({
   setCurrentUser,
   setFilterSearchShortFromLocal,
   setMoviesFromLocal,
+  setValues,
+  setIsSavedMoviesDownloaded
 }) {
 
 
   useEffect(() => {
-    handleIsProfileLink();
-  }, []);
-
-
-  useEffect(() => {
-
     if (isMoviesLink || isSavedMoviesLink) {
       handler.errors().name = '';
       return handler.errors().email = '';
@@ -56,21 +53,23 @@ function Profile({
   const [errorSubmitMessage, setErrorSubmitMessage] = useState('');
 
   const profileSubmitStyle = 'profile__button-submit_disabled';
+  // КОНТЕКСТ ДАННЫХ ПОЛЬЗОВАТЕЛЯ
+  const currentUser = React.useContext(CurrentUserContext);
+  const { name, email } = currentUser;
 
+  useEffect(() => {
+    setValues({ ...values, name: { value: name }, email: { value: email } })
+    handleIsProfileLink();
+  }, []);
 
   // КОНТЕКСТ ВАЛИДАЦИИ ФОРМ
   const handler = React.useContext(ValidationContext);
   const { errors, values, handleClickAtInputActive } = handler;
-
-  const nameValue = values().name;
-  const emailValue = values().email;
+  const nameValue = values().name.value;
+  const emailValue = values().email.value;
   const nameError = errors().name;
   const emailError = errors().email;
 
-
-  // КОНТЕКСТ ДАННЫХ ПОЛЬЗОВАТЕЛЯ
-  const currentUser = React.useContext(CurrentUserContext);
-  const { name, email } = currentUser;
 
 
   // РЕДАКТИРОВАНИЕ ДАННЫХ ПОЛЬЗОВАТЕЛЯ
@@ -112,6 +111,8 @@ function Profile({
 
     mainApi.logoutUser()
       .then(() => {
+        setValues({ name: { value: '', isValid: false }, email: { value: '', isValid: false }, password: { value: '', isValid: false } })
+        setIsSavedMoviesDownloaded(false)
         setShowAllSavedCards(false);
         setMoviesBoxForMore([]);
         setFoundMoviesAfterSearchApi([]);
@@ -128,6 +129,8 @@ function Profile({
         localStorage.removeItem('userLogged');
         localStorage.removeItem('isAuth');
         localStorage.removeItem('pressedSubmit');
+        localStorage.removeItem('savedMovies');
+        localStorage.removeItem('authAfterLogoutActive');
         handleIsNotLoggedIn();
         return goToMainPage();
       })

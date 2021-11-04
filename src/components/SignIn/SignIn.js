@@ -10,9 +10,7 @@ function SignIn({
   isRegLink,
   handleIsLogLink,
   stringifyJSON,
-  getMoviesFromStorage,
   getSavedMoviesStorage,
-  getSavedMovies,
   setEmptySavedMoviesFromStorage,
   setActiveAuthAfterLogoutStorage,
   setActiveReloadedPageStorage,
@@ -56,19 +54,14 @@ function SignIn({
     setIsBlockedInput(true)
 
     e.preventDefault()
-    const emailValue = values().email;
-    const passwordValue = values().password;
+    const emailValue = values().email.value;
+    const passwordValue = values().password.value;
 
     mainApi.signIn(emailValue, passwordValue)
       .then((dataUser) => {
         getDataUser(); // ПОЛУЧЕНИЕ ДАННЫХ ПРОФАЙЛА
-
-        if (!getSavedMoviesStorage()) { // ЕСЛИ НЕТ В ХРАНИЛИЩЕ СОХРАНЁННЫХ ФИЛЬМОВ
+        if (!getSavedMoviesStorage()) { // ЕСЛИ НЕТ В ХРАНИЛИЩЕ КЛЮЧА СОХРАНЁННЫХ ФИЛЬМОВ
           setEmptySavedMoviesFromStorage(); // СОЗДАЁМ ПУСТОЙ МАССИВ
-        }
-        if (!getMoviesFromStorage()) { // ЕСЛИ НЕТ В ХРАНИЛИЩЕ ФИЛЬМОВ
-          getSavedMovies(); // ТОГДА СКАЧИВАЕМ МАССИВ С СЕРВЕРА
-          // ЕСЛИ НЕТ И НА СЕРВЕРЕ, ТО СОЗДАСТСЯ ПУСТОЙ МАССИВ
         }
         setActiveAuthAfterLogoutStorage();
         setActiveReloadedPageStorage();
@@ -78,7 +71,7 @@ function SignIn({
         return;
       })
       .catch((err) => {
-
+        setIsBlockedInput(false);
         Object.keys(ErrorMessage).forEach((key) => {
 
           if (err === key) {
@@ -107,7 +100,7 @@ function SignIn({
 
           <label htmlFor="password" className="form__label">Пароль</label>
           <input disabled={isBlockedInput && true} name="password" type="password" className="form__input" minLength="7" maxLength="30" autoComplete="off" required></input>
-          <span className={`form__not-valid ${passwordError} && 'form__not-valid_active'}`}>{passwordError}</span>
+          <span htmlFor="password" className={`form__not-valid ${passwordError && 'form__not-valid_active'}`}>{passwordError}</span>
         </div>
       </Form>
 

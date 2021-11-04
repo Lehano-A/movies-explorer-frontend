@@ -9,7 +9,6 @@ import { ErrorMessage } from "././../../utils/constants/constants";
 function SignUp({
   isMainLink,
   isLogLink,
-  handleIsLoggedIn,
   handleIsRegLink,
   handleRedirectMovies,
   setCurrentUser,
@@ -106,9 +105,9 @@ function SignUp({
 
     e.preventDefault();
 
-    const nameValue = values().name;
-    const emailValue = values().email;
-    const passwordValue = values().password;
+    const nameValue = values().name.value;
+    const emailValue = values().email.value;
+    const passwordValue = values().password.value;
 
     mainApi.signUp(emailValue, passwordValue, nameValue)
       .then((user) => {
@@ -122,10 +121,10 @@ function SignUp({
         setEmptySavedMoviesFromStorage();
         setActiveAuthAfterLogoutStorage();
         setIsBlockedInput(false);
-        return handleIsLoggedIn();
+        return;
       })
       .catch((err) => {
-
+        setIsBlockedInput(false);
         Object.keys(ErrorMessage).forEach((key) => {
 
           if (err === key) {
@@ -139,8 +138,8 @@ function SignUp({
         console.log(err)
         return;
       })
-
   }
+
 
   return (
 
@@ -158,7 +157,7 @@ function SignUp({
 
         <label htmlFor="password" className="form__label">Пароль</label>
         <input disabled={isBlockedInput && true} name="password" type="password" className="form__input" minLength="7" maxLength="30" autoComplete="off" required></input>
-        <span className={`form__not-valid ${email && 'form__not-valid_active'}`}>{password}</span>
+        <span className={`form__not-valid ${password && 'form__not-valid_active'}`}>{password}</span>
 
       </Form>
 
