@@ -2,6 +2,7 @@ import React from 'react';
 import logo from './../../images/logo.svg';
 import { Link } from 'react-router-dom';
 import ProfileButton from '../ProfileButton/ProfileButton';
+import MenuProfile from '../MenuProfile/MenuProfile';
 
 function Header({
   pathesPages,
@@ -15,7 +16,9 @@ function Header({
   isPageNotFound,
   handleIsProfileMenu,
   goToMainPage,
-  isLoggedIn
+  isLoggedIn,
+  isProfileMenu,
+  handleButtonCloseMenuProfile
 }) {
 
   const { mainUrl, moviesUrl, savedMoviesUrl } = pathesPages;
@@ -65,6 +68,12 @@ function Header({
     // ФИЛЬМЫ, СОХРАНЁННЫЕ ФИЛЬМЫ И ПРОФАЙЛ
     if ((isMainLink || isProfileLink || isSavedMoviesLink || isMoviesLink) && (!regLogLink && isLoggedIn)) {
       return <>
+        <MenuProfile
+          isMainLink={isMainLink}
+          isProfileMenu={isProfileMenu}
+          handleButtonCloseMenuProfile={handleButtonCloseMenuProfile}
+        />
+
         <ul className="header__links">
           <li><Link to="/movies" className={`header__link ${moviesUrl && 'header__link_active'} ${changeLinkStyleWhenMainPage()}`}>Фильмы</Link></li>
           <li><Link to="/saved-movies" className={`header__link ${savedMoviesUrl && 'header__link_active'} ${changeLinkStyleWhenMainPage()}`}>Сохранённые фильмы</Link></li>

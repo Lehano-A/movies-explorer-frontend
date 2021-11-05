@@ -16,7 +16,7 @@ const QuantitySavedMovies = 100;
 
 const BeatFilmUrl = 'https://api.nomoreparties.co'
 
-const RegexEmail = /^(([-_.]?([a-zA-Z0-9]))+)@([a-zA-Z0-9]+(-)?[a-zA-Z0-9]+)+\.([a-z]+){2}$/
+const RegexEmail = /^(([-_.]?([a-zA-Z0-9]))+)@([a-zA-Z0-9]+(-)?[a-zA-Z0-9]+)+.+([a-z]+){2}$/
 const RegexName = /^[a-zA-Z]+$|^[а-яА-Я]+$/
 
 const ErrorMessage = {

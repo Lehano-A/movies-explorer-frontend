@@ -439,7 +439,7 @@ function App() {
 
   // ПОЛУЧЕНИЕ СОХРАНЁННЫХ ФИЛЬМОВ С СЕРВЕРА
   useEffect(() => {
-    if (isLoggedIn && !isSavedMoviesDownloaded && parseJSON(localStorage.getItem('dataUser'))) {
+    if (isLoggedIn && !isSavedMoviesDownloaded) {
       setIsSavedMoviesDownloaded(true)
       getSavedMovies()
       return setValues({ ...values, name: { ...values.name, value: currentUser.name }, email: { ...values.email, value: currentUser.email } })
@@ -453,8 +453,9 @@ function App() {
     mainApi.getUserData()
       .then((data) => {
         localStorage.setItem('dataUser', stringifyJSON(data.user));
-
-        setIsLoggedIn(true)
+        if (!isLoggedIn) {
+          setIsLoggedIn(true)
+        }
         return
       })
       .catch((err) => { console.log(err) })
@@ -1013,7 +1014,7 @@ function App() {
     // ЕСЛИ ОТКРЫТА СТРАНИЦА /signup
     if (pathesPages.signupUrl) {
       if ((values.name.value === '' || values.email.value === '' || values.password.value === '' || isRegexEmail === null || isRegexName === null)) {
-              return;
+        return;
       }
     }
 
@@ -1068,6 +1069,9 @@ function App() {
               isLoggedIn={isLoggedIn}
               isRegexName={isRegexName}
               isRegexEmail={isRegexEmail}
+              isProfileMenu={isProfileMenu}
+              handleButtonCloseMenuProfile={handleButtonCloseMenuProfile}
+
             />
 
             <Switch>
@@ -1093,6 +1097,7 @@ function App() {
                     setEmptySavedMoviesFromStorage={setEmptySavedMoviesFromStorage}
                     setIsAuth={setIsAuth}
                     getDataUser={getDataUser}
+                    setIsLoggedIn={setIsLoggedIn}
                   />
                   : <Redirect to="/movies" />}
               </Route>
@@ -1113,6 +1118,7 @@ function App() {
                     setIsAuth={setIsAuth}
                     handleRedirectMovies={handleRedirectMovies}
                     getDataUser={getDataUser}
+                    setIsLoggedIn={setIsLoggedIn}
                   />
                   : <Redirect to="/movies" />}
               </Route>

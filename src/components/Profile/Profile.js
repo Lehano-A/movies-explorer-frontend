@@ -8,7 +8,6 @@ import { parseJSON, stringifyJSON } from './../../utils/helpers/jsonHandler';
 import { ErrorMessage } from "../../utils/constants/constants";
 
 function Profile({
-  isLoggedIn,
   isProfileLink,
   isProfileMenu,
   isMoviesLink,
@@ -71,7 +70,6 @@ function Profile({
   const emailError = errors().email;
 
 
-
   // РЕДАКТИРОВАНИЕ ДАННЫХ ПОЛЬЗОВАТЕЛЯ
   function editUserData(e) {
     setIsBlockedInput(true)
@@ -80,8 +78,8 @@ function Profile({
 
     mainApi.editUserData({ name: nameValue, email: emailValue })
       .then((user) => {
-        handleOpenPopup({ active: true, message: 'Данные успешно обновлены' })
         setTitleName(nameValue)
+        handleOpenPopup({ active: true, message: 'Данные успешно обновлены' })
         setIsSubmitProfileDisabled(true)
         localStorage.setItem('dataUser', stringifyJSON(user))
         setCurrentUser(parseJSON(localStorage.getItem('dataUser')))

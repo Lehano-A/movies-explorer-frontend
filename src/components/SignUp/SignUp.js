@@ -17,7 +17,8 @@ function SignUp({
   setEmptyMoviesFromStorage,
   setEmptySavedMoviesFromStorage,
   getDataUser,
-  setIsAuth
+  setIsAuth,
+  setIsLoggedIn
 }) {
 
 
@@ -60,12 +61,12 @@ function SignUp({
 
     mainApi.signIn(dataForAuth.email, dataForAuth.password)
       .then((dataUser) => {
-
         getDataUser(); // ПОЛУЧЕНИЕ ДАННЫХ ПРОФАЙЛА
-        localStorage.setItem('dataUser', stringifyJSON(dataUser))
+        // localStorage.setItem('dataUser', stringifyJSON(dataUser))
         setActiveAuthAfterLogoutStorage();
         setEmptyMoviesFromStorage();
         setEmptySavedMoviesFromStorage();
+        // setIsLoggedIn(true)
         handleRedirectMovies();
         setCurrentUser(dataUser);
         return setIsAuth(localStorage.setItem('isAuth', stringifyJSON(true)));

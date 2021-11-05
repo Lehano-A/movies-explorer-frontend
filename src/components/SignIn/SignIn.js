@@ -16,7 +16,8 @@ function SignIn({
   setActiveReloadedPageStorage,
   setCurrentUser,
   setIsAuth,
-  getDataUser
+  getDataUser,
+  setIsLoggedIn
 }) {
 
 
@@ -60,14 +61,15 @@ function SignIn({
     mainApi.signIn(emailValue, passwordValue)
       .then((dataUser) => {
         getDataUser(); // ПОЛУЧЕНИЕ ДАННЫХ ПРОФАЙЛА
+        setIsBlockedInput(false)
         if (!getSavedMoviesStorage()) { // ЕСЛИ НЕТ В ХРАНИЛИЩЕ КЛЮЧА СОХРАНЁННЫХ ФИЛЬМОВ
           setEmptySavedMoviesFromStorage(); // СОЗДАЁМ ПУСТОЙ МАССИВ
         }
         setActiveAuthAfterLogoutStorage();
         setActiveReloadedPageStorage();
         setCurrentUser(dataUser);
-        setIsBlockedInput(false)
         setIsAuth(localStorage.setItem('isAuth', stringifyJSON(true)))
+        setIsLoggedIn(true)
         return;
       })
       .catch((err) => {

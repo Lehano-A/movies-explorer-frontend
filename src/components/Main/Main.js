@@ -8,11 +8,9 @@ function Main({
   handleClickByLogo,
 }) {
 
-
   useEffect(() => {
     handleClickByLogo();
-  });
-
+  }, []);
 
   return (
     <main>
