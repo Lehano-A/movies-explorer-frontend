@@ -7,17 +7,13 @@ function MoviesCardList({
   isMoviesLink,
   isPreloaderActive,
   isMoviesNotFound,
-  cards,
   isLoadedSavedMovies,
-  getSavedMovies,
-  setIsLoadedSavedMovies,
   isSavedMoviesLink,
   handleOpenPopup,
-  handleSetIsLikedCard,
-  handleDeleteMovies,
   handleDeleteCardfromDOM,
+  getSavedMovies,
   setIsLikeRemoved,
-  isFilterShortMovies,
+  cards,
 }) {
 
 
@@ -26,7 +22,7 @@ function MoviesCardList({
     if (card.movieId) {
       const newKey = {
         id: card.movieId,
-      }
+      };
       return newKey.id;
     }
     return card.id;
@@ -50,14 +46,10 @@ function MoviesCardList({
                 isMoviesLink={isMoviesLink}
                 isSavedMoviesLink={isSavedMoviesLink}
                 isLoadedSavedMovies={isLoadedSavedMovies}
-                setIsLoadedSavedMovies={setIsLoadedSavedMovies}
-                getSavedMovies={getSavedMovies}
                 handleOpenPopup={handleOpenPopup}
-                handleSetIsLikedCard={handleSetIsLikedCard}
-                handleDeleteMovies={handleDeleteMovies}
                 handleDeleteCardfromDOM={handleDeleteCardfromDOM}
+                getSavedMovies={getSavedMovies}
                 setIsLikeRemoved={setIsLikeRemoved}
-                isFilterShortMovies={isFilterShortMovies}              
                 key={checkId(card)}
                 card={card}
               />
@@ -67,7 +59,7 @@ function MoviesCardList({
 
 
       }
-    </section >
+    </section>
   )
 
 }

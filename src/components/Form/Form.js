@@ -15,13 +15,11 @@ export default function Form({
   errorSubmitMessage,
 }) {
 
-
   const handlesValidation = React.useContext(ValidationContext);
   const { handleChange, checkValidValueInput, clickAtInput } = handlesValidation;
 
 
   function checkButtonForm() {
-
     if (!checkValidValueInput()) {
       if (buttonName === 'Редактировать') {
         return 'profile__button-submit_disabled';

@@ -19,7 +19,7 @@ class MainApi {
         password: `${password}`
       }),
     })
-      .then((res) => { return this._getResponse(res) })
+      .then((res) => { return this._getResponse(res); })
   };
 
 
@@ -38,7 +38,7 @@ class MainApi {
         email: `${data.email}`
       }),
     })
-      .then((res) => { return this._getResponse(res) })
+      .then((res) => { return this._getResponse(res); })
   };
 
 
@@ -50,7 +50,7 @@ class MainApi {
       withCredentials: true,
       credentials: 'include',
     })
-      .then((res) => { return this._getResponse(res) })
+      .then((res) => { return this._getResponse(res); })
   };
 
 
@@ -61,7 +61,7 @@ class MainApi {
       withCredentials: true,
       credentials: 'include',
     })
-      .then((res) => { return this._getResponse(res) })
+      .then((res) => { return this._getResponse(res); })
   };
 
 
@@ -81,7 +81,7 @@ class MainApi {
         name: `${name}`,
       }),
     })
-      .then((res) => { return this._getResponse(res) })
+      .then((res) => { return this._getResponse(res); })
   };
 
 
@@ -93,7 +93,7 @@ class MainApi {
       withCredentials: true,
       credentials: 'include',
     })
-      .then((res) => { return this._getResponse(res) })
+      .then((res) => { return this._getResponse(res); })
   };
 
 
@@ -121,7 +121,7 @@ class MainApi {
         movieId: `${data.id}`,
       }),
     })
-      .then((res) => { return this._getResponse(res) })
+      .then((res) => { return this._getResponse(res); })
   };
 
 
@@ -135,14 +135,15 @@ class MainApi {
       headers: {
         'Content-Type': 'application/json',
       },
-    }).then((res) => { return this._getResponse(res) })
+    })
+    .then((res) => { return this._getResponse(res); })
   };
 
 
 
   _getResponse(res) {
     if (!res.ok) {
-      return Promise.reject(`${res.status}`)
+      return Promise.reject(`${res.status}`);
     }
     return res.json();
   }

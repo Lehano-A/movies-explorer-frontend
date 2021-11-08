@@ -4,7 +4,7 @@ import { useHistory, Link } from "react-router-dom";
 function PageNotFound({ handlePageNotFoundOpened }) {
 
   useEffect(() => {
-    handlePageNotFoundOpened()
+    handlePageNotFoundOpened();
   }, [])
 
   const history = useHistory();

@@ -4,18 +4,18 @@ import React, { useEffect, useState } from "react";
 function SearchForm({
   isFilterShortMovies,
   isFilterShortMoviesDisabled,
-  setIsFilterShortMoviesDisabled,
   isPreloaderActive,
   handleValueInputSearchForm,
   handleSetSubmitSearchFormActive,
   handleSetIsFilterShortMovies,
+  setIsFilterShortMoviesDisabled,
   timerFilterShortMovies,
 }) {
 
   // ТАЙМЕР ДЛЯ КНОПКИ ФИЛЬТРА
   useEffect(() => {
     if (!timerFilterShortMovies) {
-      return setIsFilterShortMoviesDisabled(false)
+      return setIsFilterShortMoviesDisabled(false);
     }
   }, [timerFilterShortMovies])
 
@@ -26,19 +26,19 @@ function SearchForm({
 
   // ВКЛЮЧИЛИ ТАЙМЕР
   function handleSetTimerActive() {
-    setTimer(true)
+    setTimer(true);
   }
 
 
   // САБМИТ ФОРМЫ ПОИСКА ФИЛЬМА + ЗНАЧЕНИЕ ПОЛЯ ВВОДА
   function handleSubmitSearchForm(e) {
     e.preventDefault();
-    localStorage.setItem('pressedSubmit', true)
+    localStorage.setItem('pressedSubmit', true);
     if (!timer) {
-      handleSetTimerActive() // ВКЛЮЧИЛИ ТАЙМЕР
+      handleSetTimerActive(); // ВКЛЮЧИЛИ ТАЙМЕР
       setTimeout(setTimer, 1000, false);
       handleSetSubmitSearchFormActive(); // САБМИТ - АКТИВНО
-      handleValueInputSearchForm(valueInput.current.value)
+      handleValueInputSearchForm(valueInput.current.value);
     }
   }
 
@@ -48,7 +48,7 @@ function SearchForm({
 
       <form className="search-form__form" onSubmit={handleSubmitSearchForm}>
         <div className="search-form__input-button-box">
-          <input className="search-form__input" ref={valueInput} placeholder="Фильм" required></input>
+          <input className="search-form__input" ref={valueInput} placeholder="Фильм"></input>
           <button className="search-form__button-search" disabled={isPreloaderActive && true} type="submit"></button>
         </div>
 

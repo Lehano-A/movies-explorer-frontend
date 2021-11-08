@@ -18,7 +18,6 @@ function SignUp({
   setEmptySavedMoviesFromStorage,
   getDataUser,
   setIsAuth,
-  setIsLoggedIn
 }) {
 
 
@@ -40,7 +39,7 @@ function SignUp({
 
   const [isBlockedInput, setIsBlockedInput] = useState(false); // ЗАБЛОКИРОВАНЫ ЛИ ПОЛЯ, ВО ВРЕМЯ ЗАПРОСА
 
-  const [errorSubmitMessage, setErrorSubmitMessage] = useState('')
+  const [errorSubmitMessage, setErrorSubmitMessage] = useState('');
 
   const handler = React.useContext(ValidationContext);
 
@@ -48,9 +47,9 @@ function SignUp({
 
   const { name, email, password } = errors();
 
-  const [dataForAuth, setDataForAuth] = useState({}) // ДАННЫЕ ДЛЯ АВТОАУТЕНТИФИКАЦИИ
+  const [dataForAuth, setDataForAuth] = useState({}); // ДАННЫЕ ДЛЯ АВТОАУТЕНТИФИКАЦИИ
 
-  const [successReg, setSuccessReg] = useState(false)
+  const [successReg, setSuccessReg] = useState(false);
 
 
 
@@ -62,11 +61,9 @@ function SignUp({
     mainApi.signIn(dataForAuth.email, dataForAuth.password)
       .then((dataUser) => {
         getDataUser(); // ПОЛУЧЕНИЕ ДАННЫХ ПРОФАЙЛА
-        // localStorage.setItem('dataUser', stringifyJSON(dataUser))
         setActiveAuthAfterLogoutStorage();
         setEmptyMoviesFromStorage();
         setEmptySavedMoviesFromStorage();
-        // setIsLoggedIn(true)
         handleRedirectMovies();
         setCurrentUser(dataUser);
         return setIsAuth(localStorage.setItem('isAuth', stringifyJSON(true)));
@@ -82,8 +79,8 @@ function SignUp({
             )
           }
         })
-        console.log(err)
-        return setIsBlockedInput(false)
+        console.log(err);
+        return setIsBlockedInput(false);
       })
   }
 
@@ -101,8 +98,7 @@ function SignUp({
 
   // РЕГИСТРАЦИЯ ПОЛЬЗОВАТЕЛЯ
   function handleSubmitSignUp(e) {
-
-    setIsBlockedInput(true)
+    setIsBlockedInput(true);
 
     e.preventDefault();
 
@@ -115,10 +111,10 @@ function SignUp({
         setDataForAuth({
           email: emailValue,
           password: passwordValue,
-        })
+        });
         setSuccessReg(true);
-        localStorage.setItem('dataUser', stringifyJSON({ name: user.name, email: user.email }))
-        setActiveAfterRegBeforeFirstSubmitStorage() // УДАЛИТСЯ ИЗ ХРАНИЛИЩА, КАК ТОЛЬКО ОСУЩЕСТВИТСЯ ПЕРВЫЙ ПОИСК
+        localStorage.setItem('dataUser', stringifyJSON({ name: user.name, email: user.email }));
+        setActiveAfterRegBeforeFirstSubmitStorage(); // УДАЛИТСЯ ИЗ ХРАНИЛИЩА, КАК ТОЛЬКО ОСУЩЕСТВИТСЯ ПЕРВЫЙ ПОИСК
         setEmptySavedMoviesFromStorage();
         setActiveAuthAfterLogoutStorage();
         setIsBlockedInput(false);

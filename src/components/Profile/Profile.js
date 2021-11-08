@@ -16,7 +16,6 @@ function Profile({
   handleIsNotLoggedIn,
   handleIsProfileLink,
   handleButtonCloseMenuProfile,
-  goToMainPage,
   setShowAllSavedCards,
   setMoviesBoxForMore,
   setFoundMoviesAfterSearchApi,
@@ -30,7 +29,8 @@ function Profile({
   setFilterSearchShortFromLocal,
   setMoviesFromLocal,
   setValues,
-  setIsSavedMoviesDownloaded
+  setIsSavedMoviesDownloaded,
+  goToMainPage
 }) {
 
 
@@ -57,7 +57,7 @@ function Profile({
   const { name, email } = currentUser;
 
   useEffect(() => {
-    setValues({ ...values, name: { value: name }, email: { value: email } })
+    setValues({ ...values, name: { value: name }, email: { value: email } });
     handleIsProfileLink();
   }, []);
 
@@ -72,18 +72,18 @@ function Profile({
 
   // РЕДАКТИРОВАНИЕ ДАННЫХ ПОЛЬЗОВАТЕЛЯ
   function editUserData(e) {
-    setIsBlockedInput(true)
+    setIsBlockedInput(true);
 
     e.preventDefault();
 
     mainApi.editUserData({ name: nameValue, email: emailValue })
       .then((user) => {
-        setTitleName(nameValue)
-        handleOpenPopup({ active: true, message: 'Данные успешно обновлены' })
-        setIsSubmitProfileDisabled(true)
-        localStorage.setItem('dataUser', stringifyJSON(user))
-        setCurrentUser(parseJSON(localStorage.getItem('dataUser')))
-        return setIsBlockedInput(false)
+        setTitleName(nameValue);
+        handleOpenPopup({ active: true, message: 'Данные успешно обновлены' });
+        setIsSubmitProfileDisabled(true);
+        localStorage.setItem('dataUser', stringifyJSON(user));
+        setCurrentUser(parseJSON(localStorage.getItem('dataUser')));
+        return setIsBlockedInput(false);
       })
       .catch((err) => {
         Object.keys(ErrorMessage).forEach((key) => {
@@ -96,8 +96,8 @@ function Profile({
             )
           }
         })
-        console.log(err)
-        setIsBlockedInput(false)
+        console.log(err);
+        setIsBlockedInput(false);
         return;
       })
   }
@@ -109,19 +109,19 @@ function Profile({
 
     mainApi.logoutUser()
       .then(() => {
-        setValues({ name: { value: '', isValid: false }, email: { value: '', isValid: false }, password: { value: '', isValid: false } })
-        setIsSavedMoviesDownloaded(false)
+        setValues({ name: { value: '', isValid: false }, email: { value: '', isValid: false }, password: { value: '', isValid: false } });
+        setIsSavedMoviesDownloaded(false);
         setShowAllSavedCards(false);
         setMoviesBoxForMore([]);
         setFoundMoviesAfterSearchApi([]);
         setMoviesFromApi([]);
         setFilterAfterSearchShortFromApi([]);
-        setFilterSearchShortFromLocal([])
-        setMoviesFromLocal([])
-        setIsMoviesNotFound(false) // УБИРАЕМ НАДПИСЬ - "НИЧЕГО НЕ НАЙДЕНО"
-        setCurrentSearchMoviesFromApi(false) // СИГНАЛ, ЧТО ПОИСК ОТ API
-        setCurrentSearchInLocalSavedMovies(false) // СИГНАЛ, ЧТО ПОИСК ЛОКАЛЬНЫЙ
-        localStorage.removeItem('timeBetweenRequests')
+        setFilterSearchShortFromLocal([]);
+        setMoviesFromLocal([]);
+        setIsMoviesNotFound(false); // УБИРАЕМ НАДПИСЬ - "НИЧЕГО НЕ НАЙДЕНО"
+        setCurrentSearchMoviesFromApi(false); // СИГНАЛ, ЧТО ПОИСК ОТ API
+        setCurrentSearchInLocalSavedMovies(false); // СИГНАЛ, ЧТО ПОИСК ЛОКАЛЬНЫЙ
+        localStorage.removeItem('timeBetweenRequests');
         localStorage.removeItem('reloadedPage')
         localStorage.removeItem('dataUser');
         localStorage.removeItem('userLogged');
@@ -143,7 +143,7 @@ function Profile({
             )
           }
         })
-        console.log(err)
+        console.log(err);
         return;
       })
   }

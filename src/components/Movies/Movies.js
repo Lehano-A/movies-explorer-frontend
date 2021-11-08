@@ -13,18 +13,10 @@ function Movies({
   isFilterShortMovies,
   isLoadedSavedMovies,
   isSavedMoviesLink,
-  handleLocalSavedMovies,
-  getSavedMovies,
-  setIsLoadedSavedMovies,
-  moviesFromApi,
-  fifthApiStep,
-  moviesBoxForMore,
   isReloadedPage,
   isSubmitFixedStateFilter,
-  currentSearchMoviesFromApi,
-  filterAfterSearchShortFromApi,
-  foundMoviesAfterSearchApi,
   isPressedSubmitSearchForm,
+  isFilterShortMoviesDisabled,
   handleOpenPopup,
   handleCountCards,
   handleSetIsFilterShortMovies,
@@ -32,17 +24,20 @@ function Movies({
   handleSetSubmitSearchFormActive,
   handleIsMoviesLink,
   handleButtonCloseMenuProfile,
-  handleSetValueInputSearchForm,
-  handleShowResultSearchMovies,
-  firstLoggingUser,
   handleIsReloadedPageActive,
+  getSavedMovies,
   setIsLikeRemoved,
-  isFilterShortMoviesDisabled,
   setIsFilterShortMoviesDisabled,
-  timerFilterShortMovies,
+  moviesFromApi,
+  moviesBoxForMore,
+  fourthApiFlag,
+  currentSearchMoviesFromApi,
+  filterAfterSearchShortFromApi,
+  foundMoviesAfterSearchApi,
+  timerFilterShortMovies
 }) {
 
-  const [movies, setMovies] = useState([])
+  const [movies, setMovies] = useState([]);
 
   const afterRegBeforeFirstSubmit = parseJSON(localStorage.getItem('afterRegBeforeFirstSubmit'));
 
@@ -50,7 +45,7 @@ function Movies({
   useEffect(() => {
 
     if (!afterRegBeforeFirstSubmit) {
-      handleValueInputSearchForm('') // ПРИ ВОЗВРАТЕ НА /movies - СБРАСЫВАЕМ ЗНАЧЕНИЕ ПОИСКА
+      handleValueInputSearchForm(''); // ПРИ ВОЗВРАТЕ НА /movies - СБРАСЫВАЕМ ЗНАЧЕНИЕ ПОИСКА
       handleIsReloadedPageActive();
     }
 
@@ -59,12 +54,11 @@ function Movies({
 
 
   useEffect(() => {
-    if (isReloadedPage && !isSavedMoviesLink && !firstLoggingUser && !afterRegBeforeFirstSubmit) {
-      return handleSetSubmitSearchFormActive()
+    if (isReloadedPage && !isSavedMoviesLink && !afterRegBeforeFirstSubmit) {
+      return handleSetSubmitSearchFormActive();
     }
   }, [isReloadedPage,
     isSavedMoviesLink,
-    firstLoggingUser,
     afterRegBeforeFirstSubmit
   ])
 
@@ -73,19 +67,19 @@ function Movies({
 
     // ОТ API
     if (isReloadedPage && !isSubmitFixedStateFilter) {
-      localStorage.removeItem('reloadedPage')
-      return setMovies(moviesBoxForMore)
+      localStorage.removeItem('reloadedPage');
+      return setMovies(moviesBoxForMore);
     } // ЕСЛИ БЫЛА ОБНОВЛЕНА СТРАНИЦА, ТО ПОКАЗЫВАЕМ ФИЛЬМЫ ИЗ ХРАНИЛИЩА, КЛЮЧ - movies
 
     if (filterAfterSearchShortFromApi.length >= 1 && currentSearchMoviesFromApi) {
-      return setMovies(filterAfterSearchShortFromApi)
+      return setMovies(filterAfterSearchShortFromApi);
     }
 
-    if (fifthApiStep && !isSubmitFixedStateFilter && currentSearchMoviesFromApi) {
-      return setMovies(moviesBoxForMore)
+    if (fourthApiFlag && !isSubmitFixedStateFilter && currentSearchMoviesFromApi) {
+      return setMovies(moviesBoxForMore);
     }
   }, [isReloadedPage,
-    fifthApiStep,
+    fourthApiFlag,
     moviesFromApi,
     moviesBoxForMore,
     filterAfterSearchShortFromApi,
@@ -105,34 +99,29 @@ function Movies({
         isFilterShortMovies={isFilterShortMovies}
         isPreloaderActive={isPreloaderActive}
         isFilterShortMoviesDisabled={isFilterShortMoviesDisabled}
-        setIsFilterShortMoviesDisabled={setIsFilterShortMoviesDisabled}
-        timerFilterShortMovies={timerFilterShortMovies}
         handleSetIsFilterShortMovies={handleSetIsFilterShortMovies}
         handleValueInputSearchForm={handleValueInputSearchForm}
         handleSetSubmitSearchFormActive={handleSetSubmitSearchFormActive}
-        handleSetValueInputSearchForm={handleSetValueInputSearchForm}
+        setIsFilterShortMoviesDisabled={setIsFilterShortMoviesDisabled}
+        timerFilterShortMovies={timerFilterShortMovies}
       />
 
       <MoviesCardList
-        cards={movies}
         isPreloaderActive={isPreloaderActive}
         isMoviesNotFound={isMoviesNotFound}
         isPressedSubmitSearchForm={isPressedSubmitSearchForm}
         isMoviesLink={isMoviesLink}
-        getSavedMovies={getSavedMovies}
         isLoadedSavedMovies={isLoadedSavedMovies}
-        setIsLoadedSavedMovies={setIsLoadedSavedMovies}
-        handleLocalSavedMovies={handleLocalSavedMovies}
         handleOpenPopup={handleOpenPopup}
-        handleShowResultSearchMovies={handleShowResultSearchMovies}
+        getSavedMovies={getSavedMovies}
         setIsLikeRemoved={setIsLikeRemoved}
-
+        cards={movies}
       />
 
       <More
+        isSubmitFixedStateFilter={isSubmitFixedStateFilter}
         resultSearchMovies={foundMoviesAfterSearchApi}
         addMoreCards={handleCountCards}
-        isSubmitFixedStateFilter={isSubmitFixedStateFilter}
         filterAfterSearchShortFromApi={filterAfterSearchShortFromApi}
       />
     </>
