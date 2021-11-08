@@ -1,0 +1,9 @@
+.profile-button__icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-image: url("./../../../images/profile_icon.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #f9f9f9;
+}

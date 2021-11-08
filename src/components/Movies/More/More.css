@@ -1,0 +1,28 @@
+.More {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 36px;
+  background-color: #f9f9f9;
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 1226px) {
+  .More {
+    max-width: 708px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .More {
+    max-width: 300px;
+    margin-bottom: 80px;
+  }
+}
+
+@media screen and (max-width: 429px) {
+  .More {
+    margin: 0 10px 160px;
+  }
+}

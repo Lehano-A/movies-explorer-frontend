@@ -1,0 +1,19 @@
+.form__submit {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.21;
+  height: 45px;
+  border: none;
+  border-radius: 3px;
+  background-color: #ff6838;
+  color: #fff;
+  margin-top: 70px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 465px) {
+  .form__submit {
+    font-size: 12px;
+    margin-top: 159px;
+  }
+}

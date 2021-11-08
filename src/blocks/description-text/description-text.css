@@ -1,0 +1,70 @@
+.description-text {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42;
+  margin: 0;
+  margin-top: 26px;
+}
+
+.Techs .description-text {
+  max-width: 460px;
+  text-align: center;
+  letter-spacing: -0.04em;
+}
+
+.AboutMe .description-text {
+  max-width: 600px;
+  margin-right: 20px;
+  line-height: 1.63;
+}
+
+@media screen and (max-width: 768px) {
+  .AboutProject .description-text {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.5;
+    margin-top: 23px;
+  }
+}
+
+@media screen and (max-width: 429px) {
+  .AboutProject .description-text {
+    font-size: 11px;
+    line-height: 1.45;
+    margin-top: 0;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .Techs .description-text {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.5;
+    margin-top: 22px;
+  }
+}
+
+@media screen and (max-width: 429px) {
+  .Techs .description-text {
+    font-size: 11px;
+    line-height: 1.45;
+    margin-top: 24px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .AboutMe .description-text {
+    font-size: 12px;
+    line-height: 1.5;
+    margin: 20px 20px 0 0;
+    max-width: 364px;
+  }
+}
+
+@media screen and (max-width: 429px) {
+  .AboutMe .description-text {
+    font-size: 11px;
+    line-height: 1.5;
+    margin-right: 0;
+  }
+}

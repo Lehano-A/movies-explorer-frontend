@@ -1,0 +1,12 @@
+.Form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 380px;
+}
+
+@media screen and (max-width: 465px) {
+  .Form {
+    height: 468px;
+  }
+}

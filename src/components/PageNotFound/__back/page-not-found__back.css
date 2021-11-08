@@ -1,0 +1,21 @@
+.page-not-found__back {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.21;
+  color: #ff6838;
+  margin: 0;
+  cursor: pointer;
+  text-decoration: none;
+  margin-bottom: 222px;
+}
+
+.page-not-found__back:hover {
+  text-decoration: underline;
+}
+
+@media screen and (max-width: 429px) {
+  .page-not-found__back {
+    font-size: 12px;
+    margin-bottom: 30px;
+  }
+}

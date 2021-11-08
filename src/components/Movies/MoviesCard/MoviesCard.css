@@ -1,0 +1,20 @@
+.MoviesCard {
+  width: 364px;
+  height: 271px;
+  margin: 0;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+}
+
+@media screen and (max-width: 1226px) {
+  .MoviesCard {
+    width: 339px;
+    height: 258px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .MoviesCard {
+    width: 300px;
+    height: 236px;
+  }
+}

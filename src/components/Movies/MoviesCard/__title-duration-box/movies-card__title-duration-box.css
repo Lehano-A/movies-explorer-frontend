@@ -1,0 +1,4 @@
+.movies-card__title-duration-box {
+  display: flex;
+  flex-direction: column;
+}

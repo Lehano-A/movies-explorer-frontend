@@ -1,0 +1,14 @@
+.about-project__scale-frontend {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 36px;
+  margin-bottom: 14px;
+  background-color: #f2f2f2;
+}
+
+@media screen and (max-width: 429px) {
+  .about-project__scale-frontend {
+    margin-bottom: 10px;
+  }
+}

@@ -1,0 +1,25 @@
+.header__link-signup {
+  color: #fff;
+  padding: 0;
+  margin-right: 30px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.33;
+  border: none;
+  background-color: transparent;
+  text-decoration: none;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.header__link-signup:hover {
+  color: #d1d1d1;
+}
+
+@media screen and (max-width: 429px) {
+  .header__link-signup {
+    font-size: 10px;
+    line-height: 1.6;
+    margin-right: 14px;
+  }
+}

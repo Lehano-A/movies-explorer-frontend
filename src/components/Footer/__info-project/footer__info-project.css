@@ -1,0 +1,19 @@
+.footer__info-project {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.21;
+  color: #a0a0a0;
+  padding-top: 79px;
+  padding-bottom: 20px;
+  border-bottom: 1px #e8e8e8 solid;
+  margin: 0 auto;
+  text-align: center;
+}
+
+@media screen and (max-width: 429px) {
+  .footer__info-project {
+    font-size: 12px;
+    line-height: 1.21;
+    padding: 0 0 21px;
+  }
+}

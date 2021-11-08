@@ -1,0 +1,12 @@
+.form__reg-login-link-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 18px;
+}
+
+@media screen and (max-width: 429px) {
+  .form__reg-login-link-box {
+    margin-top: 14px;
+  }
+}

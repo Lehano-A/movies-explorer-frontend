@@ -1,0 +1,9 @@
+.header__profile-button {
+  display: flex;
+}
+
+@media screen and (max-width: 815px) {
+  .header__profile-button {
+    display: none;
+  }
+}

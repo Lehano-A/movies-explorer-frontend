@@ -1,0 +1,25 @@
+.movies-card__title {
+  max-width: 280px;
+  min-width: 200px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.21;
+  margin: 0 0 9px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media screen and (max-width: 1226px) {
+  .movies-card__title {
+    max-width: 250px;
+    margin-bottom: 10px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .movies-card__title {
+    max-width: 230px;
+    margin-bottom: 10px;
+  }
+}

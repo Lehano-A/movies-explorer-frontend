@@ -1,0 +1,17 @@
+.AboutMe {
+  padding: 110px 70px 0;
+}
+
+@media screen and (max-width: 768px) {
+  .AboutMe {
+    padding: 90px 50px 54px;
+  }
+}
+
+@media screen and (max-width: 429px) {
+  .AboutMe {
+    padding: 68px 14px 0;
+    display: flex;
+    flex-direction: column;
+  }
+}

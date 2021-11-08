@@ -1,0 +1,15 @@
+.about-project__scale-range-title {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.21;
+  margin: 0;
+  color: #a0a0a0;
+}
+
+@media screen and (max-width: 429px) {
+  .about-project__scale-range-title {
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 1.15;
+  }
+}

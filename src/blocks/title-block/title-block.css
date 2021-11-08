@@ -1,0 +1,19 @@
+/*  МИКС - НАЗВАНИЕ БЛОКА */
+.title-block {
+  max-width: 1140px;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.22;
+  letter-spacing: -0.04em;
+  padding-bottom: 23px;
+  margin: 0;
+  border-bottom: 1px black solid;
+}
+
+@media screen and (max-width: 429px) {
+  .title-block {
+    font-size: 18px;
+    line-height: 1.21;
+    padding-bottom: 28px;
+  }
+}

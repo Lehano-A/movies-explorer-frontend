@@ -1,0 +1,19 @@
+.menu-profile__link {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.21;
+  text-decoration: none;
+  color: black;
+}
+
+.menu-profile__link a:hover {
+  padding-bottom: 4px;
+  border-bottom: 2px black solid;
+}
+
+@media screen and (max-width: 596px) {
+  .menu-profile__link a:hover {
+    padding-bottom: 7px;
+    border-bottom: 2px black solid;
+  }
+}

@@ -1,0 +1,16 @@
+.Header {
+  background-color: #465dff;
+  padding: 0 70px;
+}
+
+@media screen and (max-width: 815px) {
+  .Header {
+    padding: 0 30px;
+  }
+}
+
+@media screen and (max-width: 429px) {
+  .Header {
+    padding: 0 14px;
+  }
+}

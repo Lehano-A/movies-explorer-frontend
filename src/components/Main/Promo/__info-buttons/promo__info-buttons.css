@@ -1,0 +1,25 @@
+.promo__info-buttons {
+  display: flex;
+  justify-content: center;
+  margin: 92px 0 30px;
+  list-style: none;
+  padding-inline-start: 0;
+}
+
+.promo__info-buttons a {
+  text-decoration: none;
+  color: #000000;
+}
+
+@media screen and (max-width: 768px) {
+  .promo__info-buttons {
+    margin-top: 234px;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .promo__info-buttons {
+    margin-top: 177px;
+    margin-bottom: 33px;
+  }
+}

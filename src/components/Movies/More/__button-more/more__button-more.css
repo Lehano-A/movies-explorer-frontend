@@ -1,0 +1,23 @@
+.more__button-more {
+  width: 100%;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.21;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  transition: 0.5s;
+  height: 36px;
+}
+
+@media screen and (max-width: 815px) {
+  .more__button-more {
+    max-width: 752px;
+    width: 100%;
+  }
+}
+
+.more__button-more:hover {
+  cursor: pointer;
+  background-color: #ff6838;
+}

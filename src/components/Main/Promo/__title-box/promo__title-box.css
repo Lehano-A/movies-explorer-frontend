@@ -1,0 +1,16 @@
+.promo__title-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url("./../../../../images/practicum_logo.svg");
+  background-repeat: no-repeat;
+  background-position: 50%;
+  height: 320px;
+}
+@media screen and (max-width: 429px) {
+  .promo__title-box {
+    height: 248px;
+    background-size: 248px 248px;
+    background-position: 50% 20%;
+  }
+}

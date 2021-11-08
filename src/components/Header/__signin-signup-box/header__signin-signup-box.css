@@ -1,0 +1,7 @@
+.header__signin-signup-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  padding-inline-start: 0;
+}

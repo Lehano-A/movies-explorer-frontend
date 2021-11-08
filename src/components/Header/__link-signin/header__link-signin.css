@@ -1,0 +1,89 @@
+.header__link-signin {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 76px;
+  height: 32px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.33;
+  background-color: #2be080;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: 0.35s;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.header__link-signin:after {
+  content: "";
+  background: #ecf0f1;
+  position: absolute;
+  z-index: -1;
+  padding: 0.85em 0.75em;
+  display: block;
+}
+
+.header__link-signin::after {
+  transition: all 0.35s;
+}
+
+.header__link-signin:hover::after {
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  transition: all 0.35s;
+}
+
+.header__link-signin::after {
+  transition: all 0.3s ease;
+}
+.header__link-signin:hover::after {
+  transition: all 0.3s ease-out;
+}
+
+.header__link-signin::after {
+  left: -20%;
+  right: -20%;
+  top: 0;
+  bottom: 0;
+  transform: skewX(-45deg) scale(0, 1);
+}
+.header__link-signin:hover::after {
+  transform: skewX(-45deg) scale(1, 1);
+}
+
+.header__link-signin::after {
+  content: "";
+  background: #e8e8e8;
+  position: absolute;
+  z-index: -1;
+  padding: 0.85em 0.75em;
+  display: block;
+}
+
+.header__link-signin:link {
+  text-decoration: none;
+}
+
+.header__link-signin:visited {
+  color: black;
+}
+
+.header__link-signin:active {
+  text-decoration: none;
+  color: black;
+}
+
+@media screen and (max-width: 429px) {
+  .header__link-signin {
+    width: 54px;
+    height: 26px;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1.6;
+  }
+}

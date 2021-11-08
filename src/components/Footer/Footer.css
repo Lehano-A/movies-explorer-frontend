@@ -1,0 +1,23 @@
+.Footer {
+  background-color: #fafafa;
+  min-height: 172px;
+  margin-top: 80px;
+  padding: 0 70px;
+}
+
+@media screen and (max-width: 767px) {
+  .Footer {
+    padding: 0 30px;
+    background-color: #fff;
+  }
+}
+
+@media screen and (max-width: 429px) {
+  .Footer {
+    margin-top: 42px;
+    margin-right: 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    padding: 0;
+  }
+}

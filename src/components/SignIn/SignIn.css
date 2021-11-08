@@ -1,0 +1,10 @@
+.SignIn {
+  max-width: 396px;
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 465px) {
+  .SignIn {
+    margin: 0 30px;
+  }
+}
