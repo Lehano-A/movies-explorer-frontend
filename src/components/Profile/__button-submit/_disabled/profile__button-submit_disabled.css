@@ -1,0 +1,4 @@
+.profile__button-submit_disabled {
+  color: rgb(226, 226, 226);
+  text-decoration: line-through;
+}

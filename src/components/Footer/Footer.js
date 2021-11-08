@@ -11,16 +11,17 @@ function Footer({ isPageNotFound, isProfileLink }) {
       return 'footer_disabled';
     }
   }
+
   return (
-    <footer className={`Footer ${disabledFooter()}`}>
+    <footer className={`Footer ${disabledFooter()} ${'footer_indent'}`}>
       <p className="footer__info-project">Учебный проект Яндекс.Практикум х BeatFilm.</p>
       <div className="footer__date-nav-box">
         <p className="footer__date">&copy; {new Date().getFullYear()}</p>
         <nav>
           <ul className="footer__nav">
-            <li><a href="https://praktikum.yandex.ru/" target="blank">Яндекс.Практикум</a></li>
-            <li><a href="https://github.com/Lehano-A" target="blank">Github</a></li>
-            <li><a href="https://vk.com/id2895043" target="blank">Вконтакте</a></li>
+            <li><a href="https://praktikum.yandex.ru/" target="_blank" rel='noreferrer'>Яндекс.Практикум</a></li>
+            <li><a href="https://github.com/Lehano-A" target="_blank" rel='noreferrer'>Github</a></li>
+            <li><a href="https://vk.com/id2895043" target="_blank" rel='noreferrer'>Вконтакте</a></li>
           </ul>
         </nav>
       </div>

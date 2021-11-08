@@ -1,0 +1,13 @@
+.error__message_profile-position {
+top: 500px;
+justify-content: center;
+align-items: center;
+text-align: center;
+font-size: 12px;
+font-weight: 400;
+line-height: 1.21;
+color: #ee3465;
+text-align: center;
+margin: 0;
+border-radius: 5px;
+}

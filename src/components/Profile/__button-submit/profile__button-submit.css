@@ -10,6 +10,8 @@
 
 .profile__button-submit:hover {
   text-decoration: underline;
+
+  border: 0;
 }
 
 @media screen and (max-width: 429px) {

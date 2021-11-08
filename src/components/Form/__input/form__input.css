@@ -13,5 +13,5 @@
 .form__input:focus {
   border: 1px #dbdbdb solid;
   outline: none;
-  height: 44px;
+  text-indent: 14px;
 }

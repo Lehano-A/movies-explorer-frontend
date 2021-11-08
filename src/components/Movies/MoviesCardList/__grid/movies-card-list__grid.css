@@ -1,7 +1,7 @@
 .movies-card-list__grid {
-  display: grid;
-  grid-template-columns: 364px 364px 364px;
-  grid-template-rows: 271px 271px 271px;
+  display: none;
+  grid-template-columns: repeat(auto-fit, 364px 364px 364px);
+  grid-template-rows: repeat(auto-fit, 271px 271px 271px) F;
   row-gap: 30px;
   column-gap: 24px;
 }
