@@ -3,20 +3,19 @@ import Form from "../Form/Form";
 import mainApi from "../../utils/MainApi";
 import { ErrorMessage } from './../../utils/constants/constants';
 import { ValidationContext } from './../context/ValidationContext';
-
+import { stringifyJSON } from './../../utils/helpers/jsonHandler';
 
 function SignIn({
   isMainLink,
   isRegLink,
   handleIsLogLink,
-  stringifyJSON,
+  getDataUser,
   getSavedMoviesStorage,
   setEmptySavedMoviesFromStorage,
   setActiveAuthAfterLogoutStorage,
   setActiveReloadedPageStorage,
   setCurrentUser,
   setIsAuth,
-  getDataUser,
   setIsLoggedIn
 }) {
 
@@ -52,7 +51,7 @@ function SignIn({
   // АУТЕНТИФИКАЦИЯ ПОЛЬЗОВАТЕЛЯ
   function handleSubmitSignIn(e) {
 
-    setIsBlockedInput(true)
+    setIsBlockedInput(true);
 
     e.preventDefault()
     const emailValue = values().email.value;
@@ -61,15 +60,15 @@ function SignIn({
     mainApi.signIn(emailValue, passwordValue)
       .then((dataUser) => {
         getDataUser(); // ПОЛУЧЕНИЕ ДАННЫХ ПРОФАЙЛА
-        setIsBlockedInput(false)
+        setIsBlockedInput(false);
         if (!getSavedMoviesStorage()) { // ЕСЛИ НЕТ В ХРАНИЛИЩЕ КЛЮЧА СОХРАНЁННЫХ ФИЛЬМОВ
           setEmptySavedMoviesFromStorage(); // СОЗДАЁМ ПУСТОЙ МАССИВ
         }
         setActiveAuthAfterLogoutStorage();
         setActiveReloadedPageStorage();
         setCurrentUser(dataUser);
-        setIsAuth(localStorage.setItem('isAuth', stringifyJSON(true)))
-        setIsLoggedIn(true)
+        setIsAuth(localStorage.setItem('isAuth', stringifyJSON(true)));
+        setIsLoggedIn(true);
         return;
       })
       .catch((err) => {
@@ -85,7 +84,7 @@ function SignIn({
           }
         })
         console.log(err);
-        return setIsBlockedInput(false)
+        return setIsBlockedInput(false);
       })
   }
 

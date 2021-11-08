@@ -4,48 +4,44 @@ import SearchForm from "../Movies/SearchForm/SearchForm";
 import MoviesCardList from "../Movies/MoviesCardList/MoviesCardList";
 
 function SavedMovies({
-  moviesFromLocal,
-  resultSearchMovies,
-  isFilterShortMovies,
-  handleSetIsFilterShortMovies,
-  handleValueInputSearchForm,
-  handleSetSubmitSearchFormActive,
-  handleSetValueInputSearchForm,
-  filterSearchShortFromLocal,
-  currentSearchInLocalSavedMovies,
+  isFilterShortMoviesDisabled,
+  isLikeRemoved,
   isSubmitFixedStateFilter,
   isPreloaderActive,
   isMoviesNotFound,
   isSavedMoviesLink,
   isProfileMenu,
-  localMoviesBoxForShow,
-  localSavedMovies,
-  getSavedMovies,
+  isFilterShortMovies,
+  handleIsReloadedPageActive,
+  handleSetIsFilterShortMovies,
+  handleValueInputSearchForm,
+  handleSetSubmitSearchFormActive,
   handleOpenPopup,
-  handleDeleteMovies,
   handleIsSavedMoviesLink,
   handleButtonCloseMenuProfile,
+  getSavedMovies,
   setFilterSearchShortFromLocal,
   setLocalMoviesBoxForShow,
   setMoviesFromLocal,
-  isLikeRemoved,
   setIsLikeRemoved,
   setLocalMoviesAfterSearch,
+  setIsFilterShortMoviesDisabled,
   valueInputSearchForm,
   timerFilterShortMovies,
-  isFilterShortMoviesDisabled,
-  setIsFilterShortMoviesDisabled,
-  handleIsReloadedPageActive
+  moviesFromLocal,
+  filterSearchShortFromLocal,
+  currentSearchInLocalSavedMovies,
+  localMoviesBoxForShow,
 }) {
 
 
   const [movies, setMovies] = useState([]);
-  const [isDeleteComplete, setIsDeleteComplete] = useState(false)
+  const [isDeleteComplete, setIsDeleteComplete] = useState(false);
 
 
   useEffect(() => {
     handleIsReloadedPageActive();
-    return handleIsSavedMoviesLink() // ПЕРЕШЛИ НА СТРАНИЦУ - /saved-movies
+    return handleIsSavedMoviesLink(); // ПЕРЕШЛИ НА СТРАНИЦУ - /saved-movies
   }, [])
 
 
@@ -64,9 +60,9 @@ function SavedMovies({
 
   // УДАЛЕНИЕ КАРТОЧКИ ИЗ DOM
   function handleDeleteCardfromDOM(id) {
-    filterCard(setMovies, id)
-    filterCard(setMoviesFromLocal, id)
-    setIsDeleteComplete(true)
+    filterCard(setMovies, id);
+    filterCard(setMoviesFromLocal, id);
+    setIsDeleteComplete(true);
     return;
   }
 
@@ -74,41 +70,41 @@ function SavedMovies({
   // ЕСЛИ УДАЛИЛИ КАРТОЧКУ ИЛИ СНЯЛИ ЛАЙК
   useEffect(() => {
     if (isDeleteComplete || isLikeRemoved) {
-      setLocalMoviesAfterSearch(movies)
-      setFilterSearchShortFromLocal(movies)
-      setLocalMoviesBoxForShow(movies)
-      setIsLikeRemoved(false)
-      return setIsDeleteComplete(false)
+      setLocalMoviesAfterSearch(movies);
+      setFilterSearchShortFromLocal(movies);
+      setLocalMoviesBoxForShow(movies);
+      setIsLikeRemoved(false);
+      return setIsDeleteComplete(false);
     }
   }, [isDeleteComplete, isLikeRemoved])
 
 
-  
+
   useEffect(() => {
-    if (localSavedMovies || localMoviesBoxForShow || filterSearchShortFromLocal) {
+    if (localMoviesBoxForShow || filterSearchShortFromLocal) {
 
       // БЕЗ САБМИТА - ЕСЛИ ВЫКЛЮЧИЛИ ФИЛЬТР
       if (!isFilterShortMovies && currentSearchInLocalSavedMovies && valueInputSearchForm) {
-        setMovies(localMoviesBoxForShow)
+        setMovies(localMoviesBoxForShow);
         return
       }
 
       // САБМИТ - ЕСЛИ НЕТ ФИЛЬТРА
       if (!isSubmitFixedStateFilter && currentSearchInLocalSavedMovies) {
-        return setMovies(moviesFromLocal)
+        return setMovies(moviesFromLocal);
       }
 
       // БЕЗ САБМИТА - ЕСЛИ ВКЛЮЧИЛИ ФИЛЬТР
       if (isSubmitFixedStateFilter && currentSearchInLocalSavedMovies) {
-        return setMovies(filterSearchShortFromLocal)
+        return setMovies(filterSearchShortFromLocal);
       }
 
       // ПРИ ПЕРЕХОДЕ НА ССЫЛКУ - /saved-movies ПОКАЗЫВАЮТСЯ ВСЕ СОХРАНЁННЫЕ ФИЛЬМЫ
       if (moviesFromLocal) {
-        return setMovies(moviesFromLocal)
+        return setMovies(moviesFromLocal);
       }
     }
-  }, [moviesFromLocal, localSavedMovies, localMoviesBoxForShow, filterSearchShortFromLocal])
+  }, [moviesFromLocal, localMoviesBoxForShow, filterSearchShortFromLocal])
 
 
   return (
@@ -120,15 +116,14 @@ function SavedMovies({
       />
 
       <SearchForm
-        resultSearchMovies={resultSearchMovies}
         isFilterShortMovies={isFilterShortMovies}
         isFilterShortMoviesDisabled={isFilterShortMoviesDisabled}
-        setIsFilterShortMoviesDisabled={setIsFilterShortMoviesDisabled}
-        timerFilterShortMovies={timerFilterShortMovies}
+        isPreloaderActive={isPreloaderActive}
         handleSetIsFilterShortMovies={handleSetIsFilterShortMovies}
         handleValueInputSearchForm={handleValueInputSearchForm}
         handleSetSubmitSearchFormActive={handleSetSubmitSearchFormActive}
-        handleSetValueInputSearchForm={handleSetValueInputSearchForm}
+        setIsFilterShortMoviesDisabled={setIsFilterShortMoviesDisabled}
+        timerFilterShortMovies={timerFilterShortMovies}
       />
 
       <MoviesCardList
@@ -136,13 +131,10 @@ function SavedMovies({
         isPreloaderActive={isPreloaderActive}
         isMoviesNotFound={isMoviesNotFound}
         isSavedMoviesLink={isSavedMoviesLink}
-        getSavedMovies={getSavedMovies}
         handleOpenPopup={handleOpenPopup}
         handleDeleteCardfromDOM={handleDeleteCardfromDOM}
-        handleDeleteMovies={handleDeleteMovies}
+        getSavedMovies={getSavedMovies}
         setIsLikeRemoved={setIsLikeRemoved}
-        isFilterShortMovies={isFilterShortMovies}
-
       />
     </>
   )

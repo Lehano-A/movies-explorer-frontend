@@ -5,8 +5,8 @@ import ProfileButton from '../ProfileButton/ProfileButton';
 import MenuProfile from '../MenuProfile/MenuProfile';
 
 function Header({
-  pathesPages,
-  pathName,
+  isLoggedIn,
+  isProfileMenu,
   isRegLink,
   isLogLink,
   isProfileLink,
@@ -14,35 +14,33 @@ function Header({
   isSavedMoviesLink,
   isMainLink,
   isPageNotFound,
+  handleButtonCloseMenuProfile,
   handleIsProfileMenu,
   goToMainPage,
-  isLoggedIn,
-  isProfileMenu,
-  handleButtonCloseMenuProfile
+  pathesPages,
+  pathName,
 }) {
 
   const { mainUrl, moviesUrl, savedMoviesUrl } = pathesPages;
+  const regLogLink = (isRegLink || isLogLink); // СТЭЙТ ВНУТРЕННЕЙ ССЫЛКИ ИЛИ URL - TRUE
 
-
-  // СТЭЙТ ВНУТРЕННЕЙ ССЫЛКИ ИЛИ URL - TRUE
-  const regLogLink = (isRegLink || isLogLink);
 
   // ПРИМЕНИТЬ СВЕТЛЫЙ ФОН ШАПКИ, НА ВСЕ СТРАНИЦЫ, КРОМЕ: ГЛАВНОЙ (И 404)
   function useLightBg() {
-    return (regLogLink || isProfileLink || isMoviesLink || isSavedMoviesLink) && 'header_light-bg'
+    return (regLogLink || isProfileLink || isMoviesLink || isSavedMoviesLink) && 'header_light-bg';
   }
 
   // УБРАТЬ ШАПКУ, ЕСЛИ 404
   function removeHead() {
-    return isPageNotFound && 'header__head_disabled'
+    return isPageNotFound && 'header__head_disabled';
   }
 
   // ПОКАЗЫВАЕМ В ШАПКЕ ТОЛЬКО ЛОГО (ДЛЯ - /signup, /signin)
   function showOnlyLogo() {
-    return (regLogLink && !mainUrl) && 'header__head_only-logo'
+    return (regLogLink && !mainUrl) && 'header__head_only-logo';
   }
 
-
+  // ИЗМЕНИТЬ СТИЛЬ ССЫЛОК В ШАПКЕ, ЕСЛИ ТЕКУЩАЯ СТРАНИЦА - ГЛАВНАЯ
   function changeLinkStyleWhenMainPage() {
     if (mainUrl) {
       return 'header__link_main-page';

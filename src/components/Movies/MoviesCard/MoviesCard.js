@@ -5,13 +5,13 @@ import { BeatFilmUrl, ErrorMessage } from '../../../utils/constants/constants';
 
 function MoviesCard({
   isMoviesLink,
-  card,
-  isLoadedSavedMovies,
-  getSavedMovies,
   isSavedMoviesLink,
+  isLoadedSavedMovies,
   handleOpenPopup,
   handleDeleteCardfromDOM,
+  getSavedMovies,
   setIsLikeRemoved,
+  card,
 }) {
 
 
@@ -42,32 +42,32 @@ function MoviesCard({
 
   // ОБРАБОТЧИК ДОБАВЛЕНИЯ КОРРЕКТНОГО КЛЮЧА image
   function handleSetImage(data) {
-    setImage(data)
+    setImage(data);
   }
 
   // ОБРАБОТЧИК ДОБАВЛЕНИЯ КЛЮЧА thumbnail ДЛЯ ВОЗМОЖНОСТИ СОХРАНЕНИЯ КАРТОЧКИ
   function handleSetThumbnail(data) {
-    setThumbnail(data)
+    setThumbnail(data);
   }
 
   // ОБРАБОТЧИК СБРОСА image
   function handleSetImageReset() {
-    setImage('')
+    setImage('');
   }
 
   // ОБРАБОТЧИК СБРОСА thumbnail
   function handleSetThumbnailReset() {
-    setThumbnail('')
+    setThumbnail('');
   }
 
   // ЕСТЬ СИГНАЛ ДЛЯ СОХРАНЕНИЯ ФИЛЬМА
   function handleSetIsSignalForSaveApiYes() {
-    setIsSignalForSaveApi(true)
+    setIsSignalForSaveApi(true);
   }
 
   // НЕТ СИГНАЛА ДЛЯ СОХРАНЕНИЯ ФИЛЬМА
   function handleSetIsSignalForSaveApiNo() {
-    setIsSignalForSaveApi(false)
+    setIsSignalForSaveApi(false);
   }
 
   // ИЗМЕНЕНИЕ ИКОНКИ ЛАЙКА
@@ -75,7 +75,7 @@ function MoviesCard({
   useEffect(() => {
     if (isMoviesLink) { // ЕСЛИ ОТКРЫТА СТРАНИЦА /movies
       if (isLocalLikedMovie) {
-        handleAddClassIconButtonActive() // ДОБАВИЛИ АКТИВНЫЙ КЛАСС ИКОНКЕ
+        handleAddClassIconButtonActive(); // ДОБАВИЛИ АКТИВНЫЙ КЛАСС ИКОНКЕ
       }
     }
   }, [isLocalLikedMovie, isMoviesLink])
@@ -90,15 +90,15 @@ function MoviesCard({
     if (card.trailer) {
       valueTrailer = card.trailer;
     } else {
-      valueTrailer = card.trailerLink
+      valueTrailer = card.trailerLink;
     }
-    setTrailer(valueTrailer)
+    setTrailer(valueTrailer);
   }, [])
 
 
   useEffect(() => {
     if (iconSaveButton === false) {
-      setIsLikeRemoved(true) // ДЛЯ /saved-movies
+      setIsLikeRemoved(true); // ДЛЯ /saved-movies
     }
   }, [iconSaveButton])
 
@@ -111,50 +111,49 @@ function MoviesCard({
 
   // ДЕЛАЕМ ЛАЙК - НЕАКТИВЕН
   function handleAddClassIconButtonNotActive() {
-
-    setIconSaveButton(false)
+    setIconSaveButton(false);
   }
 
 
   // КНОПКА СОХРАНЕНИЯ - НАЖАТА
   function handlePressButtonSavePressed() {
-    setIsPressedButtonSave(true)
+    setIsPressedButtonSave(true);
   }
 
 
   // КНОПКА СОХРАНЕНИЯ - СОСТОЯНИЕ СБРОШЕНО
   function handlePressButtonSaveNotPressed() {
-    setIsPressedButtonSave(false)
+    setIsPressedButtonSave(false);
   }
 
 
   // КНОПКА УДАЛЕНИЯ - АКТИВНА - /saved-movies
   function handleSetIsPressedButtonDeleteActive() {
-    setIsPressedButtonDelete(true)
+    setIsPressedButtonDelete(true);
   }
 
 
   // КНОПКА УДАЛЕНИЯ - НЕАКТИВНА - /saved-movies
   function handleSetIsPressedButtonDeleteNotActive() {
-    setIsPressedButtonDelete(false)
+    setIsPressedButtonDelete(false);
   }
 
 
   // ВКЛЮЧИЛИ БЛОКИРОВКУ КНОПКИ
   function timerActive() {
-    setTimer(true)
+    setTimer(true);
   }
 
 
   // ОПРЕДЕЛЕНИЕ ТИП КНОПКИ КАРТОЧКИ (КНОПКА ЛАЙК ИЛИ УДАЛЕНИЕ)
   function getCurrentIconButton() {
-    return isSavedMoviesLink ? 'movies-card__button-delete' : 'movies-card__button-save'
+    return isSavedMoviesLink ? 'movies-card__button-delete' : 'movies-card__button-save';
   }
 
 
   // ПОЛУЧЕНИЕ ФИЛЬМОВ ИЗ ХРАНИЛИЩА
   function getMoviesLocalStorage() {
-    return JSON.parse(localStorage.getItem('savedMovies'))
+    return JSON.parse(localStorage.getItem('savedMovies'));
   }
 
 
@@ -162,7 +161,7 @@ function MoviesCard({
   // ПРОВЕРКА КАРТОЧЕК НА ЛАЙК - /movies
   useEffect(() => {
     if (isLoadedSavedMovies) {
-      checkLike()
+      checkLike();
     }
   }, [isLoadedSavedMovies]) // ЕСЛИ СОХРАНЁННЫЕ ФИЛЬМЫ ЗАГРУЖЕНЫ В ХРАНИЛИЩЕ
 
@@ -177,7 +176,7 @@ function MoviesCard({
       const cardId = card.id;
 
       if (movieId === cardId) { // ЕСЛИ ТЕКУЩАЯ КАРТОЧКА НАШЛАСЬ В ХРАНИЛИЩЕ
-        setIsLocalLikedMovie(true) // ТОГДА ЛАЙК - АКТИВЕН
+        setIsLocalLikedMovie(true); // ТОГДА ЛАЙК - АКТИВЕН
       }
     })
   }
@@ -190,8 +189,7 @@ function MoviesCard({
 
     localMovies.forEach((movie) => {
       if (movie.movieId === card.id) { // ЕСЛИ СОВПАЛ id с movieId
-
-        setIdCard(movie._id)
+        setIdCard(movie._id);
       }
     })
   }
@@ -202,19 +200,19 @@ function MoviesCard({
   // КНОПКА СОХРАНЕНИЯ
   function buttonSave(e) {
     if (!timer) {
-      timerActive() // ВКЛЮЧИЛИ ТАЙМЕР
+      timerActive(); // ВКЛЮЧИЛИ ТАЙМЕР
       setTimeout(setTimer, 400, false);
-      handlePressButtonSavePressed() // СООБЩАЕМ, ЧТО БЫЛА НАЖАТА КНОПКА
+      handlePressButtonSavePressed(); // СООБЩАЕМ, ЧТО БЫЛА НАЖАТА КНОПКА
 
       const button = e.currentTarget.classList;
-      const activeLike = button.contains('movies-card__button-save_active') // СТОИТ ИЛИ НЕ СТОИТ ЛАЙК
+      const activeLike = button.contains('movies-card__button-save_active'); // СТОИТ ИЛИ НЕ СТОИТ ЛАЙК
 
       if (activeLike) { // ЕСЛИ ЛАЙК АКТИВЕН
         get_IdCurrentCardFromLocal(); // ТО ПОЛУЧАЕМ _id ТЕКУЩЕЙ КАРТОЧКИ ИЗ ХРАНИЛИЩА
-        return buttonDelete() // И ДЕЛАЕМ ЗАПРОС НА УДАЛЕНИЕ
+        return buttonDelete(); // И ДЕЛАЕМ ЗАПРОС НА УДАЛЕНИЕ
       }
 
-      handleSetIsSignalForSaveApiYes() // РАЗРЕШЕНИЕ НА СОХРАНЕНИЕ (СИГНАЛ ДЛЯ ФУНКЦИИ)
+      handleSetIsSignalForSaveApiYes(); // РАЗРЕШЕНИЕ НА СОХРАНЕНИЕ (СИГНАЛ ДЛЯ ФУНКЦИИ)
     }
     return;
   }
@@ -227,14 +225,14 @@ function MoviesCard({
   useEffect(() => {
     if (isPressedButtonSave && isSignalForSaveApi) {
       if (card.thumbnail) {
-        const imageUri = `${card.image}`
+        const imageUri = `${card.image}`;
 
-        handleSetImage(imageUri)
-        handleSetThumbnail(card.thumbnail)
+        handleSetImage(imageUri);
+        handleSetThumbnail(card.thumbnail);
         return;
       }
-      handleSetImage(`${BeatFilmUrl}${card.image.url}`)
-      handleSetThumbnail(`${BeatFilmUrl}${card.image.formats.thumbnail.url}`)
+      handleSetImage(`${BeatFilmUrl}${card.image.url}`);
+      handleSetThumbnail(`${BeatFilmUrl}${card.image.formats.thumbnail.url}`);
     }
   }, [isPressedButtonSave, isSignalForSaveApi])
 
@@ -272,17 +270,17 @@ function MoviesCard({
     }
     )
       .then(() => {
-        handleSetImageReset() // ДЕФОЛТИМ СОСТОЯНИЕ image
-        handleSetThumbnailReset() // ДЕФОЛТИМ СОСТОЯНИЕ thumbnail
-        handleAddClassIconButtonActive() // ДОБАВЛЯЕМ АКТИВНЫЙ КЛАСС ИКОНКЕ
-        handlePressButtonSaveNotPressed() // ДЕФОЛТИМ СОСТОЯНИЕ КНОПКИ
-        handleSetIsSignalForSaveApiNo() // ДЕФОЛТИМ РАЗРЕШЕНИЕ НА СОХРАНЕНИЕ
-        return getSavedMovies() // ОБНОВЛЯЕМ ХРАНИЛИЩЕ
+        handleSetImageReset(); // ДЕФОЛТИМ СОСТОЯНИЕ image
+        handleSetThumbnailReset(); // ДЕФОЛТИМ СОСТОЯНИЕ thumbnail
+        handleAddClassIconButtonActive(); // ДОБАВЛЯЕМ АКТИВНЫЙ КЛАСС ИКОНКЕ
+        handlePressButtonSaveNotPressed(); // ДЕФОЛТИМ СОСТОЯНИЕ КНОПКИ
+        handleSetIsSignalForSaveApiNo(); // ДЕФОЛТИМ РАЗРЕШЕНИЕ НА СОХРАНЕНИЕ
+        return getSavedMovies(); // ОБНОВЛЯЕМ ХРАНИЛИЩЕ
       })
       .catch((err) => {
         console.log(err);
 
-        return handleOpenPopup({ active: true, message: ErrorMessage[500] })
+        return handleOpenPopup({ active: true, message: ErrorMessage[500] });
       })
   }
 
@@ -293,9 +291,9 @@ function MoviesCard({
   function buttonDelete() {
 
     if (isSavedMoviesLink) {
-      setIdCard(card._id)
+      setIdCard(card._id);
     }
-    handleSetIsPressedButtonDeleteActive() // СООБЩИЛИ, ЧТО КНОПКА УДАЛЕНИЯ НАЖАТА
+    handleSetIsPressedButtonDeleteActive(); // СООБЩИЛИ, ЧТО КНОПКА УДАЛЕНИЯ НАЖАТА
     return;
   }
 
@@ -308,7 +306,7 @@ function MoviesCard({
     if (_isMounted.current) {
       if (isPressedButtonDelete) {
         deleteMovie();
-        handleSetIsPressedButtonDeleteNotActive() // СБРОСИЛИ СОСТОЯНИЕ УДАЛЕНИЯ
+        handleSetIsPressedButtonDeleteNotActive(); // СБРОСИЛИ СОСТОЯНИЕ УДАЛЕНИЯ
       }
     }
     return
@@ -322,22 +320,22 @@ function MoviesCard({
 
     mainApi.deleteSavedMovie(idCard)
       .then(() => {
-        handlePressButtonSaveNotPressed() // ДЕФОЛТИМ СОСТОЯНИЕ КНОПКИ
-        handleAddClassIconButtonNotActive() // УБИРАЕМ АКТИВНЫЙ КЛАСС С ИКОНКИ
+        handlePressButtonSaveNotPressed(); // ДЕФОЛТИМ СОСТОЯНИЕ КНОПКИ
+        handleAddClassIconButtonNotActive(); // УБИРАЕМ АКТИВНЫЙ КЛАСС С ИКОНКИ
 
         if (isSavedMoviesLink) { // ЕСЛИ ОТКРЫТА СТРАНИЦА /saved-movies
           handleDeleteCardfromDOM(idCard); // УДАЛЯЕМ КАРТОЧКУ ИЗ DOM
         }
 
-        return getSavedMovies() // ОБНОВЛЯЕМ ХРАНИЛИЩЕ
+        return getSavedMovies(); // ОБНОВЛЯЕМ ХРАНИЛИЩЕ
       })
       .catch((err) => {
-        console.log(err)
+        console.log(err);
 
         if (err === '403') {
-          return handleOpenPopup({ active: true, message: ErrorMessage[403] })
+          return handleOpenPopup({ active: true, message: ErrorMessage[403] });
         }
-        return handleOpenPopup({ active: true, message: ErrorMessage[500] })
+        return handleOpenPopup({ active: true, message: ErrorMessage[500] });
       })
   }
 

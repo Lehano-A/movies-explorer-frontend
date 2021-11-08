@@ -4,8 +4,7 @@ import { parseJSON } from "../../utils/helpers/jsonHandler";
 
 function ProtectedRoute(props) {
 
-
-  const userAuthorized = parseJSON(localStorage.getItem('dataUser'))
+  const userAuthorized = parseJSON(localStorage.getItem('dataUser'));
 
   return (
     <Route path={props.path} >
