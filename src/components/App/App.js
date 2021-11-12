@@ -59,6 +59,9 @@ function App() {
   const [timerFilterShortMovies, setTimerFilterShortMovies] = useState(false);   // ТАЙМЕР НА КНОПКУ ФИЛЬТРА ФИЛЬМА
   const [popup, setPopup] = useState({}); // ПОПАП ОШИБОК И УСПЕШНЫХ ДЕЙСТВИЙ
   const [canMakeRequestToServer, setCanMakeRequestToServer] = useState(null); // МОЖНО ЛИ ДЕЛАТЬ ЗАПРОС К СЕРВЕРУ ЗА ФИЛЬМАМИ (ЗАДЕРЖКА)
+  const [anchorLink, setAnchorLink] = useState({ active: false, id: '' }) // ЯКОРНАЯ ССЫЛКА (ПЛАВНАЯ ПРОКРУТКА)
+
+
 
   /* --------------------------- ПОИСК, API - НАЧАЛО -------------------------- */
 
@@ -1033,6 +1036,42 @@ function App() {
 
   /* ------------------------- ВАЛИДАЦИЯ ФОРМ - КОНЕЦ ------------------------- */
 
+
+  /* ------------------ ПРОКРУТКА ДО ЯКОРНОЙ ССЫЛКИ - НАЧАЛО ------------------ */
+
+  // ОБРАБОТЧИК ПОЛУЧЕНИЯ ДАННЫХ ЯКОРНОЙ ССЫЛКИ
+  function handleAnchorLink(e) {
+
+    const elementId = e.target.parentNode.hash.substr(1);
+    setAnchorLink({ active: true, id: elementId });
+
+    e.preventDefault();
+  }
+
+
+  useEffect(() => {
+    if (anchorLink.active) {
+      return handleSmoothScrollingToAnchor();
+    }
+  }, [anchorLink])
+
+
+  // ОБРАБОТЧИК ПЛАВНОГО ПРОКРУЧИВАНИЯ
+  function handleSmoothScrollingToAnchor() {
+    
+    const anchor = document.getElementById(anchorLink.id);
+
+    anchor.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+
+    setAnchorLink({ active: false, id: '' });
+  }
+
+  /* ------------------- ПРОКРУТКА ДО ЯКОРНОЙ ССЫЛКИ - КОНЕЦ ------------------ */
+
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <ValidationContext.Provider value={{
@@ -1073,6 +1112,7 @@ function App() {
               <Route exact path="/">
                 <Main
                   handleClickByLogo={handleClickByLogo}
+                  handleAnchorLink={handleAnchorLink}
                 />
               </Route>
 

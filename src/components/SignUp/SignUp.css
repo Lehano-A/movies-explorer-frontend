@@ -6,6 +6,6 @@
 
 @media screen and (max-width: 465px) {
   .SignUp {
-    margin: 0 30px;
+    padding: 0 30px;
   }
 }

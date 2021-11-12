@@ -4,17 +4,20 @@ import AboutProject from "./AboutProject/AboutProject";
 import Tech from "./Techs/Techs";
 import AboutMe from "./AboutMe/AboutMe";
 
+
 function Main({
   handleClickByLogo,
+  handleAnchorLink
 }) {
 
   useEffect(() => {
     handleClickByLogo();
-  }, []);
+  }, [])
+
 
   return (
     <main>
-      <Promo />
+      <Promo handleAnchorLink={handleAnchorLink} />
       <AboutProject />
       <Tech />
       <AboutMe />
