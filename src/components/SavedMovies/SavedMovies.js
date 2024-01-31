@@ -1,141 +1,141 @@
 import React, { useState, useEffect } from "react";
-import MenuProfile from "../MenuProfile/MenuProfile";
 import SearchForm from "../Movies/SearchForm/SearchForm";
 import MoviesCardList from "../Movies/MoviesCardList/MoviesCardList";
-
-function SavedMovies({
-  isFilterShortMoviesDisabled,
-  isLikeRemoved,
-  isSubmitFixedStateFilter,
-  isPreloaderActive,
-  isMoviesNotFound,
-  isSavedMoviesLink,
-  isProfileMenu,
-  isFilterShortMovies,
-  handleIsReloadedPageActive,
-  handleSetIsFilterShortMovies,
-  handleValueInputSearchForm,
-  handleSetSubmitSearchFormActive,
-  handleOpenPopup,
-  handleIsSavedMoviesLink,
-  handleButtonCloseMenuProfile,
-  getSavedMovies,
-  setFilterSearchShortFromLocal,
-  setLocalMoviesBoxForShow,
-  setMoviesFromLocal,
-  setIsLikeRemoved,
-  setLocalMoviesAfterSearch,
-  setIsFilterShortMoviesDisabled,
-  valueInputSearchForm,
-  timerFilterShortMovies,
-  moviesFromLocal,
-  filterSearchShortFromLocal,
-  currentSearchInLocalSavedMovies,
-  localMoviesBoxForShow,
-}) {
+import useSavedMovies from "../../hooks/useSavedMovies";
+import usePreloader from "../../hooks/usePreloader";
+import useActionsWithCards from "../../hooks/useActionsWithCards";
+import useFilterShortMovies from "../../hooks/useFilterShortMovies";
+import useFindMovies from "../../hooks/useFindMovies";
+import useButtonDeleteMovie from "../../hooks/useButtonDeleteMovie";
+import More from "../Movies/More/More";
 
 
-  const [movies, setMovies] = useState([]);
-  const [isDeleteComplete, setIsDeleteComplete] = useState(false);
+
+function SavedMovies({ handleOpenNotificationPopup }) {
+
+  const abortController = new AbortController()
+
+  const [isActiveFilterShortMovies, setIsActiveFilterShortMovies] = useState(null)
+  const [isDownloadedInitialData, setIsDownloadedInitialData] = useState(null)
+
+  const [mainBoxForDisplay, setMainBoxForDisplay] = useState([]);
+  const [foundMoviesByValue, setFoundMoviesByValue] = useState({ all: null, shorts: null })
+  const [savedMovies, setSavedMovies] = useState({ all: [], shorts: [] })
+  const [downloadedInitialData, setDownloadedInitialData] = useState(null)
+
+
+  const {
+    handleSearchMovies,
+    sortMovies,
+  } = useFindMovies({
+    boxMoviesForSearch: savedMovies,
+    isActiveFilterShortMovies,
+    setFoundMoviesByValue,
+  })
+
+  const { switchFilterShortMovies } = useFilterShortMovies({ setIsActiveFilterShortMovies })
+
+  const {
+    isActivePreloader,
+    enablePreloader,
+    disablePreloader
+  } = usePreloader()
+
+  const { getSavedMoviesFromApi } = useSavedMovies({ setDownloadedInitialData, setIsDownloadedInitialData, handleOpenNotificationPopup, abortController })
+
+  const { showCards, filterCardsAfterRemovedLike } = useActionsWithCards(isActiveFilterShortMovies)
+
+  const { handleDeleteMovie } = useButtonDeleteMovie({ handleOpenNotificationPopup })
+
 
 
   useEffect(() => {
-    handleIsReloadedPageActive();
-    return handleIsSavedMoviesLink(); // ПЕРЕШЛИ НА СТРАНИЦУ - /saved-movies
+    getSavedMoviesFromApi(enablePreloader, disablePreloader)
+    return () => { abortController.abort() }
   }, [])
 
 
-  // ФИЛЬТР УДАЛЁННОЙ КАРТОЧКИ ИЗ МАССИВ
-  function filterCard(handle, id) {
-    handle((prevCards) => {
-      const filterCards = prevCards.filter((card) => {
-        if (card._id !== id) {
-          return card;
-        }
-      })
-      return [...filterCards];
-    })
-  }
 
-
-  // УДАЛЕНИЕ КАРТОЧКИ ИЗ DOM
-  function handleDeleteCardfromDOM(id) {
-    filterCard(setMovies, id);
-    filterCard(setMoviesFromLocal, id);
-    setIsDeleteComplete(true);
-    return;
-  }
-
-
-  // ЕСЛИ УДАЛИЛИ КАРТОЧКУ ИЛИ СНЯЛИ ЛАЙК
+  // ПЕРВОНАЧАЛЬНАЯ ЗАГРУЗКА СОХРАНЁННЫХ ФИЛЬМОВ
   useEffect(() => {
-    if (isDeleteComplete || isLikeRemoved) {
-      setLocalMoviesAfterSearch(movies);
-      setFilterSearchShortFromLocal(movies);
-      setLocalMoviesBoxForShow(movies);
-      setIsLikeRemoved(false);
-      return setIsDeleteComplete(false);
+    if (downloadedInitialData !== null) {
+      const { all, shorts } = sortMovies(downloadedInitialData)
+      setSavedMovies({ all, shorts })
+      setDownloadedInitialData(null)
     }
-  }, [isDeleteComplete, isLikeRemoved])
+  }, [downloadedInitialData])
 
 
 
+  /*
+    КОГДА ПРОИСХОДИТ:
+    1) ОБРАБОТКА ПЕРВОНАЧАЛЬНО ЗАГРУЖЖЕНЫХ СОХРАНЁННЫХ ФИЛЬМОВ
+    2) ПОИСК ФИЛЬМОВ
+    3) ПЕРЕКЛЮЧЕНИЕ ФИЛЬТРА КОРОТКОМЕТРАЖЕК
+
+  */
   useEffect(() => {
-    if (localMoviesBoxForShow || filterSearchShortFromLocal) {
-
-      // БЕЗ САБМИТА - ЕСЛИ ВЫКЛЮЧИЛИ ФИЛЬТР
-      if (!isFilterShortMovies && currentSearchInLocalSavedMovies && valueInputSearchForm) {
-        setMovies(localMoviesBoxForShow);
-        return
+    if (foundMoviesByValue.all !== null) {
+      if (!isActiveFilterShortMovies) {
+        return showCards(foundMoviesByValue.all, setMainBoxForDisplay)
       }
 
-      // САБМИТ - ЕСЛИ НЕТ ФИЛЬТРА
-      if (!isSubmitFixedStateFilter && currentSearchInLocalSavedMovies) {
-        return setMovies(moviesFromLocal);
-      }
-
-      // БЕЗ САБМИТА - ЕСЛИ ВКЛЮЧИЛИ ФИЛЬТР
-      if (isSubmitFixedStateFilter && currentSearchInLocalSavedMovies) {
-        return setMovies(filterSearchShortFromLocal);
-      }
-
-      // ПРИ ПЕРЕХОДЕ НА ССЫЛКУ - /saved-movies ПОКАЗЫВАЮТСЯ ВСЕ СОХРАНЁННЫЕ ФИЛЬМЫ
-      if (moviesFromLocal) {
-        return setMovies(moviesFromLocal);
+      if (isActiveFilterShortMovies) {
+        return showCards(foundMoviesByValue.shorts, setMainBoxForDisplay)
       }
     }
-  }, [moviesFromLocal, localMoviesBoxForShow, filterSearchShortFromLocal])
+
+
+    if (foundMoviesByValue.all === null) {
+      if (!isActiveFilterShortMovies) {
+        return showCards(savedMovies.all, setMainBoxForDisplay)
+      }
+
+      if (isActiveFilterShortMovies) {
+        return showCards(savedMovies.shorts, setMainBoxForDisplay)
+      }
+    }
+  }, [savedMovies, foundMoviesByValue, isActiveFilterShortMovies])
+
+
+
+  // ОБНОВИТЬ СОСТОЯНИЯ, ПОСЛЕ УДАЛЕНИЯ ФИЛЬМА
+  function updateStatesAfterDeletionMovie(idCard) {
+    const filteredSavedMovies = filterCardsAfterRemovedLike(savedMovies.all, idCard)
+    const filteredFoundMovies = filterCardsAfterRemovedLike(foundMoviesByValue.all, idCard)
+
+    const sortedSavedMovies = sortMovies(filteredSavedMovies)
+    const sortedFoundMovies = sortMovies(filteredFoundMovies)
+
+    setFoundMoviesByValue({ all: sortedFoundMovies.all, shorts: sortedFoundMovies.shorts })
+    setSavedMovies({ all: sortedSavedMovies.all, shorts: sortedSavedMovies.shorts })
+  }
+
 
 
   return (
     <>
-      <MenuProfile
-        isSavedMoviesLink={isSavedMoviesLink}
-        isProfileMenu={isProfileMenu}
-        handleButtonCloseMenuProfile={handleButtonCloseMenuProfile}
-      />
 
       <SearchForm
-        isFilterShortMovies={isFilterShortMovies}
-        isFilterShortMoviesDisabled={isFilterShortMoviesDisabled}
-        isPreloaderActive={isPreloaderActive}
-        handleSetIsFilterShortMovies={handleSetIsFilterShortMovies}
-        handleValueInputSearchForm={handleValueInputSearchForm}
-        handleSetSubmitSearchFormActive={handleSetSubmitSearchFormActive}
-        setIsFilterShortMoviesDisabled={setIsFilterShortMoviesDisabled}
-        timerFilterShortMovies={timerFilterShortMovies}
+        isActivePreloader={isActivePreloader}
+        isActiveFilterShortMovies={isActiveFilterShortMovies}
+        switchFilterShortMovies={switchFilterShortMovies}
+        handleSearchMovies={handleSearchMovies}
       />
 
       <MoviesCardList
-        cards={movies}
-        isPreloaderActive={isPreloaderActive}
-        isMoviesNotFound={isMoviesNotFound}
-        isSavedMoviesLink={isSavedMoviesLink}
-        handleOpenPopup={handleOpenPopup}
-        handleDeleteCardfromDOM={handleDeleteCardfromDOM}
-        getSavedMovies={getSavedMovies}
-        setIsLikeRemoved={setIsLikeRemoved}
+        cards={mainBoxForDisplay}
+        loadedSavedMovies={savedMovies.all}
+        isSavedMoviesCurrentPathname={true}
+        isActivePreloader={isActivePreloader}
+        isDownloadedInitialData={isDownloadedInitialData}
+        updateStatesAfterDeletionMovie={updateStatesAfterDeletionMovie}
+        handleDeleteMovie={handleDeleteMovie}
+        abortController={abortController}
       />
+
+      <More />
+
     </>
   )
 }

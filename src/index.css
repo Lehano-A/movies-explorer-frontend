@@ -8,7 +8,7 @@
 @import url(./blocks/description-text/description-text.css);
 @import url(./blocks/title-description/title-description.css);
 
-@import url(./components/Header/Header.css);
+@import url(./components/Header/header.css);
 @import url(./components/Header/_light-bg/header_light-bg.css);
 @import url(./components/Header/__links/header__links.css);
 @import url(./components/Header/__link/header__link.css);
@@ -19,18 +19,18 @@
 @import url(./components/Header/__link-signup/header__link-signup.css);
 @import url(./components/Header/__head/_only-logo/header__head_only-logo.css);
 @import url(./components/Header/__head/_disabled/header__head_disabled.css);
-@import url(./components/Header/__menu-profile/header__menu-profile.css);
+@import url(./components/Header/__button-menu/header__button-menu.css);
 @import url(./components/Header/__profile-button/header__profile-button.css);
 @import url(./components/Header/__link/_active/header__link_active.css);
 @import url(./components/Header/__link/_main-page/header__link_main-page.css);
 
-@import url(./components/Main/Promo/Promo.css);
+@import url(./components/Main/Promo/promo.css);
 @import url(./components/Main/Promo/__title-box/promo__title-box.css);
 @import url(./components/Main/Promo/__title/promo__title.css);
 @import url(./components/Main/Promo/__info-buttons/promo__info-buttons.css);
 @import url(./components/Main/Promo/__button-info/promo__button-info.css);
 
-@import url(./components/Main/AboutProject/AboutProject.css);
+@import url(./components/Main/AboutProject/about-project.css);
 @import url(./components/Main/AboutProject/__info-box/about-project__info-box.css);
 @import url(./components/Main/AboutProject/__text-box/about-project__text-box.css);
 @import url(./components/Main/AboutProject/__title/about-project__title.css);
@@ -44,22 +44,22 @@
 @import url(./components/Main/AboutProject/__scale-range-time/about-project__scale-range-time.css);
 @import url(./components/Main/AboutProject/__scale-range-title/about-project__scale-range-title.css);
 
-@import url(./components/Main/Techs/Techs.css);
+@import url(./components/Main/Techs/techs.css);
 @import url(./components/Main/Techs/__info-box/techs__info-box.css);
 @import url(./components/Main/Techs/__used-techs/techs__used-techs.css);
 
-@import url(./components/Main/AboutMe/AboutMe.css);
+@import url(./components/Main/AboutMe/about-me.css);
 @import url(./components/Main/AboutMe/__photo/about-me__photo.css);
 @import url(./components/Main/AboutMe/__student-photo-box/about-me__student-photo-box.css);
 @import url(./components/Main/AboutMe/__contacts/about-me__contacts.css);
 @import url(./components/Main/AboutMe/__about/about-me__about.css);
 @import url(./components/Main/AboutMe/__about-student-box/about-me__about-student-box.css);
 
-@import url(./components/Main/Portfolio/Portfolio.css);
+@import url(./components/Main/Portfolio/portfolio.css);
 @import url(./components/Main/Portfolio/__title/portfolio__title.css);
 @import url(./components/Main/Portfolio/__works/portfolio__works.css);
 
-@import url(./components/Footer/Footer.css);
+@import url(./components/Footer/footer.css);
 @import url(./components/Footer/_disabled/footer_disabled.css);
 @import url(./components/Footer/__info-project/footer__info-project.css);
 @import url(./components/Footer/__date-nav-box/footer__date-nav-box.css);
@@ -67,7 +67,7 @@
 @import url(./components/Footer/__nav/footer__nav.css);
 @import url(./components/Footer/_indent/footer_indent.css);
 
-@import url(./components/Movies/SearchForm/SearchForm.css);
+@import url(./components/Movies/SearchForm/search-form.css);
 @import url(./components/Movies/SearchForm/__form/search-form__form.css);
 @import url(./components/Movies/SearchForm/__short-films/search-form__short-films.css);
 @import url(./components/Movies/SearchForm/__input-button-box/search-form__input-button-box.css);
@@ -79,7 +79,7 @@
 @import url(./components/Movies/SearchForm/__visible-checkbox/search-form__visible-checkbox.css);
 @import url(./components/Movies/SearchForm/__switch/search-form__switch.css);
 
-@import url(./components/Movies/MoviesCard/MoviesCard.css);
+@import url(./components/Movies/MoviesCard/movies-card.css);
 @import url(./components/Movies/MoviesCard/__poster/movies-card__poster.css);
 @import url(./components/Movies/MoviesCard/__poster-box/movies-card__poster-box.css);
 @import url(./components/Movies/MoviesCard/__title-duration-box/movies-card__title-duration-box.css);
@@ -90,19 +90,21 @@
 @import url(./components/Movies/MoviesCard/__button-save/_active/movies-card__button-save_active.css);
 @import url(./components/Movies/MoviesCard/__title-duration-button-box/movies-card__title-duration-button-box.css);
 
-@import url(./components/Movies/MoviesCardList/MoviesCardList.css);
+@import url(./components/Movies/MoviesCardList/movies-card-list.css);
 @import url(./components/Movies/MoviesCardList/__grid/movies-card-list__grid.css);
 @import url(./components/Movies/MoviesCardList/__not-found/movies-card-list__not-found.css);
 @import url(./components/Movies/MoviesCardList/__grid/_active/movies-card-list__grid_active.css);
 
-@import url(./components/Movies/More/More.css);
+@import url(./components/Movies/More/more.css);
 @import url(./components/Movies/More/__button-more/more__button-more.css);
+@import url(./components/Movies/More/__button-more/_visible/more__button-more_visible.css);
 
-@import url(./components/SignUp/SignUp.css);
-@import url(./components/SignIn/SignIn.css);
+@import url(./components/SignUp/signup.css);
 @import url(./components/SignUp/__title/signup__title.css);
 
-@import url(./components/Form/Form.css);
+@import url(./components/SignIn/signin.css);
+
+@import url(./components/Form/form.css);
 @import url(./components/Form/__label/form__label.css);
 @import url(./components/Form/__input/form__input.css);
 @import url(./components/Form/__not-valid/form__not-valid.css);
@@ -115,13 +117,16 @@
 @import url(./components/Form/__submit/_disabled/form__submit_disabled.css);
 @import url(./components/Form/__not-valid/_profile/form__not-valid_profile.css);
 
-@import url(./components/PageNotFound/PageNotFound.css);
+@import url(./components/PageNotFound/page-not-found.css);
 @import url(./components/PageNotFound/__back/page-not-found__back.css);
 @import url(./components/PageNotFound/__description/page-not-found__description.css);
 @import url(./components/PageNotFound/__title/page-not-found__title.css);
 @import url(./components/PageNotFound/_active/page-not-found_active.css);
 
-@import url(./components/Profile/Profile.css);
+@import url(./components/Preloader/preloader.css);
+@import url(./components/Preloader/_active/preloader_active.css);
+
+@import url(./components/Profile/profile.css);
 @import url(./components/Profile/__label/profile__label.css);
 @import url(./components/Profile/__input/profile__input.css);
 @import url(./components/Profile/__hello-title/profile__hello-title.css);
@@ -133,21 +138,23 @@
 @import url(./components/Profile/__form-height/profile__form-height.css);
 @import url(./components/Profile/__button-submit/_disabled/profile__button-submit_disabled.css);
 
-@import url(./components/ProfileButton/ProfileButton.css);
+@import url(./components/ProfileButton/profile-button.css);
 @import url(./components/ProfileButton/__icon/profile-button__icon.css);
 @import url(./components/ProfileButton/__text/profile-button__text.css);
 
-@import url(./components/MenuProfile/MenuProfile.css);
-@import url(./components/MenuProfile/__menu-box/menu-profile__menu-box.css);
-@import url(./components/MenuProfile/__menu/menu-profile__menu.css);
-@import url(./components/MenuProfile/__link/menu-profile__link.css);
-@import url(./components/MenuProfile/__link/_active/menu-profile__link_active.css);
-@import url(./components/MenuProfile/__button-close/menu-profile__button-close.css);
-@import url(./components/MenuProfile/_open/menu-profile_open.css);
+@import url(./components/NavigationMenu/navigation-menu.css);
+@import url(./components/NavigationMenu/__box/navigation-menu__box.css);
+@import url(./components/NavigationMenu/__list/navigation-menu__list.css);
+@import url(./components/NavigationMenu/__list-link/navigation-menu__list-link.css);
+@import url(./components/NavigationMenu/__list-link/_active/navigation-menu__list-link_active.css);
+@import url(./components/NavigationMenu/__button-close/navigation-menu__button-close.css);
+@import url(./components/NavigationMenu/_open/navigation-menu_open.css);
 
-@import url(./components/Error/__message/error__message.css);
-@import url(./components/Error/__message/_signin-signup/error__message_signin-signup.css);
-@import url(./components/Error/__message/_signin-signup/_active/error__message_signin-signup_active.css);
-@import url(./components/Error/__message/_profile-position/error__message_profile-position.css);
-@import url(./components/Error/__popup/error__popup.css);
-@import url(./components/Error/__popup/_active/error__popup_active.css);
+@import url(./components/NotificationPopup/notification-popup.css);
+@import url(./components/NotificationPopup/__message/notification-popup__message.css);
+@import url(./components/NotificationPopup/__message/_signin-signup/notification-popup__message_signin-signup.css);
+@import url(./components/NotificationPopup/__message/_signin-signup/_active/notification-popup__message_signin-signup_active.css);
+@import url(./components/NotificationPopup/__message/_profile-position/notification-popup__message_profile-position.css);
+@import url(./components/NotificationPopup/_active/notification-popup_active.css);
+@import url(./components/NotificationPopup/_type/_success/notification-popup_type_success.css);
+@import url(./components/NotificationPopup/_type/_error/notification-popup_type_error.css);

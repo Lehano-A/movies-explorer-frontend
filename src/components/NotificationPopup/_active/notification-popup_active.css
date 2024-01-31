@@ -1,0 +1,16 @@
+.notification-popup_active {
+  visibility: visible;
+  animation: translate 1.2s ease-in-out;
+  /* border-left: rgb(109, 109, 109) 5px solid; */
+}
+
+@keyframes translate {
+  from {
+    transform: translate(-240px);
+    /* border-left: rgb(109, 109, 109) 5px solid; */
+  }
+  to {
+    transform: translate(0px);
+    /* border-left: rgb(109, 109, 109) 5px solid; */
+  }
+}

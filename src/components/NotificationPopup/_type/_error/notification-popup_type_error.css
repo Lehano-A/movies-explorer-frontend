@@ -1,0 +1,5 @@
+.notification-popup_type_error {
+  color: #ee3465;
+  border-left: tomato 5px solid;
+  background-color: #f5e3e3;
+}

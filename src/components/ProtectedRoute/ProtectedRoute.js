@@ -1,14 +1,15 @@
 import React from "react";
 import { Route, Redirect } from "react-router";
-import { parseJSON } from "../../utils/helpers/jsonHandler";
+import checkUserLoggedIn from "../../utils/helpers/checkUserLoggedIn";
 
-function ProtectedRoute(props) {
 
-  const userAuthorized = parseJSON(localStorage.getItem('dataUser'));
+function ProtectedRoute({ path, children }) {
+
+  const isLoggedIn = checkUserLoggedIn()
 
   return (
-    <Route path={props.path} >
-      {(userAuthorized || props.isLoggedIn) ? props.children : (<Redirect to="/" />)}
+    <Route path={path} >
+      {isLoggedIn ? children : (<Redirect to="/" />)}
     </Route>
   )
 }

@@ -1,20 +1,29 @@
 import React, { useEffect } from "react";
 import { useHistory, Link } from "react-router-dom";
 
-function PageNotFound({ handlePageNotFoundOpened }) {
+
+function PageNotFound({ setIsPageNotForund }) {
+
+  const history = useHistory()
+
 
   useEffect(() => {
-    handlePageNotFoundOpened();
+    setIsPageNotForund(true)
+
+    return () => setIsPageNotForund(null)
   }, [])
 
-  const history = useHistory();
 
+
+  // ВЕРНУТЬСЯ НАЗАД В ИСТОРИИ БРАУЗЕРА
   function goBack() {
-    history.goBack();
+    history.goBack()
   }
 
+
+
   return (
-    <div className="PageNotFound">
+    <div className="page-not-found">
       <h1 className="page-not-found__title">404</h1>
 
       <p className="page-not-found__description">Страница не найдена</p>

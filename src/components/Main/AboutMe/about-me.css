@@ -1,0 +1,17 @@
+.about-me {
+  padding: 110px 70px 0;
+}
+
+@media screen and (max-width: 768px) {
+  .about-me {
+    padding: 90px 50px 54px;
+  }
+}
+
+@media screen and (max-width: 429px) {
+  .about-me {
+    padding: 68px 14px 0;
+    display: flex;
+    flex-direction: column;
+  }
+}

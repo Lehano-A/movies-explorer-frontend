@@ -1,4 +1,4 @@
-.Profile {
+.profile {
   max-width: 410px;
   width: 100%;
   display: flex;
@@ -8,13 +8,13 @@
 }
 
 @media screen and (max-width: 768px) {
-  .Profile {
+  .profile {
     margin-top: 236px;
   }
 }
 
 @media screen and (max-width: 470px) {
-  .Profile {
+  .profile {
     margin: 0 auto;
     padding-left: 30px;
     padding-right: 30px;
@@ -22,7 +22,7 @@
 }
 
 @media screen and (max-width: 429px) {
-  .Profile {
+  .profile {
     margin-top: 70px;
     margin-bottom: 0;
   }

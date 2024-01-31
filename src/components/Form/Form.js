@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ValidationContext } from '../context/ValidationContext';
+import { ValidationContext } from '../../context/ValidationContext';
 
-export default function Form({
+function Form({
   name,
   buttonName,
   regQuestion,
@@ -12,41 +12,93 @@ export default function Form({
   handleSubmit,
   profileButton,
   profileFormHeight,
-  errorSubmitMessage,
 }) {
 
-  const handlesValidation = React.useContext(ValidationContext);
-  const { handleChange, checkValidValueInput, clickAtInput } = handlesValidation;
+  const [isSubmit, setIsSubmit] = useState(null)
+  const [isDisabledButtonSubmit, setIsDisabledButtonSubmit] = useState(true)
+
+  const validationContext = React.useContext(ValidationContext);
+  const { handleChange, checkValidityForm, inputParameters } = validationContext;
 
 
-  function checkButtonForm() {
-    if (!checkValidValueInput()) {
+  useEffect(() => {
+    return () => setIsDisabledButtonSubmit(null)
+  }, [])
+
+
+  useEffect(() => {
+    if (isSubmit) {
+      setIsDisabledButtonSubmit(true)
+    }
+  }, [isSubmit])
+
+
+
+  useEffect(() => {
+    if (checkValidityForm()) {
+      return setIsDisabledButtonSubmit(false)
+    }
+
+    if (!checkValidityForm()) {
+      return setIsDisabledButtonSubmit(true)
+    }
+  }, [inputParameters])
+
+
+
+  function changeColorButtonSubmitWhenDisabled() {
+
+    if (isDisabledButtonSubmit) {
       if (buttonName === 'Редактировать') {
         return 'profile__button-submit_disabled';
       }
+
       if (buttonName === 'Войти' || buttonName === 'Зарегистрироваться') {
         return 'form__submit_disabled';
       }
     }
-    return;
+
+    return ''
   }
+
+
+
+  // ОБРАБОТАТЬ САБМИТ ФОРМЫ
+  function handleSubmitForm(e) {
+    setIsSubmit(true)
+    setIsDisabledButtonSubmit(true)
+    handleSubmit(e, setIsSubmit)
+  }
+
 
 
   return (
     <>
-      <form innorup={inOrup} onSubmit={handleSubmit} onChange={handleChange} className={`Form ${profileFormHeight}`} method="POST" autoComplete="off" name={name}>
+      <form className={`form ${profileFormHeight ? profileFormHeight : ''}`} innorup={inOrup} onSubmit={handleSubmitForm} onChange={handleChange} method="POST" autoComplete="off" name={name}>
+
+
         {children}
 
-        {clickAtInput && <span>{errorSubmitMessage}</span>}
 
-        <button type="submit" disabled={!checkValidValueInput() && true} className={`form__submit ${profileButton} ${checkButtonForm()}`}>{buttonName}</button>
+        <button type="submit" disabled={isDisabledButtonSubmit}
+          className={`
+        form__submit ${profileButton ? profileButton : ''}
+        ${changeColorButtonSubmitWhenDisabled()}`
+          }>
+          {buttonName}
+        </button>
 
       </form>
+
+
       <div className="form__reg-login-link-box">
         <p className="form__reg-question">{regQuestion}</p>
         <Link to={`/sign${inOrup}`} className="form__signin-signup-link">{regOrLogin}</Link>
       </div>
+
     </>
   )
 }
 
+
+export default Form

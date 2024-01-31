@@ -1,6 +1,6 @@
 // ПОЛУЧЕНИЕ ШИРИНЫ ОКНА БРАУЗЕРА
 function getWidthWindowBrowser() {
-  return window.visualViewport.width;
+  return window.innerWidth;
 }
 
 export default getWidthWindowBrowser;

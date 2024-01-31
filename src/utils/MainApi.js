@@ -1,12 +1,12 @@
 class MainApi {
 
   constructor() {
-    this.baseUrl = 'https://moviefan.nomoredomains.club';
+    this.baseUrl = 'https://diplom.lehano.ru/api';
   }
 
 
   // АУТЕНТИФИКАЦИЯ ПОЛЬЗОВАТЕЛЯ
-  signIn(email, password) {
+  signIn(data) {
     return fetch(`${this.baseUrl}/signin`, {
       method: 'POST',
       withCredentials: true,
@@ -14,10 +14,7 @@ class MainApi {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        email: `${email}`,
-        password: `${password}`
-      }),
+      body: JSON.stringify(data),
     })
       .then((res) => { return this._getResponse(res); })
   };
@@ -25,18 +22,16 @@ class MainApi {
 
 
   // РЕДАКТИРОВАНИЕ ДАННЫХ ПОЛЬЗОВАТЕЛЯ
-  editUserData(data) {
+  editUserData(data, abortController) {
     return fetch(`${this.baseUrl}/users/me`, {
       method: 'PATCH',
       withCredentials: true,
       credentials: 'include',
+      signal: abortController.signal,
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        name: `${data.name}`,
-        email: `${data.email}`
-      }),
+      body: JSON.stringify(data),
     })
       .then((res) => { return this._getResponse(res); })
   };
@@ -44,11 +39,12 @@ class MainApi {
 
 
   // ПОЛУЧЕНИЕ ДАННЫХ ПРОФАЙЛА
-  getUserData() {
+  getUserData(abortController) {
     return fetch(`${this.baseUrl}/users/me`, {
       method: 'GET',
       withCredentials: true,
       credentials: 'include',
+      signal: abortController.signal
     })
       .then((res) => { return this._getResponse(res); })
   };
@@ -67,7 +63,7 @@ class MainApi {
 
 
   // РЕГИСТРАЦИЯ ПОЛЬЗОВАТЕЛЯ
-  signUp(email, password, name) {
+  signUp(data) {
     return fetch(`${this.baseUrl}/signup`, {
       method: 'POST',
       withCredentials: true,
@@ -75,11 +71,7 @@ class MainApi {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        email: `${email}`,
-        password: `${password}`,
-        name: `${name}`,
-      }),
+      body: JSON.stringify(data),
     })
       .then((res) => { return this._getResponse(res); })
   };
@@ -87,11 +79,12 @@ class MainApi {
 
 
   // ПОЛУЧЕНИЕ СОХРАНЁННЫХ ФИЛЬМОВ
-  getSavedMovies() {
+  getSavedMovies(abortController) {
     return fetch(`${this.baseUrl}/movies`, {
       method: 'GET',
       withCredentials: true,
       credentials: 'include',
+      signal: abortController.signal
     })
       .then((res) => { return this._getResponse(res); })
   };
@@ -99,7 +92,7 @@ class MainApi {
 
 
   // СОХРАНЕНИЕ ФИЛЬМА
-  saveMovie(data) {
+  saveMovie(data, abortController) {
     return fetch(`${this.baseUrl}/movies`, {
       method: 'POST',
       withCredentials: true,
@@ -107,18 +100,19 @@ class MainApi {
       headers: {
         'Content-Type': 'application/json',
       },
+      signal: abortController.signal,
       body: JSON.stringify({
-        country: `${data.country}`,
-        director: `${data.director}`,
-        duration: `${data.duration}`,
-        year: `${data.duration}`,
-        description: `${data.description}`,
-        image: `${data.image}`,
-        trailer: `${data.trailer}`,
-        nameRU: `${data.nameRU}`,
-        nameEN: `${data.nameEN}`,
-        thumbnail: `${data.thumbnail}`,
-        movieId: `${data.id}`,
+        country: data.country,
+        director: data.director,
+        duration: data.duration,
+        year: data.year,
+        description: data.description,
+        image: data.imageURI,
+        trailerLink: data.trailerLink,
+        thumbnail: data.thumbnailURI,
+        nameEN: data.nameEN,
+        nameRU: data.nameRU,
+        movieId: data.id,
       }),
     })
       .then((res) => { return this._getResponse(res); })
@@ -127,23 +121,24 @@ class MainApi {
 
 
   // УДАЛЕНИЕ СОХРАНЁННОГО ФИЛЬМА
-  deleteSavedMovie(idCard) {
+  deleteSavedMovie(idCard, abortController) {
     return fetch(`${this.baseUrl}/movies/${idCard}`, {
       method: 'DELETE',
       withCredentials: true,
       credentials: 'include',
+      signal: abortController.signal,
       headers: {
         'Content-Type': 'application/json',
       },
     })
-    .then((res) => { return this._getResponse(res); })
+      .then((res) => { return this._getResponse(res); })
   };
 
 
 
   _getResponse(res) {
     if (!res.ok) {
-      return Promise.reject(`${res.status}`);
+      return Promise.reject(res.json());
     }
     return res.json();
   }

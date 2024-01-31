@@ -3,7 +3,7 @@
   font-weight: 500;
   line-height: 1.21;
   margin: 0 0 123px;
-  text-align: center;
+  word-wrap: break-word;
 }
 
 @media screen and (max-width: 768px) {
@@ -12,12 +12,6 @@
     max-width: 410px;
   }
 }
-
-/* @media screen and (max-width: 445px) {
-  .profile__hello-title {
-    max-width: 350px;
-  }
-} */
 
 @media screen and (max-width: 429px) {
   .profile__hello-title {

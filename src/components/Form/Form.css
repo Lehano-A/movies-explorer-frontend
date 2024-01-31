@@ -1,4 +1,4 @@
-.Form {
+.form {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -6,7 +6,7 @@
 }
 
 @media screen and (max-width: 465px) {
-  .Form {
+  .form {
     height: 468px;
   }
 }

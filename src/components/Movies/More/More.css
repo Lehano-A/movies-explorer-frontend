@@ -1,29 +1,21 @@
-.More {
+.more {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 36px;
-  background-color: #f9f9f9;
+  height: 166px;
   max-width: 1140px;
   width: 100%;
-  margin: 80px auto 0;
+  margin: 0 auto;
 }
 
 @media screen and (max-width: 1226px) {
-  .More {
+  .more {
     max-width: 708px;
   }
 }
 
 @media screen and (max-width: 767px) {
-  .More {
+  .more {
     max-width: 300px;
-    margin-bottom: 80px;
-  }
-}
-
-@media screen and (max-width: 429px) {
-  .More {
-    margin: 0 10px 160px;
   }
 }

@@ -1,106 +1,75 @@
 import React from 'react';
 import logo from './../../images/logo.svg';
 import { Link } from 'react-router-dom';
-import ProfileButton from '../ProfileButton/ProfileButton';
-import MenuProfile from '../MenuProfile/MenuProfile';
+import useIdentifyCurrentPathname from '../../hooks/useIdentifyCurrentPathname';
+import ElementsWhenUserLoggedIn from './ElementsWhenUserLoggedIn/ElementsWhenUserLoggedIn';
+import ElementsWhenUserNotAuth from './ElementsWhenUserNotAuth/ElementsWhenUserNotAuth';
+import ElementsWhenSigninOrSignup from './ElementsWhenSigninOrSignup/ElementsWhenSigninOrSignup';
+
 
 function Header({
   isLoggedIn,
-  isProfileMenu,
-  isRegLink,
-  isLogLink,
-  isProfileLink,
-  isMoviesLink,
-  isSavedMoviesLink,
-  isMainLink,
   isPageNotFound,
-  handleButtonCloseMenuProfile,
-  handleIsProfileMenu,
   goToMainPage,
-  pathesPages,
-  pathName,
+  handleClickButtonNavigationMenu,
 }) {
 
-  const { mainUrl, moviesUrl, savedMoviesUrl } = pathesPages;
-  const regLogLink = (isRegLink || isLogLink); // СТЭЙТ ВНУТРЕННЕЙ ССЫЛКИ ИЛИ URL - TRUE
+  const identifyCurrentPathname = useIdentifyCurrentPathname()
+
+  const hasCurrentPathnameMenu = identifyCurrentPathname.hasNavigationMenu() // ИМЕЕТ ЛИ ТЕКУЩИЙ ПУТЬ - МЕНЮ?
+  const isSignupCurrentPathname = identifyCurrentPathname.isSignup()
+  const isSigninCurrentPathname = identifyCurrentPathname.isSignin()
+
 
 
   // ПРИМЕНИТЬ СВЕТЛЫЙ ФОН ШАПКИ, НА ВСЕ СТРАНИЦЫ, КРОМЕ: ГЛАВНОЙ (И 404)
-  function useLightBg() {
-    return (regLogLink || isProfileLink || isMoviesLink || isSavedMoviesLink) && 'header_light-bg';
+  function applyLightBg() {
+    return identifyCurrentPathname.hasLightBG() ? 'header_light-bg' : '';
   }
 
+
   // УБРАТЬ ШАПКУ, ЕСЛИ 404
-  function removeHead() {
-    return isPageNotFound && 'header__head_disabled';
+  function removeHeadIfPageNotFound() {
+    return isPageNotFound ? 'header__head_disabled' : '';
   }
+
 
   // ПОКАЗЫВАЕМ В ШАПКЕ ТОЛЬКО ЛОГО (ДЛЯ - /signup, /signin)
   function showOnlyLogo() {
-    return (regLogLink && !mainUrl) && 'header__head_only-logo';
+    return identifyCurrentPathname.hasLogoOnly() ? 'header__head_only-logo' : '';
   }
 
-  // ИЗМЕНИТЬ СТИЛЬ ССЫЛОК В ШАПКЕ, ЕСЛИ ТЕКУЩАЯ СТРАНИЦА - ГЛАВНАЯ
-  function changeLinkStyleWhenMainPage() {
-    if (mainUrl) {
-      return 'header__link_main-page';
-    }
-    return;
-  }
 
-  // ОБРАБОТЧИК ДАЛЬНЕЙШЕЙ ЛОГИКИ ПРИ НАЖАТИИ НА ССЫЛКИ
-  // РЕГИСТРАЦИИ, АУТЕНТИФИКАЦИИ И ПРОФИЛЯ
-  function handleRegLogProfile() {
-
-    // ПРИВЕТСТВИЕ - ЕСЛИ ОТКРЫТА ФОРМА РЕГИСТРАЦИИ
-    if (pathName === '/signup') {
-      return <h1 className="signup__title">Добро пожаловать!</h1>;
-    }
-
-    // ПРИВЕТСТВИЕ - ЕСЛИ ОТКРЫТА ФОРМА АУТЕНТИФИКАЦИИ
-    if (pathName === '/signin') {
-      return <h1 className="signup__title">Рады видеть!</h1>;
-    }
-
-    // ЕСЛИ ПОЛЬЗОВАТЕЛЬ ЗАЛОГИНЕН, ТО ИНИЦИАЛИЗИРУЮТСЯ ССЫЛКИ:
-    // ФИЛЬМЫ, СОХРАНЁННЫЕ ФИЛЬМЫ И ПРОФАЙЛ
-    if ((isMainLink || isProfileLink || isSavedMoviesLink || isMoviesLink) && (!regLogLink && isLoggedIn)) {
-      return <>
-        <MenuProfile
-          isMainLink={isMainLink}
-          isProfileMenu={isProfileMenu}
-          handleButtonCloseMenuProfile={handleButtonCloseMenuProfile}
-        />
-
-        <ul className="header__links">
-          <li><Link to="/movies" className={`header__link ${moviesUrl && 'header__link_active'} ${changeLinkStyleWhenMainPage()}`}>Фильмы</Link></li>
-          <li><Link to="/saved-movies" className={`header__link ${savedMoviesUrl && 'header__link_active'} ${changeLinkStyleWhenMainPage()}`}>Сохранённые фильмы</Link></li>
-        </ul>
-        <button onClick={handleIsProfileMenu} type="button" className="header__menu-profile"></button>
-        <span className="header__profile-button"><ProfileButton mainPage={mainUrl} /></span>
-      </>
-    }
-
-    // ЕСЛИ ПОЛЬЗОВАТЕЛЬ НЕЗАЛОГИНЕН
-    if (!isLoggedIn) {
-      return <ul className="header__signin-signup-box">
-        <li><Link to="/signup" className="header__link-signup">Регистрация</Link></li>
-        <li><Link to="/signin" className="header__link-signin">Войти</Link></li>
-      </ul>
-    }
-  }
 
   return (
-    <header className={`Header ${useLightBg()} ${removeHead()}`}>
-
+    <header className={`header ${applyLightBg()} ${removeHeadIfPageNotFound()}`}>
       <div className={`header__head ${showOnlyLogo()}`}>
 
-        <Link to="/"><img onClick={goToMainPage} className="header__logo" src={logo} alt="Логотип сайта"></img></Link>
+        <Link to="/">
+          <img onClick={goToMainPage} className="header__logo" src={logo} alt="Логотип сайта" />
+        </Link>
 
-        {handleRegLogProfile()}
+
+        {
+          (isLoggedIn && hasCurrentPathnameMenu) &&
+          <ElementsWhenUserLoggedIn
+            handleClickButtonNavigationMenu={handleClickButtonNavigationMenu}
+          />
+        }
+
+
+        {
+          (!isLoggedIn && (!isSigninCurrentPathname && !isSignupCurrentPathname)) &&
+          <ElementsWhenUserNotAuth />
+        }
+
+
+        {
+          (isSigninCurrentPathname || isSignupCurrentPathname) &&
+          <ElementsWhenSigninOrSignup />
+        }
 
       </div>
-
     </header>
 
   )

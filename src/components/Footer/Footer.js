@@ -1,22 +1,39 @@
 import React from "react";
-import { useLocation } from "react-router";
+import useIdentifyCurrentPathname from "../../hooks/useIdentifyCurrentPathname";
 
-function Footer({ isPageNotFound, isProfileLink }) {
 
-  const location = useLocation();
-  const pathName = location.pathname;
+function Footer({ isPageNotFound }) {
 
-  function disabledFooter() {
-    if (pathName === '/signup' || pathName === '/signin' || isPageNotFound || isProfileLink) {
+  const identifyCurrentPathname = useIdentifyCurrentPathname()
+
+
+  // ОБРАБОТАТЬ СКРЫТИЕ ФУТЕРА
+  function handleHidingFooter() {
+    const isPageSignin = identifyCurrentPathname.isSignin()
+    const isPageSignup = identifyCurrentPathname.isSignup()
+    const isPageProfile = identifyCurrentPathname.isProfile()
+
+    if (isPageSignin || isPageSignup || isPageProfile || isPageNotFound) {
       return 'footer_disabled';
     }
+
+    return ''
   }
 
+
+
   return (
-    <footer className={`Footer ${disabledFooter()} ${'footer_indent'}`}>
-      <p className="footer__info-project">Учебный проект Яндекс.Практикум х BeatFilm.</p>
+    <footer className={`footer ${handleHidingFooter()} footer_indent`}>
+
+      <p className="footer__info-project">
+        Учебный проект Яндекс.Практикум х BeatFilm.
+      </p>
+
+
       <div className="footer__date-nav-box">
+
         <p className="footer__date">&copy; {new Date().getFullYear()}</p>
+
         <nav>
           <ul className="footer__nav">
             <li><a href="https://praktikum.yandex.ru/" target="_blank" rel='noreferrer'>Яндекс.Практикум</a></li>
@@ -24,6 +41,7 @@ function Footer({ isPageNotFound, isProfileLink }) {
             <li><a href="https://vk.com/id2895043" target="_blank" rel='noreferrer'>Вконтакте</a></li>
           </ul>
         </nav>
+
       </div>
     </footer>
   )

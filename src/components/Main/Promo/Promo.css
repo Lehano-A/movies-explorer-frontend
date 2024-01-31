@@ -1,4 +1,4 @@
-.Promo {
+.promo {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -8,13 +8,13 @@
 }
 
 @media screen and (max-width: 768px) {
-  .Promo {
+  .promo {
     height: 844px;
   }
 }
 
 @media screen and (max-width: 429px) {
-  .Promo {
+  .promo {
     height: 630px;
   }
 }

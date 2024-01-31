@@ -1,110 +1,66 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Form from "../Form/Form";
-import mainApi from "../../utils/MainApi";
-import { ErrorMessage } from './../../utils/constants/constants';
-import { ValidationContext } from './../context/ValidationContext';
-import { stringifyJSON } from './../../utils/helpers/jsonHandler';
+import { ValidationContext } from '../../context/ValidationContext';
+
 
 function SignIn({
-  isMainLink,
-  isRegLink,
-  handleIsLogLink,
-  getDataUser,
-  getSavedMoviesStorage,
-  setEmptySavedMoviesFromStorage,
-  setActiveAuthAfterLogoutStorage,
-  setActiveReloadedPageStorage,
-  setCurrentUser,
-  setIsAuth,
-  setIsLoggedIn
+  sendAuthReqUserToApi,
+  handleChangeInput,
 }) {
 
+  const [isBlockedInput, setIsBlockedInput] = useState(null); // ЗАБЛОКИРОВАНЫ ЛИ ПОЛЯ, ВО ВРЕМЯ ЗАПРОСА
+
+  const validationContext = React.useContext(ValidationContext);
+  const { errorsForm, inputParameters, resetFormByDefault } = validationContext;
+
+
 
   useEffect(() => {
-    handleIsLogLink();
-  }, []);
-
-
-  useEffect(() => {
-
-    if (isRegLink || isMainLink) {
-      handler.errors().name = '';
-      return handler.errors().email = '';
+    return () => {
+      setIsBlockedInput(null)
+      resetFormByDefault()
     }
-    return;
-  }, [isRegLink, isMainLink])
+  }, [])
 
 
-  const [isBlockedInput, setIsBlockedInput] = useState(false); // ЗАБЛОКИРОВАНЫ ЛИ ПОЛЯ, ВО ВРЕМЯ ЗАПРОСА
 
-  const [errorSubmitMessage, setErrorSubmitMessage] = useState('');
-
-  const handler = React.useContext(ValidationContext);
-
-  const { errors, values, handleClickAtInputActive } = handler;
-
-  const emailError = errors().email;
-
-  const passwordError = errors().password;
-
-
-  // АУТЕНТИФИКАЦИЯ ПОЛЬЗОВАТЕЛЯ
-  function handleSubmitSignIn(e) {
-
+  // ОБРАБОТАТЬ САБМИТ АУТЕНТИФИКАЦИИ
+  function handleSubmitSignIn(e, setIsSubmit) {
+    e.preventDefault()
     setIsBlockedInput(true);
 
-    e.preventDefault()
-    const emailValue = values().email.value;
-    const passwordValue = values().password.value;
+    const { email, password } = inputParameters
 
-    mainApi.signIn(emailValue, passwordValue)
-      .then((dataUser) => {
-        getDataUser(); // ПОЛУЧЕНИЕ ДАННЫХ ПРОФАЙЛА
-        setIsBlockedInput(false);
-        if (!getSavedMoviesStorage()) { // ЕСЛИ НЕТ В ХРАНИЛИЩЕ КЛЮЧА СОХРАНЁННЫХ ФИЛЬМОВ
-          setEmptySavedMoviesFromStorage(); // СОЗДАЁМ ПУСТОЙ МАССИВ
-        }
-        setActiveAuthAfterLogoutStorage();
-        setActiveReloadedPageStorage();
-        setCurrentUser(dataUser);
-        setIsAuth(localStorage.setItem('isAuth', stringifyJSON(true)));
-        setIsLoggedIn(true);
-        return;
-      })
-      .catch((err) => {
-        setIsBlockedInput(false);
-        Object.keys(ErrorMessage).forEach((key) => {
-
-          if (err === key) {
-            handleClickAtInputActive();
-
-            return setErrorSubmitMessage(
-              <p className={`error__message_signin-signup error__message_signin-signup_active`}>{ErrorMessage[err]}</p>
-            )
-          }
-        })
-        console.log(err);
-        return setIsBlockedInput(false);
-      })
+    sendAuthReqUserToApi({
+      email: email.inputValue,
+      password: password.inputValue,
+      setIsBlockedInput,
+      setIsSubmit,
+    },
+    )
   }
+
 
 
   return (
 
-    <div className="SignIn">
+    <div className="signin">
+      <Form buttonName="Войти" handleSubmit={handleSubmitSignIn} regQuestion="Ещё не зарегистрированы?" inOrup="up" regOrLogin="Регистрация">
 
-      <Form errorSubmitMessage={errorSubmitMessage} buttonName="Войти" handleSubmit={handleSubmitSignIn} regQuestion="Ещё не зарегистрированы?" inOrup="up" regOrLogin="Регистрация">
         <div className="form__input-box">
+
           <label htmlFor="email" className="form__label">E-mail</label>
-          <input disabled={isBlockedInput && true} name="email" type="email" className="form__input" maxLength="43" required></input>
-          <span htmlFor="email" className={`form__not-valid ${emailError && 'form__not-valid_active'}`}>{emailError}</span>
+          <input onChange={handleChangeInput} disabled={isBlockedInput && true} name="email" type="email" className="form__input" minLength="6" maxLength="80" required></input>
+          <span htmlFor="email" className={`form__not-valid ${errorsForm.email && 'form__not-valid_active'}`}>{errorsForm.email}</span>
+
 
           <label htmlFor="password" className="form__label">Пароль</label>
-          <input disabled={isBlockedInput && true} name="password" type="password" className="form__input" minLength="7" maxLength="30" autoComplete="off" required></input>
-          <span htmlFor="password" className={`form__not-valid ${passwordError && 'form__not-valid_active'}`}>{passwordError}</span>
-        </div>
-      </Form>
+          <input onChange={handleChangeInput} disabled={isBlockedInput && true} name="password" type="password" className="form__input" minLength="7" maxLength="30" autoComplete="off" required></input>
+          <span htmlFor="password" className={`form__not-valid ${errorsForm.password && 'form__not-valid_active'}`}>{errorsForm.password}</span>
 
+        </div>
+
+      </Form>
     </div>
   )
 }
