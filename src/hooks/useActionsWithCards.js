@@ -3,13 +3,7 @@ function useActionsWithCards(isActiveFilterShortMovies, setTotalAllCardsDisplaye
 
   // ОТФИЛЬТРОВАТЬ КАРТОЧКИ, ПОСЛЕ УДАЛЕНИЯ ЛАЙКА
   function filterCardsAfterRemovedLike(cards, id) {
-    return cards.filter((card) => {
-
-      if (card._id !== id) {
-        return card;
-      }
-      return null
-    })
+    return cards.filter((card) => card._id !== id)
   }
 
 
@@ -20,7 +14,6 @@ function useActionsWithCards(isActiveFilterShortMovies, setTotalAllCardsDisplaye
     if (setTotalAllCardsDisplayed) {
       if (!isActiveFilterShortMovies) {
         setTotalAllCardsDisplayed(lengthCardsInMainBox)
-        return
       }
     }
   }
