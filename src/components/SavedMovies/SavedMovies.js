@@ -72,7 +72,6 @@ function SavedMovies({ handleOpenNotificationPopup }) {
     1) ОБРАБОТКА ПЕРВОНАЧАЛЬНО ЗАГРУЖЖЕНЫХ СОХРАНЁННЫХ ФИЛЬМОВ
     2) ПОИСК ФИЛЬМОВ
     3) ПЕРЕКЛЮЧЕНИЕ ФИЛЬТРА КОРОТКОМЕТРАЖЕК
-
   */
   useEffect(() => {
     if (foundMoviesByValue.all !== null) {
@@ -101,14 +100,15 @@ function SavedMovies({ handleOpenNotificationPopup }) {
 
   // ОБНОВИТЬ СОСТОЯНИЯ, ПОСЛЕ УДАЛЕНИЯ ФИЛЬМА
   function updateStatesAfterDeletionMovie(idCard) {
-    const filteredSavedMovies = filterCardsAfterRemovedLike(savedMovies.all, idCard)
-    const filteredFoundMovies = filterCardsAfterRemovedLike(foundMoviesByValue.all, idCard)
+    const filteredSaved = filterCardsAfterRemovedLike(savedMovies.all, idCard)
+    const sortedSaved = sortMovies(filteredSaved)
+    setSavedMovies({ all: sortedSaved.all, shorts: sortedSaved.shorts })
 
-    const sortedSavedMovies = sortMovies(filteredSavedMovies)
-    const sortedFoundMovies = sortMovies(filteredFoundMovies)
-
-    setFoundMoviesByValue({ all: sortedFoundMovies.all, shorts: sortedFoundMovies.shorts })
-    setSavedMovies({ all: sortedSavedMovies.all, shorts: sortedSavedMovies.shorts })
+    if (foundMoviesByValue.all !== null) {
+      const filteredFound = filterCardsAfterRemovedLike(foundMoviesByValue.all, idCard)
+      const sortedFound = sortMovies(filteredFound)
+      setFoundMoviesByValue({ all: sortedFound.all, shorts: sortedFound.shorts })
+    }
   }
 
 
